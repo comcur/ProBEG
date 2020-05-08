@@ -1,0 +1,58 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+	<h3>{{ page_title }}</h3>
+
+	{% if race %}
+		<p>Вы успешно ввели все нужные данные для регистрации на забег «{{ race.event|safe }}» ({{ race.event.dateFull|safe }}), дистанция {{ race|safe }}.</p>
+		<p>Осталось оплатить участие; это можно сделать до {{ registrant.time_to_delete }} по Московскому времени.
+			После этого регистрация исчезнет, и вы сможете заполнить форму для регистрации ещё раз, если останутся места.</p>
+		<p>Вы также можете зарегистрировать ещё кого-то на этот же забег или на другие, на которые доступна регистрация нашем сайте, и оплатить всё это одним махом.</p>
+	{% endif %}
+
+	<br/><br/>
+	<h4>Ваши неоплаченные регистрации</h4>
+	<table class="table table-condensed table-hover">
+		<tr>
+			<th class="text-right">№</th>
+			<th class="text-right">Дата</th>
+			<th>Забег</th>
+			<th>Место проведения</th>
+			<th class="text-right">Дистанция</th>
+			<th>Имя</th>
+			<th class="text-right">Цена</th>
+			<th>Когда сгорит, если не оплатить</th>
+			<th class="min-width"></th>
+			<th class="min-width"></th>
+		</tr>
+		{% for reg in registrants %}{% with reg_race=reg.race event=reg.race.event %}
+			<tr>
+				<td class="text-right">{{ forloop.counter }}</td>
+				<td class="text-right">{{ event.dateFull|safe }}</td>
+				<td><a href="{{ event.get_absolute_url }}" target="_blank">{{ event }}</a></td>
+				<td>{% include 'results/event_cities_with_links.html' %}</td>
+				<td class="text-right">{{ reg_race.distance }}</td>
+				<td>{{ reg.fname }} {{ reg.lname }}</td>
+				<td class="text-right">{{ reg.price }} ₽</td>
+				<td>{{ reg.time_to_delete }}</td>
+				<td class="min-width"><a href="#" class="dash-underlined">Подробности</a></td>
+				<td class="min-width"><a href="#" onclick="confirm_link('Вы действительно хотите удалить регистрацию на забег «{{ event }}»?', '{{ reg.get_delete_url }}');">
+					Отменить&nbsp;регистрацию</a>
+				</td>
+			</tr>
+		{% endwith %}{% endfor %}
+		<tr><td colspan="10">&nbsp;</td></tr>
+		<tr><td colspan="6"><strong>Общая сумма к оплате</strong></td>
+			<td class="text-right"><strong>{{ total_sum }} ₽</strong></td>
+			<td colspan="3"></td>
+		</tr>
+		<tr><td colspan="10">&nbsp;</td></tr>
+		<tr><td colspan="6"></td>
+			<td colspan="4" class="text-right"><a href="#"><button type="button" class="btn btn-warning">Оплатить регистрации</button></a></td>
+		</tr>
+	</table>
+	</form>
+</div></div>
+{% endblock %}

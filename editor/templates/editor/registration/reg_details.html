@@ -1,0 +1,281 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+
+{% include 'results/panel_header_before_title.html' %}
+		Регистрация на забег <a class="underlined" href="{{ event.get_absolute_url }}">{{ event|safe }}</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<a class="dash-underlined" href="#questions">{{ n_questions }} вопрос{{ n_questions|plural_ending_1 }}</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="{{ registration.get_history_url }}">
+			<button type="button" class="btn btn-sm btn-primary">История изменений</button></a>
+{% include 'results/panel_header_after_title.html' %}
+	{% for error in frmRegistration.non_field_errors %}
+		<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+	{% endfor %}
+	<form id="frmRegistration" method="POST" action="{{ registration.get_editor_url }}">
+		{% csrf_token %}
+		<div class="row">
+			<div class="col-md-4">
+				<table class="table table-condensed table-borderless">
+					{% include 'results/form_field_tr.html' with field=frmRegistration.is_open %}
+					{% include 'results/form_field_tr.html' with field=frmRegistration.is_midname_needed %}
+					{% include 'results/form_field_tr.html' with field=frmRegistration.is_address_needed %}
+				</table>
+			</div>
+			<div class="col-md-4">
+				<table class="table table-condensed table-borderless">
+					{% include 'results/form_field_tr.html' with field=frmRegistration.start_date %}
+					{% include 'results/form_field_tr.html' with field=frmRegistration.finish_date %}
+				</table>
+			</div>
+			<div class="col-md-4">
+				<h4>На какие дистанции открыта регистрация</h4>
+				{% for race in event.ordered_race_set %}
+					<input type="checkbox" name="race{{ race.id }}_chkbox" disabled {% if race in races_with_registration %}checked{% endif %}/>
+					{{ race }}
+					<br/>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-5">
+				<input type="submit" name="frmRegistration_submit" value="Сохранить" class="btn btn-success"/>
+			</div>
+		</div>
+	</form>
+{% include 'results/panel_footer.html' %}
+
+<p>При регистрации на любой забег участники обязательно заполняют следующие поля:
+	<br/>
+	имя, фамилия, пол, страна, регион (для России,&nbsp;Беларуси и&nbsp;Украины), населённый пункт, дата рождения,
+	адрес электронной почты, телефон, имя и&nbsp;номер телефона знакомого на&nbsp;экстренный случай, клуб&nbsp;(необязательно).
+</p>
+
+<a name="questions"></a>
+{% include 'results/panel_header.html' with title='Дополнительные вопросы' %}
+	<form id="frmQuestions" method="POST" action="{{ registration.get_editor_url }}"
+		class="form-inline" enctype="multipart/form-data"
+	>
+		{{ frmQuestions.management_form }}{% csrf_token %}
+	<ul class="nav nav-tabs">
+		{% for form in frmQuestions %}
+			<li{% if forloop.last %} class="active"{% endif %}>
+				<a data-toggle="tab" href="#question{{ forloop.counter }}">
+					{% if form.instance.id %}{{ form.instance.title|default:'(без названия)' }}{% else %}Новый вопрос{% endif %}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	<div class="tab-content">
+		<br/>
+		{% for form in frmQuestions %}{% with question=form.instance %}
+			<div id="question{{ forloop.counter }}" class="tab-pane fade{% if forloop.last %} in active{% endif %}">
+				{% for error in form.non_field_errors %}
+					<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+				{% endfor %}
+				{{ form.id }}
+				{{ form.event }}
+				{{ form.created_by }}
+				<div class="row">
+					<div class="col-md-4">
+						<h4>Основные параметры</h4>
+						<table class="table table-condensed table-borderless">
+							{% if question.id %}
+								<tr>
+									<td class="text-right"><strong>Номер вопроса:</strong></td>
+									<td>{{ question.number }}</td>
+								</tr>
+							{% endif %}
+							{% include 'results/form_field_tr.html' with field=form.title %}
+							{% include 'results/form_field_tr.html' with field=form.name %}
+							{% include 'results/form_field_tr.html' with field=form.finish_date %}
+							{% include 'results/form_field_tr.html' with field=form.multiple_answers %}
+							{% include 'results/form_field_tr.html' with field=form.is_required %}
+							{% if question.id %}
+								<tr>
+									<td class="text-right"><strong>Добавил вопроc:</strong></td>
+									<td>{% include 'editor/user_name_with_link.html' with person=question.created_by %}</td>
+								</tr>
+								{% include 'results/form_field_tr.html' with field=form.DELETE label='Отметьте, чтобы удалить вопрос' %}
+							{% endif %}
+						</table>
+					</div>
+					<div class="col-md-5">
+						{% if question.id %}
+							<h4>Варианты ответа
+								&nbsp;
+								<a href="{{ question.get_editor_url }}" target="_blank">
+									<button type="button" class="btn btn-xs btn-primary">Редактировать в новом окне</button></a>
+							</h4>
+							<table class="table table-condensed table-border">
+								<tr>
+									<th>№</th><th>Текст</th><th>Цена</th>
+									<th>Показывать<br/>регистрирующимся</th>
+									<th>Выбран<br/>по умолчанию</th>
+									<th>Число<br/>ответивших</th>
+								</tr>
+								{% for choice in question.reg_question_choice_set.all %}
+									<tr>
+										<td>{{ forloop.counter }}</td>
+										<td>{{ choice.name }}</td>
+										<td>{{ choice.cost|default:'0' }}</td>
+										<td>{% include 'tools/small_bool_span.html' with value=choice.is_visible %}</td>
+										<td>{% include 'tools/small_bool_span.html' with value=choice.is_default %}</td>
+										<td>{{ choice.reg_answer_set.count|default:'0' }}</td>
+									</tr>
+								{% endfor %}
+							</table>
+							<br/>
+							<h4>На каких дистанциях задаём вопрос</h4>
+							{% for race in question.race_set.all %}
+								<p>
+									<input type="checkbox" name="chkbox_{{ race.id }}" checked disabled>
+									{{ race }}
+								</p>
+							{% endfor %}
+							<br/>
+							<h4>Переместить вопрос</h4>
+							<input type="submit" name="move_question_{{ question.id }}_submit" value="Переместить" class="btn btn-xs btn-primary"/>
+							&nbsp;&nbsp;
+							<select name="move_question_{{ question.id }}">
+								{% for value, name in move_choices %}
+									<option value="{{ value }}">{{ name }}</option>
+								{% endfor %}
+							</select>
+							<p>При нажатии «Переместить» никакие другие параметры регистрации не сохранятся.</p>
+						{% endif %}
+					</div>
+					<div class="col-md-3">
+						<h4>Картинка к вопросу (необязательно)</h4>
+						<table class="table table-condensed table-borderless">
+							{% include 'results/form_field_tr.html' with field=form.image %}
+							{% if question.image %}
+								<tr>
+									<td class="text-right"><strong>Размер файла на сервере в байтах:</strong></td>
+									<td>{{ question.file_size }}</td>
+								</tr>
+							{% endif %}
+						</table>
+						{% if question.image %}
+							<img src="{{ question.image|add_prefix }}" align="right" style="max-height: 300px; max-width: 100%;"/>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		{% endwith %}{% endfor %}
+	</div>
+		<input type="submit" name="frmQuestions_submit" value="Сохранить изменения в вопросах" class="btn btn-success"/>
+	</form>
+{% include 'results/panel_footer.html' %}
+
+<a name="races"></a>
+{% include 'results/panel_header.html' with title='Дистанции' %}
+	<form id="frmRaces" method="POST" action="{{ registration.get_editor_url }}"
+		class="form-inline"
+	>
+		{{ frmRaces.management_form }}{% csrf_token %}
+	<ul class="nav nav-tabs">
+		{% for form in frmRaces %}
+			<li{% if forloop.first %} class="active"{% endif %}>
+				<a data-toggle="tab" href="#race{{ forloop.counter }}">
+					{{ form.instance.race.distance }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	<div class="tab-content">
+		<br/>
+		{% for form in frmRaces %}{% with race_details=form.instance race=form.instance.race %}
+			<div id="race{{ forloop.counter }}" class="tab-pane fade{% if forloop.first %} in active{% endif %}">
+				{% for error in form.non_field_errors %}
+					<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+				{% endfor %}
+				{{ form.id }}
+				{{ form.race }}
+				{{ form.created_by }}
+				<div class="row">
+					<div class="col-md-4">
+						<table class="table table-condensed table-borderless">
+							{% include 'results/form_field_tr.html' with field=form.is_open %}
+							{% include 'results/form_field_tr.html' with field=form.participants_limit %}
+							{% include 'results/form_field_tr.html' with field=form.queue_limit %}
+							{% include 'results/form_field_tr.html' with field=form.is_participants_list_open %}
+							<tr>
+								<td class="text-right"><strong>Добавил дистанцию:</strong></td>
+								<td>{% include 'editor/user_name_with_link.html' with person=race_details.created_by %}</td>
+							</tr>
+							<tr>
+								<td class="text-right"><strong>Уже зарегистрировалось человек:</strong></td>
+								<td>{{ race.registrant_set.count }}</td>
+							</tr>
+						{% if not race.registrant_set.exists %}
+							{% include 'results/form_field_tr.html' with field=form.DELETE label='Отметьте, чтобы удалить регистрацию на эту дистанцию' %}
+						{% endif %}
+						</table>
+					</div>
+					<div class="col-md-4">
+						<table class="table table-condensed table-borderless">
+							{% include 'results/form_field_tr.html' with field=form.can_be_transferred %}
+							{% include 'results/form_field_tr.html' with field=form.transfer_cost %}
+							{% include 'results/form_field_tr.html' with field=form.transfer_finish_date %}
+						</table>
+					</div>
+					<div class="col-md-4">
+						<h4>Стоимость регистрации
+							&nbsp;
+							<a href="{{ race.get_reg_editor_url }}" target="_blank">
+								<button type="button" class="btn btn-xs btn-primary">Редактировать в новом окне</button></a>
+						</h4>
+						<table class="table table-condensed">
+							{% for finish_date, costs, names in race.reg_race_details.get_prices_by_dates %}
+								<tr>
+									<td class="text-right">
+										до
+										{% if finish_date %}
+											{{ finish_date|date:'j.m.Y' }}
+										{% else %}
+											окончания регистрации
+										{% endif %}
+									</td>
+									<td class="text-right">{% for cost in costs %}{% if not forloop.first %}<br/>{% endif %}{{ cost }}{% endfor %}</td>
+									<td>{% for name in names %}{% if not forloop.first %}<br/>{% endif %}{{ name }}{% endfor %}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+			</div>
+		{% endwith %}{% endfor %}
+	</div>
+		<input type="submit" name="frmRaces_submit" value="Сохранить изменения в дистанциях" class="btn btn-success"/>
+	</form>
+{% include 'results/panel_footer.html' %}
+
+{% if frmNewRace %}
+	<a name="open_new_distance"></a>
+	{% include 'results/panel_header.html' with title='Открытие регистрации на ещё одну дистанцию' %}
+		<form id="frmNewDistance" method="POST" action="" class="form-inline">
+			{% csrf_token %}
+			Открыть регистрацию на дистанцию
+			{{ frmNewRace.race_new }}
+			, взяв за образец дистанцию
+			{{ frmNewRace.race_template }}
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="submit" name="frmNewRace_submit" value="Открыть регистрацию" class="btn btn-success"/>
+		</form>
+	{% include 'results/panel_footer.html' %}
+{% endif %}
+
+{% if is_admin %}
+	{% if 1 or not registration.has_dependent_objects %}
+		<form id="frmForRegistration" method="POST" action="{{ registration.get_delete_url }}" class="form-inline">
+			{% csrf_token %}
+			<input type="submit" name="frmDeleteRegistration_submit"
+				value="Удалить регистрацию на забег {{ event }}" class="btn btn-danger"
+			/>
+		</form>
+	{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+     12 git status
+     11 git push
+     11 git add .
+      1 rpm -qi git
+      1 rpm -q git
+      1 grep git ~/.bash_history 
+      1 git sdd .
+      1 git rm editor/management/commands/xlsxrep-test.py
+      1 git rm editor/management/commands/xlsxrep.py.orig
+      1 git rm editor/management/commands/xlsxrep.py.old
+      1 git rm editor/management/commands/xlsxrep.py.last
+      1 git rm editor/management/commands/xlsxrep.py.alex
+      1 git rm editor/management/commands/xlsxrep.py.181112
+      1 git rm editor/management/commands/xlsxrep.py.180727
+      1 git rm editor/management/commands/xlsxrep.py.180717
+      1 git rm editor/management/commands/xlsxrep.py.180715
+      1 git rm editor/management/commands/xlsxrep.py.180707
+      1 git rm editor/management/commands/xlsxrep.py-1
+      1 git commit -m 'User_name renamed to Extra_name. They are now connected to runners instead of users'
+      1 git commit -m "Three pages of new report. Algorithm for club members records is fixed"
+      1 git commit -m "Registration is updated. Payment form now works with online kassa"
+      1 git commit -m 'Payment form is ready and waiting for online kassa. User names are half transferred from users to runners. User_profile and runner are immediately created for new runners'
+      1 git commit -m 'Page for payment via Moneta'
+      1 git commit -m 'Models for payments are added'
+      1 git commit -m 'Model for KLB report stat is added. Form for payments is added'
+      1 git commit -m 'Model for KLB 
+      1 git commit -m "Links to payment form are added"
+      1 git commit -m 'KLB reports. Only 100 results on runner page by default. Minor changes'
+      1 git commit -m 'All runner names are used in KLB processing. Template for admins work stat is started'
+      1 git commit -m 'Admins work statistics page is working'

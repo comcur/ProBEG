@@ -1,0 +1,108 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+
+<div class="row"><div class="col-md-8 col-md-offset-2">
+	{% include 'results/panel_header_before_title.html' %}
+			Добавление отдельных результатов забега
+			<a class="underlined" href="{{ event.get_absolute_url }}">{{ event.name|safe }}</a>
+			({{ event.dateFull|safe }}) на
+			<a class="underlined" href="{{ race.get_absolute_url }}">{{ race.distance }}</a>
+			в серии
+			<a class="underlined" href="{{ event.series.get_absolute_url }}">{{ event.series|safe }}</a>
+	{% include 'results/panel_header_after_title.html' %}
+		{% if hasOfficialResults %}
+			<p>Для этой дистанции уже есть официальные результаты. Добавить отдельные результаты нельзя.</p>
+		{% else %}
+			<form id="formset" method="POST" action="{{ race.get_klb_add_results_url }}">
+				{{ formset.management_form }}{% csrf_token %}
+				<input type="hidden" name="club" value="{{ club.id|default:0 }}"/>
+				<input type="hidden" name="n_persons" value="{{ n_persons }}"/>
+				<p>Здесь вы можете добавить результаты любых {{ n_persons }} (или меньше)
+					{% if club %}
+						участников клуба {{ club.name }}.
+					{% else %}
+						индивидуальных участников КЛБМатча.
+					{% endif %}
+					{% if race_is_ok_for_klb %}
+						Те, которым вы поставите флажок в правой колонке, будут обработаны в КЛБМатч после проверки администратором.
+						Можно отметить сразу несколько флажков, выбрав первый и затем с нажатой клавишей Shift нажав на последний.
+					{% endif %}
+				</p>
+				<p>В выпадающих меню – только участники, включенные в Матч на день забега и ещё не имеющие результатов на этом забеге.</p>
+				<p>
+					{% if is_admin %}
+						По возможности укажите источник информации (например, отправителя и дату отправления письма):
+					{% else %}
+						Если протокола с этими результатами нет в документах на нашем сайте, укажите источник информации:
+					{% endif %}
+				</p>
+				{% if is_admin and race_is_ok_for_klb and event.is_too_old_for_klb_score %}
+					<p><strong>
+						{% if is_admin %}
+							Со дня забега прошло больше 90 дней. Согласно Положению, для результов, у которых в протоколе не указан нужный клуб,
+							нужно считать только бонусные очки. Для этого поставьте галочку в правом столбце.
+						{% else %}
+							Со дня забега прошло больше 90 дней. Согласно Положению, для результов, у которых в протоколе не указан нужный клуб,
+							будут посчитаны только бонусные очки.
+						{% endif %}
+					</strong></p>
+				{% endif %}
+				<div class="form-group">
+					<input type="text" class="form-control" name="source"/>
+				</div>
+				<table class="table table-condensed">
+					<tr>
+						<th>Участник</th>
+						<th>Результат
+							{% if type_minutes %}
+								(в метрах, только цифры)
+							{% else %}
+								(чч:мм:сс или чч:мм:сс,хх)
+							{% endif %}
+						</th>
+						{% if race_is_ok_for_klb %}
+							<th>Отправить на модерацию в КЛБМатч?</th>
+							{% if is_admin %}
+								<th>Считать только бонусы?</th>
+							{% endif %}
+						{% endif %}
+					</tr>
+					{% for form in formset %}
+						{% for error in form.non_field_errors %}
+							<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+						{% endfor %}
+						{{ form.id }}
+						<tr>
+							{% for field in form %}
+								<td>{% include 'results/form_field.html' with field=field no_title=1 %}</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</table>
+				{% if race_is_ok_for_klb %}
+					<input type="checkbox" name="confirm_club_check" id="confirm_club_check" form="frmSearch"/>
+					Подтверждаю, что проверил{% if user_is_female %}а{% endif %}:
+					для всех результатов, отмеченных для отправки в КЛБМатч, в официальном протоколе либо указан нужный клуб,
+					либо поле «Клуб» пустое.
+					<br/>
+				{% endif %}
+				<input type="submit" name="formset_submit" id="frmResults_claim"
+					value="Добавить результаты{% if race_is_ok_for_klb %} и обработать в КЛБМатч{% endif %}" class="btn btn-success"
+					{% if race_is_ok_for_klb %}
+						disabled
+					{% endif %}
+				/>
+			</form>
+			<script language="javascript">
+var $confirm_club_check = $('#confirm_club_check');
+var $btnSubmit = $('#frmResults_claim');
+$confirm_club_check.click(function(e) {
+	$btnSubmit.prop("disabled", !$confirm_club_check.prop("checked"));
+});
+			</script>
+		{% endif %}
+	{% include 'results/panel_footer.html' %}
+</div></div>
+{% endblock %}

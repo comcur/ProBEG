@@ -1,0 +1,89 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<h3>
+	{% if is_admin %}
+		<span class="pull-right">
+			{% if country.id == 'RU' %}
+				<a href="{% url 'results:records_better_than_shatilo' %}">
+					<button type="button" class="btn btn-xs btn-primary">Рекорды выше, чем у Шатило</button></a>
+				&nbsp;&nbsp;
+			{% endif %}	
+			<a href="{% url 'editor:better_age_group_results' country_id=country.id %}">
+				<button type="button" class="btn btn-xs btn-primary">Потенциальные рекорды</button></a>
+		</span>
+	{% endif %}	
+	{{ page_title }}
+</h3>
+
+<br/><br/>
+
+<p>Наша цель — собрать для общепринятых возрастных групп (с шагом в 5 лет, начиная с 35 лет) на самых популярных беговых дистанциях от 100 метров до марафона:</p>
+
+<p>1. по три лучших результата за всю историю России, Украины, Беларуси, как на стадионе/шоссе, так и в закрытых помещениях;</p>
+
+<p>2. все результаты начиная с 1992 года, какое-то время бывшие рекордными.</p>
+
+<p>Большую работу по созданию такой базы для России проделал член федерации легкой атлетики Курганской области Анатолий Шатило; он же любезно предоставил нам файл, из которого взяты почти все результаты ниже. Мы рассчитываем, что общими усилиями бегового сообщества вместе с комиссией ветеранов при ВФЛА сможем поддерживать эту базу в актуальном состоянии.</p>
+
+<p>В таблицах ниже представлены только лучшие результаты; если нажать на результат в любой ячейке, попадёте на страницу с лучшей тройкой результатов и историей улучшения рекорда (если такая информация у вас есть).</p>
+
+<p>Если вы знаете о результатах, которые нужно добавить в эту таблицу, или найдёте любые ошибки, пожалуйста, напишите нам на <a href="mailto:info@probeg.org">info@probeg.org</a> или <a href="#" id="send_to_info_page">прямо отсюда</a>.</p>
+
+{% for gender, data_gender in data.items %}
+	<div class="row"><div class="col-md-12 text-center">
+		{% include 'misc/adsense_bottom.html' %}
+	</div></div>
+	<br/><br/>
+	<h3 class="text-center">{{ data_gender.name }}</h3>
+	<table class="table table-condensed text-small table-hover table-striped">
+		<tr class="info vcenter">
+			<th class="text-center">Возрастная группа</th>
+			{% for distance, dist_code in distances_and_codes %}
+				<th class="text-center" colspan="2">
+					<a href="{% url 'results:age_group_records_for_distance' country_id=country.id distance_code=dist_code %}">{{ distance }}</a>
+				</th>
+			{% endfor %}
+		</tr>
+		{% for age_group, data_age_group in data_gender.age_groups.items %}
+			<tr class="vcenter{% if age_group.age_group_type == 1 %} warning{% endif %}">
+				<td class="text-center">
+					{% if age_group.age_min %}{{ data_gender.name.0 }}{% endif %}{{ age_group }}
+					{% if is_admin and not age_group.age_min %}
+						<a href="{% url 'editor:country_records_edit' country_id=country.id gender_code=data_gender.gender_code %}"><button type="button" class="btn btn-xs btn-primary">Ред</button></a>
+					{% endif %}
+				</td>
+				{% for distance, record_result in data_age_group.items %}
+					{% if record_result %}
+						<td>{% include 'age_group_records/record_result_runner_name_and_city.html' %}</td>
+						<td class="text-right">
+							<a href="{% url 'results:age_group_record_details' country_id=country.id gender_code=record_result.get_gender_code age=age_group.age_min|default_if_none:0 distance_code=record_result.get_distance_code is_indoor=is_indoor %}">{{ record_result }}</a>
+							{% if record_result.is_from_shatilo %}
+								<a href="#shatilo">*</a>
+							{% else %}
+								<span style="opacity: 0.0;">*
+							{% endif %}
+						</td>
+					{% else %}
+						<td colspan="2"></td>
+					{% endif %}
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</table>
+{% endfor %}
+
+<a name="shatilo">*</a> — результат взят из сборника рекордов Анатолия Шатило.
+
+<br/><br/><br/><br/>
+<h3>Как определяется возрастная группа</h3>
+<p>Правила принадлежности к возрастным группам для молодёжи и для ветеранов разные. У ветеранов всё просто: к группе М40, например, относятся все, кому в день забега от 40 до 44 лет включительно.</p>
+<p>У молодёжных групп всё немного сложнее ради того, чтобы возрастная группа у человека не менялась по ходу сезона (с января по декабрь). Например, к группе <20 относятся все, кому будет меньше 20 лет на конец текущего года: если забег проходит 8 августа 2019 года, в этой группе выступают родившиеся 1 января 2000 года или позже.</p>
+
+<br/><br/><br/>
+<h3>Полезные ссылки</h3>
+<p><a href="http://rusathletics.info/russianrecords">Рекорды и высшие достижения в России, Европе, мире на сайте ВФЛА</a></p>
+<p><a href="https://world-masters-athletics.com">World Masters Athletics</a></p>
+<p><a href="https://en.wikipedia.org/wiki/List_of_world_records_in_masters_athletics">Мировые рекорды в возрастных группах в Википедии</a></p>
+<p><a href="https://mastersathletics.ru/archive/">Протоколы некоторых российских соревнований среди ветеранов</a></p>
+{% endblock %}

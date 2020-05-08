@@ -1,0 +1,21 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+	<h3><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч–{{ year }}</a>: {{ page_title }}</h3>
+	<table class="table table-condensed table-hover">
+		<tr>
+			<th>Дата</th><th>Название</th><th>Город</th><th>Дистанции</th><th>Комментарий</th>
+		</tr>
+		{% for event in events %}
+			<tr>
+				<td><a href="{{ event.get_absolute_url }}">{{ event.date|safe }}</a></td>
+				<td><a href="{{ event.get_absolute_url }}">{{ event|safe }}</a></td>
+				<td>{% include 'results/event_cities_with_links.html' %}</td>
+				<td>{% include 'results/distances_comma.html' with races=event.race_set.all %}</td>
+				<td>{{ event.reason }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div></div>
+{% endblock %}

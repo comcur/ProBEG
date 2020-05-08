@@ -1,0 +1,42 @@
+<tr{% if not ignore_gender and person.gender == 1 %} class="success"{% endif %}>
+	<td>{{ forloop.counter }}</td>
+	{% if klb_result.race %}
+		<td class="text-right">{{ event.start_date|date:'j.m' }}</td>
+		<td><a href="{{ event.get_absolute_url }}">{{ event.name|safe }}</a>
+			{% if klb_result.is_error %}
+				<br/>
+				<strong>(зачтен ошибочно)</strong>
+			{% endif %}
+			{% if klb_result.race.is_multiday %}
+				<br/>
+				(многодневный забег)
+			{% endif %}
+		</td>
+		<td>{{ event.strCityCountry|safe }}</td>
+		<td><a href="{{ klb_result.race.get_absolute_url }}">{{ klb_result.race.distance }}</a>
+			{% if klb_result.race.distance_real %}
+				<br/>
+				<span class="nobr">(факт.: {{ klb_result.race.distance_real }})</span>
+			{% endif %}
+		</td>
+	{% else %}
+		<td class="text-right">{{ klb_result.event_raw.start_date|date:'j.m' }}</td>
+		<td><a href="{{ klb_result.event_raw.get_absolute_url }}">{{ klb_result.event_raw.name }}</a></td>
+		<td>{{ klb_result.event_raw.strCityCountry|safe }}</td>
+		<td>неизвестно</td>
+	{% endif %}
+	<td>{{ klb_result.strResult }}
+		{% if is_admin and klb_result.result %}
+			<br/>
+			<span class="for-admin">{{ klb_result.result.strPace }}</span>
+		{% endif %}
+	</td>
+	<td class="text-right{% if klb_result.is_in_best %} warning best-result{% endif %}">{{ klb_result.klb_score|floatformat:3 }}</td>
+	<td class="text-right{% if klb_result.is_in_best_bonus %} warning best-result{% endif %}">{{ klb_result.bonus_score|floatformat:3 }}</td>
+	{% if is_admin and klb_result.result %}
+		<td>
+			<a href="{{ klb_result.result.get_editor_url }}">
+				<button type="button" class="btn btn-xs btn-primary">Ред</button></a>
+		</td>
+	{% endif %}
+</tr>

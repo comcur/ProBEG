@@ -1,0 +1,39 @@
+{% extends 'results/base.html' %}
+{% block main %}
+<div class="row"><div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+		<h3><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч-{{ year }}</a>: Слепки</h3>
+		<br/>
+		<p>Каждый слепок — файл в формате MS Excel с положением в личном и комадном зачётах КЛБМатча и полным списком учтённых результатов
+		на момент создания слепка. Слепки создаются каждые 14 и 28 число каждого месяца.</p>
+		<br/>
+		<table class="table table-condensed">
+		<tr>
+			<th>Год матча</th>
+			<th>Дата создания</th>
+			{% if is_admin %}
+				<th>Доступен всем?</th>
+				<th>id</th>
+			{% endif %}
+			<th>Заявлено команд</th>
+			<th>Заявлено людей</th>
+			<th>Учтено результатов</th>
+			<th>Дистанций с&nbsp;хотя&nbsp;бы одним результатом в&nbsp;зачёт</th>
+		</tr>
+
+		{% for report in reports %}
+			<tr>
+				<td>{{ report.0 }}</td>
+				<td class="nobr"><a href="{{ report.2 }}">{{ report.5|date:'d E Y' }}</a></td>
+				{% if is_admin %}
+					<td>{{ report.3 }}</td>
+					<td>{{ report.6 }}</td>
+				{% endif %}
+				<td>{{ report.7 }}</td>
+				<td>{{ report.8 }}</td>
+				<td>{{ report.9 }}</td>
+				<td>{{ report.10 }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+</div></div>
+{% endblock %}

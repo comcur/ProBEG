@@ -1,0 +1,60 @@
+{% load results_extras %}{% if user_name %} {{ user_name }}, добрый день!{% else %} Добрый день!{% endif %}
+{% if claimed_results.exists %}
+За последнее время Вам были добавлены следующие результаты:
+	{% for result_for_mail in claimed_results %}{% with result=result_for_mail.result %}
+{{ result.race.event.date|safe }} — {{ result.race.name_with_event|safe }} ({{ url_start }}{{ result.race.get_absolute_url }}), {{ result }}
+	{% endwith %}{% endfor %}{% if n_unclaimed_results %}
+Кроме того, есть {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }}, похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}. Проверьте: не Ваш{{ n_unclaimed_results|plural_ending_12 }} ли? {{ url_start }}{% url 'results:find_results' %}
+	{% endif %}
+{% elif n_unclaimed_results %}
+Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }}, похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}. Проверьте: не Ваш{{ n_unclaimed_results|plural_ending_12 }} ли? {{ url_start }}{% url 'results:find_results' %}
+{% endif %}{% if added_to_team_data %}{% with added_profile=added_to_team_data.added_by.user_profile %}
+
+Заявка в КЛБМатч
+
+{% if added_to_team_data.added_by_admin %}Администраторы КЛБМатча заявили{% else %}{{ added_to_team_data.added_by.get_full_name }} ( {{ url_start }}{{ added_profile.get_absolute_url }} ) заявил{% if added_profile.is_female %}а{% endif %}{% endif %} Вас{% if added_to_team_data.date_registered %} с {{ added_to_team_data.date_registered|date_rus }}{% endif %} в команду «{{ added_to_team_data.team.name }}» ( {{ url_start }}{{ added_to_team_data.team.get_absolute_url }} ) для участия в КЛБМатче–{{ added_to_team_data.team.year }}.
+
+Если Вы не давали согласия на включение в команду, пожалуйста, напишите нам (например, просто ответив на это письмо).
+Если же всё в порядке — мы рады видеть Вас в числе участников нового матча!
+{% endwith %}{% endif %}{% if added_to_club_data %}
+
+Клубы
+
+{% for item in added_to_club_data %}{% with added_profile=item.added_data.added_by.user_profile %}{% if item.added_by_admin %}Администраторы сайта добавили{% else %}{{ item.added_data.added_by.get_full_name }} добавил{% if added_profile.is_female %}а{% endif %}{% endif %} Вас {% if item.club_member.date_registered %}с {{ item.club_member.date_registered|date_rus }}{% endif %} в клуб «{{ item.club_member.club.name }}» (не в КЛБМатч, а просто в состав клуба).{% endwith %}{% endfor %}
+
+Если Вы не давали согласия на включение в клуб, пожалуйста, напишите нам (например, просто ответив на это письмо).{% endif %}{% if participant %}{% with overall_group=participant.get_overall_group gender_group=participant.get_gender_group age_group=participant.age_group %}
+Ваше положение в КЛБМатче:
+
+Выступлений: {{ participant.n_starts }}.
+Набранные очки: {{ participant.score_sum }} (в том числе бонусы: {{ participant.bonus_sum }}).
+	{% if participant.place %}
+Место в общем зачёте ({{ url_start }}{{ overall_group.get_absolute_url }}): {{ participant.place }} из {{ overall_group.n_participants }}.
+	{% endif %}{% if participant.place_gender %}
+Место среди {% if participant.klb_person.gender == 2 %}мужчин{% else %}женщин{% endif %} ({{ url_start }}{{ gender_group.get_absolute_url }}): {{ participant.place_gender }} из {{ gender_group.n_participants }}.
+	{% endif %}{% if participant.place_group %}
+Место в группе {{ age_group.name }} ({{ url_start }}{{ age_group.get_absolute_url }}): {{ participant.place_group }} из {{ age_group.n_participants }}.
+	{% endif %}{% endwith %}{% endif %}{% if team %}
+
+Команда «{{ team.name }}» ({{ url_start }}{{ team.get_absolute_url }}):
+	{% if team.place %}
+Место в общем зачёте ({{ url_start }}{% url 'results:klb_match_summary' %}): {{ team.place }} из {{ teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_team team_prev=team.get_prev_team %}
+	{% endif %}{% if team.place_medium_teams %}
+Место в зачёте средних команд ({{ url_start }}{% url 'results:klb_match_summary' tab='medium' %}): {{ team.place_medium_teams }} из {{ medium_teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_medium_team team_prev=team.get_prev_medium_team %}
+	{% elif team.place_small_teams %}
+Место в зачёте маленьких команд ({{ url_start }}{% url 'results:klb_match_summary' tab='small' %}): {{ team.place_small_teams }} из {{ small_teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_small_team team_prev=team.get_prev_small_team %}
+	{% endif %}{% endif %}
+{% if user_city %}
+Поищите предстоящие забеги:
+
+В городе {{ user_city }} — {{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}
+	{% if user_city.region.active %}
+В регионе {{ user_city.region }} — {{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}
+	{% endif %}
+В стране {{ user_city.region.country }} — {{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}
+{% endif %}
+Успешных Вам стартов!
+Отписаться от рассылки: {{ url_start }}{% url 'results:my_details' %}
+
+--
+Команда сайта «ПроБЕГ»
+http://base.probeg.org

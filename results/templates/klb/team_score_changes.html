@@ -1,0 +1,54 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+
+<h3><a href="{% url 'results:klb_match_summary' year=team.year %}">КЛБМатч–{{ team.year }}</a>,
+	команда <a href="{{ team.get_absolute_url }}">{{ team.name }}</a>:
+	последние изменения очков
+</h3>
+
+<p>Страница работает в тестовом режиме; к сожалению, здесь пока отображаются не все изменения очков команды.</p>
+
+<table class="table table-condensed table-hover">
+	<tr class="info">
+		<th>№</th>
+		<th>Время операции</th>
+		<th>Забег</th>
+		<th>Город</th>
+		<th class="text-right">Дата забега</th>
+		<th class="text-right">Затронуто членов клуба</th>
+		<th class="text-right">Чистые очки</th>
+		<th class="text-right">Бонусы</th>
+		<th class="text-right">Сумма</th>
+		<th class="text-right"></th>
+		<th>Описание</th>
+		{% if is_admin %}
+			<th class="for-admin">Кто одобрил</th>
+		{% endif %}
+	</tr>
+	{% for score_change in score_changes %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ score_change.added_time|date:'d E Y H:i' }}</td>
+			<td><a href="{{ score_change.race.get_absolute_url }}">{{ score_change.race.name_with_event|safe }}</a></td>
+			<td>{{ score_change.race.event.strCityCountry|safe }}</td>
+			<td class="text-right">{{ score_change.race.event.start_date|date:'j.m' }}</td>
+			<td class="text-right">{{ score_change.n_persons_touched }}</td>
+			<td class="text-right">{{ score_change.clean_sum|floatformat:3 }}</td>
+			<td class="text-right">{{ score_change.bonus_sum|floatformat:3 }}</td>
+			<td class="text-right">{{ score_change.total_sum|floatformat:3 }}</td>
+			<td class="text-right">
+				{% if score_change.delta > 0 %}
+					<strong><span class="text-success">+{{ score_change.delta|floatformat:3 }}</span></strong>
+				{% elif score_change.delta < 0 %}
+					<strong><span class="text-danger">−{{ score_change.delta|inverse|floatformat:3 }}</span></strong>
+				{% endif %}
+			</td>
+			<td>{{ score_change.comment }}</td>
+			{% if is_admin %}
+				<td class="for-admin">{% include 'editor/user_name_with_link.html' with person=score_change.added_by %}</td>
+			{% endif %}
+		</tr>
+	{% endfor %}
+</table>
+{% endblock %}

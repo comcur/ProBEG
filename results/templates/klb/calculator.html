@@ -1,0 +1,45 @@
+{% extends 'results/base.html' %}
+{% block main %}
+<div class="row">
+	<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+		<h4>{{ page_title }}</h4>
+		{% if form.non_field_errors %}
+			{% for error in form.non_field_errors %}
+				<div class="alert alert-danger" role="alert">{{ error }}</div>
+			{% endfor %}
+		{% endif %}
+		<form method="GET" action="" class="form-horizontal">
+			{% csrf_token %}
+			{% for field in form %}
+				{% include 'tools/form_field_horizontal.html' with leftcol=5 %}
+			{% endfor %}
+			<div class="col-sm-offset-5 col-sm-7">
+				<div class="checkbox">
+					<input type="submit" name="btnCalc" value="Рассчитать" class="btn btn-success"/>
+				</div>
+			</div>
+		</form>
+		{% if distance %}
+			<p><br/><br/></p>
+			<p>Если вы пробежите {{ distance }} за время {{ time }}
+				{% if itra_score %}
+					на дистанции, за которую дают {{ itra_score }} очков <a href="https://itra.run/page/383/Runners_FAQ.html" target="_blank">ITRA</a>
+				{% endif %}
+				, то наберёте:</p>
+				{% for year, data in years.items %}
+					<p>В {{ year }} году —
+						<strong>{{ data.score|floatformat:3 }}</strong>&nbsp;основных очков
+						и&nbsp;<strong>{{ data.bonus_score|floatformat:3 }}</strong>&nbsp;бонусных очков в&nbsp;зачёт КЛБМатча.
+						{% if data.time_with_coef != time %}
+							<br/>(Бегуны в возрасте 19-30 лет получат столько же очков,
+							если пробегут ту же дистанцию за&nbsp;<strong>{{ data.time_with_coef }}</strong>.)
+						{% endif %}
+					</p>
+				{% endfor %}
+			{% if too_large %}
+				<p>Проверьте введённые данные: если Вы – не чемпион мира, то где-то ошиблись.</p>
+			{% endif %}
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

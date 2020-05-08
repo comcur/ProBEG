@@ -1,0 +1,58 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+
+<h3><a href="{% url 'results:klb_match_summary' year=team.year %}">КЛБМатч–{{ team.year }}</a>,
+	команда <a href="{{ team.get_absolute_url }}">{{ team.name }}</a>:
+	<br/>
+	Участники команды без результатов с планировавшихся забегов
+</h3>
+<br/>
+{% if with_marked %}
+	<p>Показаны в том числе записи, которые Вы уже отметили как учтённые.
+	<a href="{% url 'editor:klb_team_did_not_run' team_id=team.id %}">Показать только непомеченные записи</a></p>
+{% else %}
+	<p>Показаны только записи, которые Вы не отмечали как учтённые.
+	<a href="{% url 'editor:klb_team_did_not_run' team_id=team.id with_marked=1 %}">Показать все записи</a></p>
+{% endif %}
+
+{% if calendar_items %}
+	<form action="{% url 'editor:klb_team_did_not_run' team_id=team.id %}" method="POST">
+		{% csrf_token %}
+		<table class="table table-condensed table-hover">
+			<tr class="info">
+				<th class="text-right">Дата</th>
+				<th>Забег</th>
+				<th>Город</th>
+				<th>Бегун</th>
+				<th class="text-right">Дистанция</th>
+				<th class="text-center">Пометить запись как учтённую<br/>и больше не показывать</th>
+			</tr>
+			{% for item in calendar_items %}
+				<tr>
+					<td class="text-right">{{ item.event.dateFull|safe }}</td>
+					<td><a href="{{ item.event.get_absolute_url }}">{{ item.event|safe }}</a></td>
+					<td>{{ item.event.strCityCountry|safe }}</td>
+					<td><a href="{{ item.user.user_profile.get_absolute_url }}">{{ item.user.get_full_name }}</a></td>
+					<td class="text-right">{% if item.race %}<a href="{{ item.race.get_absolute_url }}">{{ item.race|safe }}</a>{% endif %}</td>
+					<td class="text-center">
+						{% if item.marked_as_checked %}
+							(уже помечена)
+						{% else %}
+							<input type="checkbox" class="chkbox" name="calendar{{ item.id }}"/>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+			<tr>
+				<td colspan="5"></td>
+				<td class="text-center">
+					<input type="submit" name="mark_submit" value="Пометить записи как учтённые" class="btn btn-success"/>
+				</td>
+			</tr>
+		</table>
+	</form>
+{% else %}
+	<p>Не найдено ни одной такой записи у ваших участников. Либо мало кто из вас зарегистрирован на сайте, либо вы очень дисциплинированы. Ура!</p>
+{% endif %}
+{% endblock %}

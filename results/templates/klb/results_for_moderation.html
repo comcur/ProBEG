@@ -1,0 +1,34 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+
+<h3><a href="{% url 'results:klb_match_summary' year=team.year %}">КЛБМатч–{{ team.year }}</a>,
+	команда <a href="{{ team.get_absolute_url }}">{{ team.name }}</a>:
+	результаты, ждущие проверки администраторами
+</h3>
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th>
+		<th>Забег</th>
+		<th>Город</th>
+		<th class="text-center">Дата забега</th>
+		<th>Участник</th>
+		<th>Результат</th>
+		<th class="text-center">Дата подачи заявки</th>
+		<th>Кто подал заявку</th>
+	</tr>
+	{% for result, table_update in results_for_moderation %}{% with race=result.race runner=result.runner %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td><a href="{{ result.race.get_absolute_url }}">{{ race.name_with_event|safe }}</a></td>
+			<td>{{ race.event.strCityCountry|safe }}</td>
+			<td class="text-center">{{ race.event.start_date|date:'j.m' }}</td>
+			<td><a href="{{ runner.get_absolute_url }}">{{ runner.fname }} {{ runner.lname }}</a></td>
+			<td>{{ result }}</td>
+			<td class="text-center">{{ table_update.added_time|date:'d E Y H:i' }}</td>
+			<td>{% include 'editor/user_name_with_link.html' with person=table_update.user %}</td>
+		</tr>
+	{% endwith %}{% endfor %}
+</table>
+{% endblock %}

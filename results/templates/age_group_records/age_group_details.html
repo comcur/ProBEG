@@ -1,0 +1,49 @@
+{% extends 'results/base.html' %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+	{% if is_admin %}
+		<span class="pull-right">
+			&nbsp;&nbsp;<a href="{{ generate_records_link }}"><button type="button" class="btn btn-xs btn-primary">Заново поискать возможные рекорды в группе</button></a>
+		</span>
+		<span class="pull-right">
+			&nbsp;&nbsp;<a href="{{ update_records_link }}"><button type="button" class="btn btn-xs btn-primary">Обновить эти записи о рекордах</button></a>
+		</span>
+		<span class="pull-right">
+			<a href="{% url 'editor:age_group_record_add' %}"><button type="button" class="btn btn-xs btn-primary">Добавить рекорд</button></a>
+		</span>
+	{% endif %}
+	<h3><a href="{% url 'results:age_group_records' country_id=country.id %}">{{ page_title_first }}</a>{{ page_title_second }}</h3>
+</div></div>
+<br/>
+<div class="row"><div class="col-md-12">
+	<form action="" method="POST" name="frmAgeGroupRecord" class="form-inline">
+		{% csrf_token %}
+		{% for field in form %}
+			{% include 'results/form_field.html' with field=field %}&nbsp;&nbsp;
+		{% endfor %}
+		<button type="submit" class="btn btn-success" name="btnFilter">Перейти</button>
+	</form>
+</div></div>
+<br/><br/>
+<div class="row"><div class="col-md-12">
+	{% if results_best_overall %}
+		<table class="table table-hover vcenter">
+			{% include 'tools/age_group_details_result_rows.html' with record_results=results_best_overall title='Лучшие результаты за всю историю' to_display_counter=1 %}
+			{% if old_records %}
+				<tr><td colspan="100" class="text-center"><h4>&nbsp;</h4></td></tr>
+				{% include 'tools/age_group_details_result_rows.html' with record_results=old_records title='История рекордов' %}
+			{% endif %}
+			{% if is_admin and other_results %}
+				<tr><td colspan="100" class="text-center"><h4>&nbsp;</h4></td></tr>
+				{% include 'tools/age_group_details_result_rows.html' with record_results=other_results title='Другие сохранённые результаты' title_for_admin_only=1 %}
+			{% endif %}
+		</table>
+		{% if has_shatilo_results %}
+			<a name="shatilo">*</a> — результат взят из сборника рекордов Анатолия Шатило.
+		{% endif %}
+	{% else %}
+		<h4 class="text-center">Лучшие результаты за всю историю</h4>
+		<p>Пока нам неизвестно ни одного.</p>
+	{% endif %}
+</div></div>
+{% endblock %}

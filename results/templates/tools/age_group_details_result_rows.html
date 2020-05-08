@@ -1,0 +1,60 @@
+{% load results_extras %}
+<tr><td colspan="100" class="text-center">
+	<h4 {% if title_for_admin_only %}class="for-admin"{% endif %}>{{ title }}</h4>
+</td></tr>
+<tr class="info">
+	<th></th>
+	<th></th>
+	<th class="text-center">Возраст<br/>на день забега</th>
+	<th class="text-center">Результат</th>
+	<th class="text-right">Дата</th>
+	<th>Забег</th>
+	{% if is_admin %}<th></th>{% endif %}
+</tr>
+{% for record_result in record_results %}
+	<tr>
+		<td>{% if to_display_counter %}{{ forloop.counter }}{% endif %}</td>
+		<td>{% include 'age_group_records/record_result_runner_name_and_city.html' %}</td>
+		<td class="nobr text-center">
+			{{ record_result.age_on_event_date|default_if_none:'неизвестен' }}
+			{% if record_result.age_on_event_date %}
+				{{ record_result.age_on_event_date|ending:11 }}
+			{% endif %}
+		</td>
+		<td class="text-center">
+			{% if record_result.result %}
+				<a href="{{ record_result.result.race.get_absolute_url }}">{{ record_result }}</a>
+			{% else %}
+				<span>{{ record_result }}</span>
+			{% endif %}
+			{% if record_result.is_from_shatilo %}
+				<a href="#shatilo">*</a>
+			{% else %}
+				<span style="opacity: 0.0;">*
+			{% endif %}
+		</td>
+		<td class="text-right">
+			{% if record_result.is_date_known %}
+				{{ record_result.date }}
+			{% else %}
+				{{ record_result.date.year }} г.
+			{% endif %}
+		</td>
+		<td>
+			{% if record_result.race %}
+				<a href="{{ record_result.race.get_absolute_url }}">{{ record_result.race.event.name }}</a>
+			{% endif %}
+		</td>
+		{% if is_admin %}
+			<td>{% if record_result.result_id %}
+					<form action="{{ record_result.get_delete_url }}" method="POST">
+						{% csrf_token %}
+						<input type="submit" name="btnDeleteRecord" value="Удалить из рекордов" class="btn btn-xs btn-danger"/>
+					</form>
+				{% else %}
+					<a href="{{ record_result.get_editor_url }}"><button type="button" class="btn btn-xs btn-primary">Редактировать</button></a>
+				{% endif %}
+			</td>
+		{% endif %}
+	</tr>
+{% endfor %}

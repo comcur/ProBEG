@@ -1,0 +1,391 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+
+<p class="pull-right">
+	{% if year == oldest_year %}
+		<a href="{%url 'editor:klb_status' %}">Состояние базы за последний год</a>
+	{% else %}
+		<a href="{%url 'editor:klb_status' year=oldest_year %}">Состояние базы за все годы</a>
+	{% endif %}
+</p>
+<h4>Состояние базы результатов в КЛБМатче за
+{% if year < last_active_year %}{{ year }}–{{ last_active_year }} годы{% else %}{{ last_active_year }} год{% endif %}</h4>
+
+{% if events_absent %}
+	<h4>1А. id забегов, которых нет в базе</h4>
+	Количество: {{ events_absent|length }} штук. Вот они:
+	<br/>
+	{% for event_id in events_absent %}{{ event_id }}, {% endfor %}
+{% endif %}
+
+{% if distances_not_parsed %}
+	<h4>1Б. Дистанции, которые не получилось распознать</h4>
+	Количество: {{ distances_not_parsed|length }} штук. Вот они:
+	<br/>
+	{% for distance in distances_not_parsed %}
+		Забег: <a href="http://base.probeg.org/event/">{{ distance.0 }}</a>, дистанция: {{ distance.1 }}, время: {{ distance.2 }}<br/>
+	{% endfor %}
+{% endif %}
+
+{% if distances_absent %}
+	<h4>1В. Дистанции, которых не хватает в базе данных</h4>
+	Количество: {{ distances_absent|length }} штук. Вот они:
+	<br/>
+	{% for distance in distances_absent %}
+		Забег: <a href="http://base.probeg.org/event/{{ distance.0 }}">{{ distance.0 }}</a>, тип: {{ distance.1 }}, длина: {{ distance.2 }}<br/>
+	{% endfor %}
+{% endif %}
+
+{% if races_absent %}
+	<h4>1Г. Дистанции, которых не хватает в конкретном забеге</h4>
+	Количество: {{ races_absent|length }} штук. Вот они:
+	<table class="table table-condensed table-hover">
+		<tr>
+			<th>№</th><th>ID забега</th><th>Дата</th><th>Название</th>
+			<th>Результаты в зачёт КЛБМатча</th><th>Дистанция из KLBresults</th><th>Имеющиеся дистанции</th>
+		</tr>
+		{% for event, distance in races_absent %}
+			<tr>
+				<td>{{ forloop.counter }}</td>
+				<td><a href="{{ event.get_absolute_url }}">{{ event.id }}</a></td>
+				<td><a href="{{ event.get_absolute_url }}">{{ event.date|safe }}</a></td>
+				<td><a href="{{ event.get_absolute_url }}">{{ event.name|safe }}</a></td>
+				<td><a href="http://probeg.org/klb/2016/allraces.php?idpro={{ event.id }}">тут</a></td>
+				<td>{{ distance.name }}</td>
+				<td>{% for race in event.race_set.all %}
+						{{ race.distance }}{% if not forloop.last %}, {% endif %}
+					{% endfor %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endif %}
+
+{% if klb_results_absent %}
+	<h4>2. КЛБМ-результаты, которым не соответствует ни один результат в базе данных, хотя результаты забега загружены</h4>
+	Количество: {{ klb_results_absent|length }} штук. Вот они:
+	<form action="{% url 'editor:connect_klb_results' %}" method="POST">
+		{% csrf_token %}
+		<input type="hidden" name="year" value="{{ year }}"/>
+		<table class="table table-condensed table-hover">
+			<tr>
+				<th>№</th><th>ID забега</th><th>Дата</th><th>Дистанция</th><th>Название</th>
+				<th>Результаты в зачёт КЛБМатча</th><th>Участник Матча</th><th>Дистанция в метрах</th><th>Время в секундах</th>
+				<th>Похожий результат в базе результатов, если есть</th>
+				<th colspan="2">Привязать к найденному результату и пересчитать (если результат из активного Матча)?</th>
+			</tr>
+			{% for race, results in klb_results_absent %}
+				{% for klb_result, result, is_active_klb in results %}{% with klb_person=klb_result.klb_person %}
+					<tr>
+						<td>{{ forloop.parentloop.counter }}</td>
+						<td><a href="{{ race.event.get_absolute_url }}">{{ race.event.id }}</a></td>
+						<td><a href="{{ race.get_absolute_url }}">{{ race.event.date|safe }}</a></td>
+						<td><a href="{{ race.get_absolute_url }}">{{ race.distance }}</a></td>
+						<td><a href="{{ race.get_absolute_url }}">{{ race.event.name }}</a></td>
+						<td><a href="http://probeg.org/klb/2016/allraces.php?idpro={{ race.event.id }}">тут</a></td>
+						<td><a href="{{ klb_person.get_absolute_url }}">{{ klb_person.fname }} {{ klb_person.lname }}</a></td>
+						<td>{{ klb_result.distance_raw }}</td>
+						<td>{{ klb_result.time_seconds_raw|secs2time }}</td>
+						<td>{% if result %}
+								{{ result.lname }} {{ result.fname }} {{ result }}
+							{% endif %}
+						</td>
+						<td><select class="result-list" name="result_for_klb_{{ klb_result.id }}"
+								data-race="{{ race.id }}" style="width: 260px;"></select>
+						</td>
+						<td>
+							<nobr><input type="radio" name="to_connect_klb_{{ klb_result.id }}" value="connect" class="chkbox"/>Привязать</nobr>
+							{% if is_active_klb %}
+								<br/>
+								<nobr><input type="radio" name="to_connect_klb_{{ klb_result.id }}" value="delete"/>Удалить из Матча</nobr>
+							{% endif %}
+							<br/>
+							<nobr><input type="radio" name="to_connect_klb_{{ klb_result.id }}" value="ignore" checked/>Игнорировать</nobr>
+						</td>
+					</tr>
+				{% endwith %}{% endfor %}
+			{% endfor %}
+		</table>
+		{% comment %}<input type="submit" value="Удалить отмеченные результаты из КЛБМатча" class="btn btn-danger"/>{% endcomment %}
+		<input type="submit" value="Привязать отмеченные результаты из КЛБМатча к найденным результатам" class="btn btn-success"/>
+	</form>
+	<br/>
+{% endif %}
+
+{% if unoff_results_in_loaded_races %}
+	<h4>4. Забеги с официальными результатами, где остались неофициальные результаты</h4>
+	Количество результатов: {{ unoff_results_in_loaded_races|length }}. Вот они:
+	<form action="{% url 'editor:connect_unoff_results' %}" method="POST" name="frmFillUnoffResults">
+		{% csrf_token %}
+		<table class="table table-condensed table-hover">
+			<tr>
+				<th>№</th><th>Дата</th><th>Забег</th><th>Фамилия</th><th>Имя</th><th>Результат</th>
+				<th>Похожие результаты в протоколе</th>
+				<th>Выберите результат</th>
+				<th>Выберите действие</th>
+			</tr>
+			{% for row in unoff_results_in_loaded_races %}
+			{% with result=row.result runner=row.result.runner similar_results=row.similar_results %}
+				<tr>
+					<td>{{ forloop.counter }}</td>
+					<td>{{ result.race.event.date|safe }}</td>
+					<td><a href="{{ result.race.get_unoff_details_url }}">{{ result.race.name_with_event }}</a></td>
+					<td><a href="{{ runner.get_absolute_url }}">{{ runner.lname }}</a></td>
+					<td><a href="{{ runner.get_absolute_url }}">{{ runner.fname }}</a></td>
+					<td><a href="{{ result.get_editor_url }}">{{ result }}</a></td>
+					<td>{% for similar_result in similar_results %}
+							<a href="{{ similar_result.get_editor_url }}">{{ similar_result.strName }}, {{ similar_result }}</a>
+							{% if similar_result.runner %}
+								(уже привязан к бегуну
+								<a href="{{ similar_result.runner.get_absolute_url }}">{{ similar_result.runner.name }}</a>)
+							{% endif %}
+							<br/>
+						{% endfor %}
+					</td>
+					<td><select class="result-list" name="result_for_unoff_{{ result.id }}"
+							data-race="{{ result.race.id }}" style="width: 260px;"></select>
+					</td>
+					<td>
+						<nobr><input type="radio" name="to_connect_unoff_{{ result.id }}" value="connect" class="chkbox"/>Привязать</nobr>
+						<br/>
+						<nobr><input type="radio" name="to_connect_unoff_{{ result.id }}" value="delete"/>Удалить неоф. результат</nobr>
+						<br/>
+						<nobr><input type="radio" name="to_connect_unoff_{{ result.id }}" value="ignore" checked/>Игнорировать</nobr>
+					</td>
+				</tr>
+			{% endwith %}{% endfor %}
+		</table>
+		<input type="submit" name="frmUnoffResults_submit" value="Заменить неофициальные результаты на отмеченные официальные"
+			class="btn btn-success"/>
+	</form>
+	<br/><br/>
+{% endif %}
+
+
+{% if lost_results %}
+	<h4>5. Потерянные привязки к официальным результатам при перезакачке протоколов</h4>
+	Количество привязок: {{ lost_results|length }}. Вот они:
+	<form action="" method="POST" name="frmFillLostResults">
+		{% csrf_token %}
+		<table class="table table-condensed table-hover">
+			<tr>
+				<th>№</th><th>Дата</th><th>Забег</th><th>Фамилия</th><th>Имя</th>
+				<th>Результат</th><th>Бегун</th><th>Пользователь</th>
+				<th>К какому результату привязать</th>
+				<th>Или удалить привязку?</th>
+			</tr>
+			{% for result in lost_results %}
+				<tr>
+					<td>{{ forloop.counter }}</td>
+					<td>{{ result.race.event.date|safe }}</td>
+					<td><a href="{{ result.race.get_absolute_url }}">{{ result.race.name_with_event }}</a></td>
+					<td>{{ result.runner.lname }}</td>
+					<td>{{ result.runner.fname }}</td>
+					<td>{{ result }}</td>
+					<td>{% if result.runner %}
+							<a href="{{ result.runner.get_absolute_url }}">{{ result.runner.name }}</a>
+						{% endif %}
+					</td>
+					<td>{% if result.user %}
+							<a href="{{ result.user.user_profile.get_absolute_url }}">{{ result.user.get_full_name }}</a>
+						{% endif %}
+					</td>
+					<td>
+						<select class="result-list" name="result_for_lost_{{ result.id }}"
+							data-race="{{ result.race.id }}" style="width: 100%"></select>
+					</td>
+					<td>
+						<input type="checkbox" name="delete_lost_result_{{ result.id }}"/> удалить
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<input type="submit" name="frmLostResults_submit" value="Привязать отмеченные результаты" class="btn btn-success"/>
+	</form>
+	<br/><br/>
+{% endif %}
+
+{% if races_for_klb %}
+	<h4>6. Забеги, которые нужно провести в КЛБМатч</h4>
+	Тут – {{ MAX_RACES_FOR_KLB }} самых старых дистанций, по которым загружены результаты, но проверка в КЛБМатч не проведена или устарела,
+	и нет ошибок с результатами.
+	<table class="table table-condensed table-hover">
+		<tr>
+			<th>Дата</th><th>Город</th><th>Название</th><th>Дистанция</th><th></th>
+		</tr>
+		{% for race in races_for_klb %}
+			<tr>
+				<td class="text-center"><a href="{{ race.event.get_absolute_url }}">{{ race.event.date|safe }}</a></td>
+				<td>{% include 'results/event_cities_with_links.html' with event=race.event %}</td>
+				<td><a href="{{ race.event.get_absolute_url }}">{{ race.event|safe }}</a></td>
+				<td><a href="{{ race.get_absolute_url }}">{{ race }}</a></td>
+				<td><a href="{{ race.get_klb_editor_url }}"><button type="button" class="btn btn-sm btn-primary">Обработать</button></a></td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endif %}
+
+{% if events_with_preliminary_protocols %}
+	<h4>7. Предварительные протоколы</h4>
+	Тут – все забеги, у которых есть предварительный протокол. Поглядывайте иногда, не стал ли он окончательным
+	<table class="table table-condensed table-hover">
+		<tr>
+			<th>Дата</th><th>Город</th><th>Название</th><th>Протоколы</th><th></th>
+		</tr>
+		{% for event in events_with_preliminary_protocols %}
+			<tr>
+				<td class="text-center"><a href="{{ event.get_absolute_url }}">{{ event.date|safe }}</a></td>
+				<td>{% include 'results/event_cities_with_links.html' %}</td>
+				<td><a href="{{ event.get_absolute_url }}">{{ event|safe }}</a></td>
+				<td>{% for document in event.document_set.all %}
+						<p>{% include 'results/document_link.html' %}</p>
+					{% endfor %}
+				</td>
+				<td><a href="{{ event.get_editor_url }}"><button type="button" class="btn btn-xs btn-primary">Редактировать</button></a></td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endif %}
+
+{% if races_wo_results %}
+	<h4>8. Забеги без результатов</h4>
+	Здесь – забеги в России/Украине/Беларуси 2017-18 годов, прошедшие не меньше недели назад
+	и на которых есть дистанции в метрах или минутах без результатов.
+	<table class="table table-condensed table-hover">
+		<tr>
+			<th>№</th><th class="text-center">Дата</th><th>Город</th><th>Название</th><th>Дистанции<br/>без результатов</th>
+			<th>Протоколы<br/>в xls</th><th>Остальные<br/>протоколы</th><th>Редакторы</th><th>Почта<br/>организаторов</th>
+		</tr>
+		{% regroup races_wo_results by event as events %}
+		{% for row in events %}{% with event=row.grouper %}
+			<tr>
+				<td>{{ forloop.counter }}</td>
+				<td class="text-center">
+					<a href="{{ event.get_absolute_url }}">{{ event.date|safe }}</a>
+				</td>
+				<td>{% include 'results/event_cities_with_links.html' %}</td>
+				<td>
+					<a href="{{ event.get_absolute_url }}">{{ event|safe }}</a>
+				</td>
+				<td>
+					{% include 'results/distances_comma.html' with races=row.list %}
+				</td>
+				<td>{% for document in event.document_set.all %}
+						{% if document.is_xls %}
+							<a href="{% url 'editor:protocol_details' event_id=event.id protocol_id=document.id %}" target="_blank">
+								{{ document }}
+							</a>
+							{% if not forloop.last %}
+								<br/>
+							{% endif %}
+						{% endif %}
+					{% endfor %}
+				</td>
+				<td>{% for document in event.document_set.all %}
+						{% if document.document_type == 7 and not document.is_xls %}
+							{% include 'results/document_link.html' %}
+							{% if not forloop.last %}<br/>{% endif %}
+						{% endif %}
+					{% endfor %}
+				</td>
+				<td>{% for series_editor in event.series.series_editor_set.all %}
+						{% include 'editor/user_name_with_link.html' with person=series_editor.user %}
+						{% if not forloop.last %}<br/>{% endif %}
+					{% endfor %}
+				</td>
+				<td>{% if event.email %}
+						{{ event.email }}
+						<br/>
+						<a class="send_from_info_page" href="#" data-event-wo-protocols="{{ event.id }}">Написать</a>
+						{% if event.ask_for_protocol_sent %}
+							&nbsp;<span class="label label-primary small-label">уже писали</span>
+						{% endif %}
+					{% endif %}
+				</td>
+			</tr>
+		{% endwith %}{% endfor %}
+	</table>
+{% endif %}
+
+{% comment %}
+<h4>9. Все дистанции 2016 года в России, где есть какой-то протокол, но результаты не загружены</h4>
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№№</th><th>Дата</th><th>Название</th><th>Дистанция</th><th>Число участников</th>
+	</tr>
+	{% for race in races_with_protocol %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td class="text-center"><a href="{{ race.event.get_absolute_url }}">{{ race.event.date|safe }}</a></td>
+			<td><a href="{{ race.event.get_absolute_url }}">{{ race.event|safe }}</a></td>
+			<td>{{ race.distance }}</td>
+			<td>{{ race.n_participants }}</td>
+		</tr>
+	{% endfor %}
+</table>
+{% endcomment %}
+
+{% if events_with_xls_protocol %}
+	<h4>10. Забеги с протоколами и без результатов</h4>
+	Здесь – самые свежие {{ MAX_RACES_FOR_KLB }} забегов, которые прошли не меньше недели назад,
+	у которых есть протоколы .XLS или .XLSX и есть дистанции без результатов.
+	<table class="table table-condensed table-hover">
+		<tr>
+			<th>Дата</th><th>Название</th><th>Дистанции</th><th>Нажмите для обработки</th>
+		</tr>
+		{% for event in events_with_xls_protocol %}
+			<tr>
+				<td class="text-center">
+					{{ event.date|safe }}
+				</td>
+				<td>
+					<a href="{{ event.get_absolute_url }}">{{ event|safe }}</a>
+				</td>
+				<td>
+					{% include 'results/distances_comma.html' with races=event.race_set.all %}
+				</td>
+				<td>
+					{% for protocol in event.document_set.all %}
+						<a href="{% url 'editor:protocol_details' event_id=event.id protocol_id=protocol.id %}">
+							{{ protocol }}
+						</a>
+						{% if not forloop.last %}
+							<br/>
+						{% endif %}
+					{% endfor %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endif %}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script type="text/javascript">
+$(".result-list").each(function() {
+	race_id = $(this).data('race');
+	$(this).select2({
+		placeholder: "Введите первые буквы фамилии",
+		width: 'element',
+		allowClear: true,
+		ajax: {
+			url: "/editor/race/" + race_id + "/results/list/",
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					query: params.term
+				};
+			},
+			processResults: function (data) {
+				return {
+					results: data
+				};
+			},
+			cache: true
+		},
+	});
+})
+</script>
+{% endblock %}

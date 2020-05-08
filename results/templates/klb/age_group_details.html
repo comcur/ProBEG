@@ -1,0 +1,89 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+	<h3><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч–{{ year }}</a>: {{ page_title }}</h3>
+</div></div>
+<br/>
+{% include 'tools/klb_age_group_and_category_forms.html' %}
+{% if group_has_people %}
+	{% include 'tools/klb_name_region_filter.html' %}
+	<div class="row"><div class="col-md-12">
+		<table class="table table-hover">
+		<thead>
+			<tr class="info">
+				<th class="text-right min-width vcenter">№</th>
+				<th class="text-right min-width vcenter">Место</th>
+				<th>Имя
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'name' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="name">▲</button>
+				</th>
+				<th>Город
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'city' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="city">▲</button>
+				</th>
+				<th class="text-center">Год рождения
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'birthday' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="birthday">▲</button>
+				</th>
+				<th>Команда
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'team' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="team">▲</button>
+				</th>
+				<th class="text-center">Стартов
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'n_starts' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="n_starts">▼</button>
+				</th>
+				<th class="text-right min-width nobr">Очки
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'clean_sum' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="clean_sum">▼</button>
+				</th>
+				<th>+</th>
+				<th class="text-right min-width nobr">Бонусы
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'bonus_sum' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="bonus_sum">▼</button>
+				</th>
+				<th>=</th>
+				<th class="text-right min-width nobr">Сумма
+					<button class="btn btn-link btn-ordering arrow{% if ordering == 'place' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="new_ordering" value="place">▼</button>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for row, participant in page_enum %}{% with person=participant.klb_person runner=participant.klb_person.runner %}
+			<tr{% if person.gender == 1 %} class="success"{% endif %}>
+				<td class="text-right min-width">{{ row }}</td>
+				<td class="text-right min-width">{{ participant.cur_place|default:'' }}</td>
+				<td>{% include 'tools/runner_or_user_name_with_link.html' %}</td>
+				<td>{% if person.city %}
+						<a href="{{ person.city.get_races_url }}">{{ person.city.nameWithCountry|safe }}</a>
+					{% endif %}
+				</td>
+				<td class="text-center">{% if person.birthday %}{{ person.birthday.year }}{% endif %}</td>
+				<td>{% if participant.team %}
+						<a href="{{ participant.team.get_absolute_url }}">{{ participant.team.name }}</a>
+					{% endif %}
+				</td>
+				<td class="text-center">{{ participant.n_starts }}</td>
+				{% if participant.n_starts %}
+					<td class="text-right min-width">{{ participant.clean_sum|floatformat:3 }}</td>
+					<td>+</td>
+					<td class="text-right min-width">{{ participant.bonus_sum|floatformat:3 }}</td>
+					<td>=</td>
+					<td class="text-right min-width"><strong>{{ participant.score_sum|floatformat:3 }}</strong></td>
+				{% else %}
+					<td colspan="5"></td>
+				{% endif %}
+			</tr>
+		{% endwith %}{% endfor %}
+		</tbody></table>
+		<div class="pull-right">
+			{% include 'results/pagination.html' %}
+		</div>
+	</div></div>
+{% else %}
+	<p>Ни одного человека не найдено. :(</p>
+{% endif %}
+{% endblock %}

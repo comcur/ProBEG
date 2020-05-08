@@ -1,0 +1,34 @@
+{% extends 'report_russia/generator/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+	<p>Для каждой дистанции мы для каждого бегуна взяли только лучший за {{ year }} год результат. Так что если кто-то быстрый здорово пробежал десятку семь раз, мы учли только самый быстрый результат, а не все семь. (К сожалению, в базе осталось очень много результатов, не привязанных к бегунам; но всю информацию о связи результатов и бегунов, что у нас есть, мы постарались учесть.)
+	</p>
+	<br/>
+	<table class="table table-condensed table-hover table-bordered">
+		{% for distance, data in distances.items %}
+			{% if not forloop.first %}
+			<tr><td colspan="{{ quantiles|length|add:1 }}">&nbsp;</td></tr>
+			{% endif %}
+			<tr class="text-center info"><th colspan="{{ quantiles|length|add:1 }}">{{ distance }}</th></tr>
+			<tr class="text-center">
+				<td class="text-right">Чтобы оказаться в такой доле<br/>лучших результатов по {{ country.prep_case }}:</td>
+				{% for quantile in quantiles %}
+					<th><br/>{{ quantile }}%</th>
+				{% endfor %}
+			</tr>
+			<tr class="text-center">
+				<td class="text-right">мужчина должен пробежать {{ distance }} за</td>
+				{% for result in data.2 %}
+					<td>{{ result }}</td>
+				{% endfor %}
+			</tr>
+			<tr class="text-center">
+				<td class="text-right">женщина — за</td>
+				{% for result in data.1 %}
+					<td>{{ result }}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

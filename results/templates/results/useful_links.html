@@ -1,0 +1,29 @@
+{% extends 'results/base.html' %}
+{% block main %}
+<h3>{{ page_title }}</h3>
+<div class="row">
+	{% if is_admin %}
+		<div class="col-md-9">
+	{% else %}
+		<div class="col-md-12 col-md-offset-0 col-lg-10 col-lg-offset-1">
+	{% endif %}
+	{% for label in links_by_label %}{% with links=label.useful_link_set %}{% if links %}
+		<br/><br/>
+		<h4>{{ label }}</h4>
+		{% for link in links %}
+			<p><a href="{{ link.url }}" target="_blank">{{ link.name }}</a></p>
+		{% endfor %}
+	{% endif %}{% endwith %}{% endfor %}
+	</div>
+	{% if is_admin %}
+		<div class="col-md-3">
+			{% include 'results/panel_header.html' with title='Добавить ссылку' %}
+			{% include 'results/panel_footer.html' %}
+
+			{% include 'results/panel_header.html' with title='Добавить метку' %}
+			{% include 'results/panel_footer.html' %}
+		</div>
+	{% endif %}
+</div>
+
+{% endblock %}

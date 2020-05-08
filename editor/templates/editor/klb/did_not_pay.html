@@ -1,0 +1,102 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+
+<h3><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч–{{ year }}</a>:
+	команды, не оплатившие участие
+</h3>
+<br/>
+<p>Заявлено в матч {{ n_members }} человек. Оплатили участие полностью {{ n_members_paid }}, из них {{ n_seniors_paid }} пенсионеров и инвалидов; участвуют бесплатно {{ n_members_paid_zero }} человек.</p>
+<p>В матче участвуют {{ n_teams_with_members }} команд с хотя бы одним заявленным человеком. Полностью оплатили участие {{ n_teams_paid }} из них; не оплатили —  {{ n_teams_not_paid }}. Всего участие не оплачено у {{ n_team_members_not_paid }} членов команд и {{ individuals_not_paid.count }} индивидуальных участников.</p>
+
+{% if teams %}
+	<table class="table table-condensed table-hover">
+		<tr class="info">
+			<th class="text-right">№</th>
+			<th>Название</th>
+			<th class="text-center">Участников всего</th>
+			<th class="text-center">Не оплатили
+				<br/>
+				(в т.ч. пенсионеры и инвалиды)
+			</th>
+			<th>Самый ранний заявленный и не оплаченный</th>
+			<th>Самый поздний заявленный и не оплаченный</th>
+			<th>Имеют права на работу с клубом</th>
+		</tr>
+		{% for team_data in teams %}{% with first_participant=team_data.participants_not_paid.first last_participant=team_data.participants_not_paid.last %}
+			<tr>
+				<td class="text-right">{{ forloop.counter }}</td>
+				<td><a href="{{ team_data.team.get_absolute_url }}">{{ team_data.team.name }}</a></td>
+				<td class="text-center">{{ team_data.team.klb_participant__count }}</td>
+				<td class="text-center">{{ team_data.participants_not_paid.count }}
+					<br/>
+					({{ team_data.n_seniors_not_paid }})
+				</td>
+				<td><a href="{{ first_participant.klb_person.get_absolute_url }}">{{ first_participant.klb_person }}</a>
+					<br/>
+					Заявлен{% if first_participant.klb_person.gender == 1 %}а{% endif %} в матч {{ first_participant.date_registered }}
+					<br/>
+					Заявил{% if first_participant.added_by.gender == 1 %}а{% endif %}
+					{% include 'editor/user_name_with_link.html' with person=first_participant.added_by %}
+				</td>
+				<td>{% if first_participant != last_participant %}
+						<a href="{{ last_participant.klb_person.get_absolute_url }}">{{ last_participant.klb_person }}</a>
+						<br/>
+						Заявлен{% if last_participant.klb_person.gender == 1 %}а{% endif %} в матч {{ last_participant.date_registered }}
+						<br/>
+						Заявил{% if last_participant.added_by.gender == 1 %}а{% endif %}
+						{% include 'editor/user_name_with_link.html' with person=last_participant.added_by %}
+					{% endif %}
+				</td>
+				<td>{% for editor in team_data.team.club.editors.all %}
+						{% if not forloop.first %}<br/>{% endif %}
+						<span class="pull-right">
+							<a class="send_from_info_page" href="#" data-user="{{ editor.id }}">
+							<button type="button" class="btn btn-xs btn-primary">Написать</button></a></span>
+						{% include 'editor/user_name_with_link.html' with person=editor %}
+					{% endfor %}
+				</td>
+			</tr>
+		{% endwith %}{% endfor %}
+	</table>
+	<p>Электронные адреса имеющих права на все команды-должники: {{ teams_not_paid_emails }}
+{% else %}
+	<p>Таких нет. Ура!</p>
+{% endif %}
+<br/><br/>
+<h3>Индивидуальные участники, не оплатившие участие</h3>
+<br/>
+<p>Оплатили участие {{ n_individuals_paid }} участников, участвуют бесплатно — {{ n_individuals_for_free }}.</p>
+{% if individuals_not_paid %}
+	<table class="table table-condensed table-hover">
+		<tr class="info">
+			<th class="text-right">№</th>
+			<th>Имя</th>
+			<th class="text-right">Дата регистрации</th>
+			<th class="text-right">Должен оплатить до</th>
+			<th class="text-center">Учтено результатов в матче</th>
+			<th class="text-center">Пенсионер?</th>
+			<th class="text-center">Группа инвалидности</th>
+			<th>E-mail</th>
+		</tr>
+		{% for participant in individuals_not_paid %}{% with user=participant.klb_person.runner.user %}
+			<tr>
+				<td class="text-right">{{ forloop.counter }}</td>
+				<td>{% include 'tools/runner_or_user_name_with_link.html' with runner=participant.klb_person.runner %}</td>
+				<td class="text-right">{{ participant.date_registered }}</td>
+				<td class="text-right">{{ participant.get_last_day_to_pay }}</td>
+				<td class="text-center">{{ participant.n_starts }}</td>
+				<td class="text-center">{% include 'tools/span_yes_no.html' with value=participant.is_senior %}</td>
+				<td class="text-center">{% if participant.klb_person.disability_group %}
+						<span class="label label-success small-label">{{ participant.klb_person.get_disability_group_display }}</span>
+					{% endif %}
+				</td>
+				<td>{{ participant.email }}</td>
+			</tr>
+		{% endwith %}{% endfor %}
+	</table>
+	<p>Электронные адреса всех не оплативших участие: {{ individuals_not_paid_emails }}
+{% else %}
+	<p>Таких нет. Ура!</p>
+{% endif %}
+{% endblock %}

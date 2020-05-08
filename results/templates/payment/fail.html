@@ -1,0 +1,20 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="row">
+	<div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<h3>{{ page_title }}</h3>
+		{% if payment %}
+			<p>К сожалению, платёжная система не смогла обработать Ваш заказ № {{ payment.id }} на сумму {{ payment.amount }} ₽.
+			Вы можете попробовать
+				<a href="{{ payment.get_pay_url }}">оплатить этот заказ ещё раз</a>.
+			</p>
+		{% else %}
+			<p>К сожалению, платёжная система не смогла обработать Ваш заказ. Попробуйте ещё раз или <a href="#" id="send_to_info_page">напишите нам</a>.</p>
+		{% endif %}
+		{% if user_has_payments %}
+			<p><a href="{% url 'results:my_payments' %}">Все Ваши платежи</a></p>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

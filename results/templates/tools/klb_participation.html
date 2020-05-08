@@ -1,0 +1,21 @@
+<p>
+	Выступлений:
+	{% if with_link_to_person_page %}
+		<a href="{{ klb_person.get_absolute_url }}">{{ participant.n_starts }}</a>.
+	{% else %}
+		{{ participant.n_starts }}.
+	{% endif %}
+	Набранные очки: {{ participant.score_sum }} (в том числе бонусы: {{ participant.bonus_sum }})
+	{% if is_admin %}
+		{% if participant.date_registered %}
+			<br/>
+			<i>Заявлен{% if participant.klb_person.runner.gender == 1 %}а{% endif %}
+			в матч {{ participant.date_registered|date:"j E Y" }}</i>
+		{% endif %}
+		{% if participant.date_removed %}
+			<br/>
+			<i>Отзаявлен{% if participant.klb_person.runner.gender == 1 %}а{% endif %}
+			из матча {{ participant.date_removed|date:"j E Y" }}</i>
+		{% endif %}
+	{% endif %}
+</p>	

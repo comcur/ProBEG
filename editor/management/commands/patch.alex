@@ -1,0 +1,38 @@
+--- xlsxrep.py.180717	2018-07-16 02:45:42.628681625 +0300
++++ xlsxrep.py.alex	2018-07-18 08:03:11.000000000 +0300
+@@ -72,7 +72,7 @@
+ # logging.basicConfig(filename='example.log',level=logging.DEBUG, format='%(asctime)s %(message)s')
+ 
+ #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
++logging.basicConfig(filename=models.LOG_FILE_KLB_REPORTS, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+ #logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
+ 
+ 
+@@ -113,7 +113,7 @@
+ class ReportGeneratorError(CommandError):
+     pass
+ 
+-class NotEqualVaulesError(ReportGeneratorError):
++class NotEqualValuesError(ReportGeneratorError):
+     def __init__(self, sheet_name, column_name, id_, values):
+         self.sheet_name = sheet_name
+         self.column_name = column_name
+@@ -121,7 +121,7 @@
+         self.values = values
+ 
+     def __unicode__(self):
+-        return u'value != value2 in worksheet "{}", column "{}", id={}. values="{}"'.format(
++        return u'Отличаются значения value и value2 на листе "{}", в столбце "{}", id={}. Значения: "{}"'.format(
+             self.sheet_name,
+             self.column_name,
+             unicode(self.id_),
+@@ -969,7 +969,7 @@
+                         warning("value2 != value: " + unicode(value2) + "!=" + unicode(value))
+                         if filetype == 'xlsx':
+                             # warning("I can show different value and value2 only in csv file, not xlsx")
+-                            raise NotEqualVaulesError(
++                            raise NotEqualValuesError(
+                                 sheet_name=report_name,
+                                 column_name=column_name,
+                                 id_=item.id,     # works only if there is such a field !!!

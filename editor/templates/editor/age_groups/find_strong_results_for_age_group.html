@@ -1,0 +1,34 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+	<h3>{{ page_title }}</h3>
+	<p>Страна: {{ country }}, пол: {{ gender }}, возрастная группа: {{ age_group }}, дистанция: {{ distance }}, {{ is_indoor }}</p>
+		{% if record_result %}{% with record_result=record_result runner=record_result.runner %}
+			<p>Рекордный результат:
+				{% if runner %}
+					<a href="{{ runner.get_runner_or_user_url }}">{{ runner.name }}</a>,
+				{% else %}
+					{{ record_result.fname }} {{ record_result.lname }},
+				{% endif %}
+
+				{% if record_result.race %}
+					<a href="{{ record_result.race.get_absolute_url }}">{{ record_result.race.event.name }}</a>, {{ record_result.race.event.dateFull|safe }},
+				{% elif record_result.is_date_known %}
+					{{ record_result.date }},
+				{% else %}
+					{{ record_result.date.year }} г.,
+				{% endif %}
+
+				{{ record_result.get_value }}
+			</p>
+		{% endwith %}{% else %}
+			Рекорда пока нет.
+		{% endif %}
+		{% if results %}
+			{% include 'editor/age_groups/results_and_runners_table.html' %}
+		{% else %}
+			<p>Подходящих результатов пока нет.</p>
+		{% endif %}
+</div></div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>{% block page_title %}{% endblock %}</title>
+	</head>
+	<body yahoo="" style="min-width: 100% !important; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 1.42857143; color: #333; background-color: #fff; margin: 0; padding: 0;" bgcolor="#fff"><style type="text/css">
+a:focus { color: #23527c !important; text-decoration: underline !important; }
+a:hover { color: #23527c !important; text-decoration: underline !important; }
+&gt;</style>
+		<!--[if (gte mso 9)|(IE)]>
+		<table width="100%" bgcolor="#f6f8f1" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td>
+					<![endif]-->
+					<table class="content" align="center" cellpadding="0" cellspacing="0" border="0" style="width: 600px !important; max-width: 600px; border-spacing: 0; border-collapse: collapse;">
+						<tr>
+							<td class="header" style="background-color: #dff0d8; padding: 5px 30px; border: 1px solid transparent;" bgcolor="#dff0d8">
+								<table width="70" align="left" border="0" cellpadding="0" cellspacing="0" style="border-spacing: 0; border-collapse: collapse;">
+									<tr>
+										<td height="70" style="padding: 0 30px 0 0;">
+											<a href="{{ url_start }}" style="color: #337ab7; text-decoration: none;"><img src="{% static 'images/qirl-black-square-200.png' %}" width="70" height="70" border="0" alt="" /></a>
+										</td>
+									</tr>
+								</table>
+								<!--[if (gte mso 9)|(IE)]>
+								<table width="425" align="left" cellpadding="0" cellspacing="0" border="0">
+									<tr>
+										<td>
+										<![endif]-->
+											<table class="col425" align="left" border="0" cellpadding="0" cellspacing="0" style="width: 425px !important; max-width: 425px; border-spacing: 0; border-collapse: collapse;">
+												<tr>
+													<td height="70">
+														<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-spacing: 0; border-collapse: collapse;">
+																<tr>
+																		<td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 1px 0 0;">
+																				{% block page_header %}{% endblock %}
+																		</td>
+																</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										<!--[if (gte mso 9)|(IE)]>
+										</td>
+									</tr>
+								</table>
+								<![endif]-->
+							</td>
+						</tr>
+						<tr>
+							<td class="innerpadding borderbottom" style="border-bottom-width: 1px; border-bottom-color: #f2eeed; border-bottom-style: solid; padding: 30px 0px;">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-spacing: 0; border-collapse: collapse;">
+									{% block main %}{% endblock %}
+								</table>
+							</td>
+						</tr>
+							<tr>
+								<td class="footer" style="background-color: #dff0d8; padding: 20px 30px 15px;" bgcolor="#dff0d8">
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-spacing: 0; border-collapse: collapse;">
+										<tr>
+											<td align="center" class="footercopy">
+												® <a href="http://base.probeg.org" style="color: #337ab7; text-decoration: none;">ПроБЕГ</a>
+												{% if user %}
+													<br />
+													<a href="http://base.probeg.org{% url 'results:my_details' %}" style="color: #337ab7; text-decoration: none;">Отписаться от рассылки</a>
+												{% endif %}
+											</td>
+										</tr>
+										<tr>
+											<td align="center">
+												<table border="0" cellspacing="0" cellpadding="0" style="border-spacing: 0; border-collapse: collapse;">
+													<tr>
+														<td width="30" style="text-align: center; padding: 0 10px;" align="center">
+															<a href="https://vk.com/probeg_org" style="color: #337ab7; text-decoration: none;">
+																<img src="{% static 'images/vk_small_square.png' %}" width="30" height="30" alt="Наша страница на vk.com" border="0" />
+															</a>
+														</td>
+														<td width="30" style="text-align: center; padding: 0 10px;" align="center">
+															<a href="https://www.facebook.com/probegorg" style="color: #337ab7; text-decoration: none;">
+																<img src="{% static 'images/fb_small_square.png' %}" width="30" height="30" alt="Наша страница на Facebook" border="0" />
+															</a>
+														</td>
+														<td width="30" style="text-align: center; padding: 0 10px;" align="center">
+															<a href="https://twitter.com/ProbegOrg" style="color: #337ab7; text-decoration: none;">
+																<img src="{% static 'images/tw_small_square.png' %}" width="30" height="30" alt="Наша страница в Twitter" border="0" />
+															</a>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+					</table>
+					<!--[if (gte mso 9)|(IE)]>
+				</td>
+			</tr>
+		</table>
+		<![endif]-->
+	</body>
+</html>

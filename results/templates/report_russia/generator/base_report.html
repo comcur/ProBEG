@@ -1,0 +1,37 @@
+{% spaceless %}
+<div class="row">
+	<div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<h3 class="text-center">{{ page_title }} <small> по данным сайта «ПроБЕГ»</small></h3>
+		<br/>
+		<h3 class="text-center">{{ cur_tab_name }}</h3>
+		{% block first_part %}{% endblock %}
+	</div>
+	<div class="col-md-3 col-sm-4">
+		{% include 'results/panel_header.html' with title='Содержание' style='default' %}
+			{% for tab_name in tab_names %}
+				{% if forloop.counter0 == tab %}
+					<p><strong>{{ tab_name }}</strong></p>
+					{% if forloop.counter0 == 1 %}
+						{% for item in main_distances %}
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#part{{ forloop.counter }}" class="dash-underlined">{{ item.distance.name|capfirst }}</a></p>
+						{% endfor %}
+						{% for item in main_distances_race_needed %}
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#part{{ forloop.counter|add:10 }}" class="dash-underlined">{{ item.distance }}</a></p>
+						{% endfor %}
+					{% endif %}
+				{% else %}
+					<p><a href="{% url report_url year=year tab=forloop.counter0 %}">{{ tab_name }}</a></p>
+				{% endif %}
+			{% endfor %}
+		{% include 'results/panel_footer.html' %}
+	</div>
+</div>
+{% block main_part %}{% endblock %}
+{% if next_tab_name %}
+	<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<div class="well well-sm">
+			Следующий раздел: <a href="{% url report_url year=year tab=tab|add:1 %}">{{ next_tab_name }}</a>
+		</div>
+	</div></div>
+{% endif %}
+{% endspaceless %}

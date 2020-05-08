@@ -1,0 +1,195 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="row">
+	{% if is_admin %}
+		<div class="col-md-12">
+			{% include 'results/panel_header_before_title.html' %}
+				Параметры поиска
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="{% url 'editor:runner_create' %}">
+					<button type="button" class="btn btn-sm btn-primary">Создать бегуна</button></a>
+			{% include 'results/panel_header_after_title.html' %}
+				<form id="frmSearch" action="{% url 'results:runners' %}" method="GET" class="form-inline">
+					{% csrf_token %}
+					{% if page %}
+						<input type="hidden" name="page" id="id_page" value="{{ page.number }}"/>
+					{% endif %}
+					<input type="hidden" name="ordering" value="{{ ordering }}"/>
+					{% include 'results/form_field.html' with field=form.fname no_title=1 %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					{% include 'results/form_field.html' with field=form.lname no_title=1 %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					{% if is_admin %}
+						{% include 'results/form_field.html' with field=form.birthday_from %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						{% include 'results/form_field.html' with field=form.birthday_to %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<br/>
+						{% include 'results/form_field.html' with field=form.is_user %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						{% include 'results/form_field.html' with field=form.is_in_klb %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						{% comment %}
+							{% include 'results/form_field.html' with field=form.is_ak_person %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						{% endcomment %}
+						{% include 'results/form_field.html' with field=form.is_in_parkrun %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					{% endif %}
+					<input type="submit" name="btnSearchSubmit" value="Показать" class="btn btn-success"/>
+				</form>
+			{% include 'results/panel_footer.html' %}
+		</div>
+	{% else %}
+		<div class="col-md-6">
+			<h4>Параметры поиска</h4>
+			<form id="frmSearch" action="{% url 'results:runners' %}" method="GET" class="form-inline">
+				{% csrf_token %}
+				<input type="hidden" name="ordering" value="{{ ordering }}"/>
+				{% include 'results/form_field.html' with field=form.fname no_title=1 %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				{% include 'results/form_field.html' with field=form.lname no_title=1 %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="submit" name="btnSearchSubmit" value="Показать" class="btn btn-success"/>
+			</form>
+		</div>
+		<div class="col-md-6">
+			{% include 'misc/adsense_high.html' %}
+		</div>
+	{% endif %}
+</div>
+{% if page %}
+	<p></p>
+	<div class="row">
+		<div class="col-md-6">
+			<h3>{{ list_title|safe }}</h3>
+		</div>
+		<div class="col-md-6 text-right">
+			{% include 'results/pagination.html' %}
+		</div>
+	</div>
+	<div class="row"><div class="col-md-12">
+		<table class="table table-condensed table-hover table-striped">
+		<thead>
+			<tr class="text-center info">
+				<th rowspan="2" class="vcenter">№</th>
+				<th rowspan="2" class="vcenter">Имя
+					<button class="btn btn-link arrow{% if ordering == 'name' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="name">▲</button>
+				</th>
+				<th rowspan="2" class="vcenter">Город
+					<button class="btn btn-link arrow{% if ordering == 'city' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="city">▲</button>
+				</th>
+				<th rowspan="2" class="vcenter">
+					{% if is_admin %}
+						<span class="for-admin">Дата рождения</span>
+					{% else %}
+						Год рождения
+					{% endif %}
+					<button class="btn btn-link arrow{% if ordering == 'birthday' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="birthday">▲</button>
+				</th>
+				<th colspan="3">В {{ cur_stat_year }} году</th>
+				<th colspan="3">Всего</th>
+				{% if is_admin %}
+					<th rowspan="2">Пользователь сайта?</th>
+					<th rowspan="2">Участник КЛБМатча?</th>
+					{% comment %}<th rowspan="2">Есть в базе АК55?</th>{% endcomment %}
+					<th rowspan="2">parkrun id?</th>
+					<th rowspan="2"></th>
+				{% endif %}
+			</tr>
+			<tr class="text-center info">
+				<th class="text-right">Финишей
+					<button class="btn btn-link arrow{% if ordering == 'finishes_cur_year' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="finishes_cur_year">▼</button>
+				</th>
+				<th class="text-right">Расстояние
+					<button class="btn btn-link arrow{% if ordering == 'length_cur_year' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="length_cur_year">▼</button>
+				</th>
+				<th>Время
+					<button class="btn btn-link arrow{% if ordering == 'time_cur_year' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="time_cur_year">▼</button>
+				</th>
+				<th class="text-right">Финишей
+					<button class="btn btn-link arrow{% if ordering == 'finishes_all' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="finishes_all">▼</button>
+				</th>
+				<th class="text-right">Расстояние
+					<button class="btn btn-link arrow{% if ordering == 'length_all' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="length_all">▼</button>
+				</th>
+				<th>Время
+					<button class="btn btn-link arrow{% if ordering == 'time_all' %}-active{% endif %}" form="frmSearch"
+						type="submit" name="ordering" value="time_all">▼</button>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for row, runner in page_enum %}{% with user=runner.user %}
+			<tr class="vcenter">
+				<td class="text-center">{{ row }}</td>
+				<td>{% include 'tools/runner_or_user_name_with_link.html' with with_midname=is_admin %}
+				</td>
+				<td class="text-center">
+					{% if runner.city %}
+						{{ runner.city.nameWithCountry|safe }}
+					{% endif %}
+				</td>
+				<td class="text-center">
+					{% if is_admin %}
+						{{ runner.strBirthday|safe }}
+					{% else %}
+						{{ runner.birthday.year|default:'' }}
+					{% endif %}
+				</td>
+				<td class="text-right">{{ runner.get_n_starts_curyear|default:'' }}</td>
+				<td class="text-right">{{ runner.get_length_curyear|safe }}</td>
+				<td class="text-center">{{ runner.get_time_curyear|safe }}</td>
+				<td class="text-right">{{ runner.n_starts|default:'' }}</td>
+				<td class="text-right">{{ runner.get_total_length|safe }}</td>
+				<td class="text-center">{{ runner.get_total_time|safe }}</td>
+				{% if is_admin %}
+					<td class="text-center">
+						{% if user %}
+							<a href="{{ runner.get_user_url }}">да</a>
+							{% if not user.is_active %}
+								(не&nbsp;активный)
+							{% endif %}
+						{% endif %}
+					</td>
+					<td class="text-center">
+						{% if runner.klb_person_id %}
+							<a href="{{ runner.get_klb_url }}">да</a>
+						{% endif %}
+					</td>
+					{% comment %}
+						<td class="text-center">
+							{% if runner.ak_person_id %}
+								<a href="{{ runner.get_ak_url }}">да</a>
+							{% endif %}
+						</td>
+					{% endcomment %}
+					<td class="text-center">
+						{% if runner.parkrun_id %}
+							<a href="{{ runner.get_parkrun_url }}">да</a>
+						{% endif %}
+					</td>
+					<td><a href="{{ runner.get_editor_url }}"><button type="button" class="btn btn-xs btn-primary">Ред</button></a></td>
+				{% endif %}
+			</tr>
+		{% endwith %}{% endfor %}
+		</tbody></table>
+		<div class="pull-right">
+			{% include 'results/pagination.html' %}
+		</div>
+	</div></div>
+{% else %}
+	<p>Ни одного бегуна не найдено. :(</p>
+{% endif %}
+<p>
+	{% if lname and fname %}
+		<p><a href="{% url 'results:results' lname=lname fname=fname %}">Все результаты с именем «{{ fname }}*» и фамилией «{{ lname }}*»</a></p>
+		<p><a href="{% url 'results:results_disconnected' lname=lname fname=fname %}">Все результаты с именем «{{ fname }}*» и фамилией «{{ lname }}*», не привязанные к бегунам</a></p>
+	{% elif lname %}
+		<p><a href="{% url 'results:results' lname=lname fname=fname %}">Все результаты с фамилией «{{ lname }}*»</a></p>
+		<p><a href="{% url 'results:results_disconnected' lname=lname fname=fname %}">Все результаты с фамилией «{{ lname }}*», не привязанные к бегунам</a></p>
+	{% elif fname %}
+		<p><a href="{% url 'results:results' fname=fname %}">Все результаты с именем «{{ fname }}*»</a></p>
+		<p><a href="{% url 'results:results_disconnected' fname=fname %}">Все результаты с именем «{{ fname }}*», не привязанные к бегунам</a></p>
+	{% endif %}
+</p>
+{% endblock %}

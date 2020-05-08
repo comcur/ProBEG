@@ -1,0 +1,182 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+
+<div class="row">
+	<div class="col-md-8">
+		{% include 'results/panel_header_before_title.html' %}
+			<span class="label label-primary">КЛБМатч</span>
+			{% if person.id %}
+				Участник КЛБМатчей <a class="underlined" href="{{ person.get_absolute_url }}">{{ person }}</a>
+				(id {{ person.id }})
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="{{ person.get_history_url }}">
+					<button type="button" class="btn btn-xs btn-primary">История изменений</button></a>
+			{% else %}
+				Создание нового участника по бегуну
+				<a class="underlined" href="{{ runner.get_absolute_url }}">{{ runner }}</a>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+			{% endif %}
+		{% include 'results/panel_header_after_title.html' %}
+			{% for error in form.non_field_errors %}
+				<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+			{% endfor %}
+			<form id="form" method="POST" action="
+				{% if person.id %}
+					{{ person.get_update_url }}
+				{% else %}
+					{% url 'editor:klb_person_create' runner_id=runner.id %}
+				{% endif %}" 
+			>
+				{% csrf_token %}
+				<table class="table table-condensed table-borderless">
+					<tr>
+						<td class="text-right"><strong>Бегун, к которому привязан участник:</strong></td>
+						<td>
+							{% if person.runner %}
+								<a href="{{ person.runner.get_absolute_url }}">{{ person.runner.name }}</a>
+							{% endif %}
+						</td>
+					</tr>
+					<tr>
+						<td class="text-right"><strong>Фамилия:</strong></td>
+						<td>{{ person.lname }}</td>
+					</tr>
+					<tr>
+						<td class="text-right"><strong>Имя:</strong></td>
+						<td>{{ person.fname }}</td>
+					</tr>
+					<tr>
+						<td class="text-right"><strong>Отчество:</strong></td>
+						<td>{{ person.midname }}</td>
+					</tr>
+					<tr>
+						<td class="text-right"><strong>Пол:</strong></td>
+						<td>{{ person.get_gender_display }}</td>
+					</tr>
+					<tr>
+						<td class="text-right"><strong>Дата рождения:</strong></td>
+						<td>{{ person.birthday|date:'d.m.Y' }}</td>
+					</tr>
+					<tr>
+						<td class="text-right"><strong>Город:</strong></td>
+						<td>{{ person.city.nameWithCountry }}</td>
+					</tr>
+					{% for field in form %}
+						{% include 'results/form_field_tr.html' with field=field %}
+					{% endfor %}
+				</table>
+				<div class="row">
+					<div class="col-md-5">
+						<input type="submit"
+							name="frmPerson_submit"
+							value="{% if person.id %}Сохранить{% else %}Создать{% endif %}"
+							class="btn btn-success"
+						/>
+					</div>
+				</div>
+			</form>
+		{% include 'results/panel_footer.html' %}
+		{% if person.id %}
+			<form id="frmForPerson" method="POST" action="{{ person.get_delete_url }}" class="form-inline">
+				{% csrf_token %}
+				{% if person.has_dependent_objects %}
+					{% include 'results/panel_header.html' with title='Заменить текущего участника во всех результатах на другого и удалить текущего' %}
+				После запуска участник {{ person }} будет присоединён к выбранному ниже участнику, заменён на него
+				везде в таблицах KLBresults, dj_runner и KLBppx, после чего удалён.
+				<br/>
+				Будьте очень осторожны!
+					<p/>
+					<select class="persons-list" name="new_person_id" style="width: 50%"></select>
+					<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+					<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+					<script type="text/javascript">
+$(".persons-list").select2({
+	placeholder: "Введите первые буквы фамилии и имени",
+	width: 'element',
+	allowClear: true,
+	minimumInputLength: 3,
+	ajax: {
+		url: "{% url 'editor:persons_list' person_id=person.id %}",
+		dataType: 'json',
+		delay: 250,
+		data: function (params) {
+			return {
+				query: params.term
+			};
+		},
+		processResults: function (data) {
+			return {
+				results: data
+			};
+		},
+		cache: true
+	},
+});
+					</script>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="submit" name="frmForPerson_submit" value="Удалить участника «{{ person }}»" class="btn btn-danger"/>
+					{% include 'results/panel_footer.html' %}
+				{% else %}
+					<input type="submit" name="frmForPerson_submit" value="Удалить участника «{{ person }}»" class="btn btn-danger"/>
+				{% endif %}
+			</form>
+		{% endif %}
+	</div>
+	<div class="col-md-4">
+		{% if person.id %}
+			{% for year, participant in years.items %}{% with id=participant.form.instance.id %}
+				{% include 'results/panel_header_before_title.html' %}
+				КЛБМатч–{{ year }}
+				{% include 'results/panel_header_after_title.html' %}
+					{% if id %}
+						<p>Стартов в зачёт Матча–{{ year }}: {{ participant.n_results }}</p>
+						{% if participant.n_results %}
+							<p>Дата первого старта:
+							<a href="{{ participant.first_run.race.get_absolute_url }}">{{ participant.first_run.race.event.start_date }}</a></p>
+							<p>Дата последнего старта:
+							<a href="{{ participant.last_run.race.get_absolute_url }}">{{ participant.last_run.race.event.start_date }}</a></p>
+						{% endif %}
+					{% else %}
+						<p>Не заявлен в Матч–{{ year }}.</p>
+					{% endif %}
+					<form method="POST" action="{% url 'editor:klb_person_participant_update' person_id=person.id year=year %}"
+							onsubmit="document.getElementById('id_team').disabled = false;">
+						{% csrf_token %}
+						{% for error in participant.form.non_field_errors %}
+							<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+						{% endfor %}
+						{% for field in participant.form %}
+							{% include 'results/form_field.html' %}
+						{% endfor %}
+						{% if id %}
+							При изменении дат добавления или исключения из матча очки за забеги, выпавшие из диапазона, будут удалены.
+							<br/><br/>
+						{% else %}
+							<input type="checkbox" name="and_to_club_members" checked/> 
+							Также добавить этого человека в члены клуба на {{ year }} год
+							<br/><br/>
+						{% endif %}
+						<input type="submit" name="frmParticipant_submit" class="btn btn-success"
+							value="{% if id %}Сохранить изменения{% else %}Заявить участника в Матч–{{ year }}{% endif %}" />
+						{% if id %}
+							<br/><br/>
+							<span class="pull-right">
+								<input type="submit" name="frmParticipant_delete" class="btn btn-danger"
+									value="Удалить участника из Матча–{{ year }}" />
+							</span>
+						{% endif %}
+					</form>
+				{% include 'results/panel_footer.html' %}
+			{% endwith %}{% endfor %}
+		{% endif %}
+	</div>
+</div>
+<script language="javascript">
+var ajax_city_prefix = "id_";
+var ajax_city_fullname = 1;
+{% if person.city %}
+var ajax_city_default = "{{ person.city.id }}";
+{% endif %}
+</script>
+{% endblock %}

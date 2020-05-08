@@ -1,0 +1,15 @@
+{% extends 'letters/base_with_klb_results.html' %}
+{% load results_extras %}
+{% block content %}
+	<p>Вы заявлены за команду <a href="{{ url_start }}{{ team.get_absolute_url }}">{{ team.name }}</a> в КЛБМатч–{{ team.year }} с {{ participant.added_time|date_rus }}, но руководители команды всё ещё не оплатили Ваше участие{% if n_other_not_paid %} (а также и за ещё {{ n_other_not_paid }} член{{ n_other_not_paid|ending:16 }} команды){% endif %}. А год уже почти кончился.
+	<p>Оплатить участие через сайт может
+		{% if club_editors.count > 1 %}
+			любой из руководителей команды:
+				{% for editor in club_editors.all %}{{ editor.get_full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}.
+		{% else %}
+			руководитель команды {{ club_editors.all.0.get_full_name }}.
+		{% endif %}
+		Если Вы хотите остаться участником матча, пожалуйста, свяжитесь с руководителем. Или, если Вы готовы оплатить участие за оставшихся членов команды сами, напишите нам (просто ответив на это письмо).
+	</p>
+	<p>{{ registration_deadline }} мы удалим всех участников матча, участие которых не будет оплачено.</p>
+{% endblock %}

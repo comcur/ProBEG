@@ -1,0 +1,312 @@
+{% extends 'results/base.html' %}
+{% block main %}
+
+<h3>Доброе утро, {{ request.user.first_name }}!</h3>
+
+Только для Вас – всё самое свежее.
+
+<h4>1. Дистанции у отменённых забегов</h4>
+Количество: {{ dists_with_cancelled.count }} штук.
+
+<h4>2. Забеги без city_id</h4>
+Количество: {{ events_wo_cityid.count }} штук.
+<br/>
+Исправить те строки, где справа единички, можно следующим запросом:
+<br/>
+UPDATE ProbegYear, dj_city
+SET ProbegYear.dj_city_id=dj_city.id
+WHERE ProbegYear.cityp!="" AND ProbegYear.cityp!="По назначению" AND ((ProbegYear.dj_city_id IS NULL) OR (ProbegYear.dj_city_id=0))
+AND (SELECT COUNT(*) FROM dj_city AS c WHERE ProbegYear.cityp=IF(c.raion!="", CONCAT(c.raion, ", ", c.city_type, " ", c.name), c.name))=1
+AND ProbegYear.cityp=IF(dj_city.raion!="", CONCAT(dj_city.raion, ", ", dj_city.city_type, " ", dj_city.name), dj_city.name)
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>ID серии</th><th>ID забега</th><th>Название забега</th><th>Дата</th>
+		<th>Страна</th><th>Регион</th><th>Город</th><th>Подходящих записей в dj_city</th>
+	</tr>
+	{% for record in events_wo_cityid %}
+		<tr>
+			<td><a href="{% url 'results:series_details' series_id=record.series.id %}">{{ record.series.id }}</a></td>
+			<td><a href="{% url 'results:event_details' event_id=record.id %}">{{ record.id }}</a></td>
+			<td>{{ record.name|safe }}</td>
+			<td>{{ record.date }}</td>
+			<td>{{ record.country_raw }}</td>
+			<td>{{ record.region_raw }}</td>
+			<td>{{ record.city_raw }}</td>
+			<td>{{ record.city_raw|safe }}</td>
+			<td>{{ record.n_cities }}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>3. Серии без city_id</h4>
+Количество: {{ series_wo_cityid.count }} штук.
+<br/>
+Исправить те строки, где справа единички, можно следующим запросом:
+<br/>
+UPDATE probeg, dj_city
+SET probeg.dj_city_id=dj_city.id
+WHERE probeg.city!="" AND probeg.city!="По назначению" AND ((probeg.dj_city_id IS NULL) OR (probeg.dj_city_id=0))
+AND (SELECT COUNT(*) FROM dj_city AS c WHERE probeg.city=IF(c.raion!="", CONCAT(c.raion, ", ", c.city_type, " ", c.name), c.name))=1
+AND probeg.city=IF(dj_city.raion!="", CONCAT(dj_city.raion, ", ", dj_city.city_type, " ", dj_city.name), dj_city.name)
+
+<table class="table table-condensed table-hover" id="table_for_sort">
+	<thead><tr>
+		<th>ID серии</th><th>Название серии</th>
+		<th>Страна</th><th>Регион</th><th>Город</th><th>Подходящих записей в dj_city</th>
+	</tr></thead>
+	<tbody>
+	{% for record in series_wo_cityid %}
+		<tr>
+			<td><a href="{% url 'results:series_details' series_id=record.id %}">{{ record.id }}</a></td>
+			<td>{{ record.name|safe }}</td>
+			<td>{{ record.country_raw }}</td>
+			<td>{{ record.region_raw }}</td>
+			<td>{{ record.city_raw }}</td>
+			<td>{{ record.city_raw|safe }}</td>
+			<td>{{ record.n_cities }}</td>
+		</tr>
+	{% endfor %}
+</tbody></table>
+
+<h4>4. Забеги с неправильным city_id</h4>
+Количество: {{ events_with_wrong_cityid.count }} штук.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>ID серии</th><th>ID забега</th><th>Название забега</th><th>Дата</th>
+		<th>Страна</th><th>Регион</th><th>Город</th><th>Какой город проставлен</th>
+	</tr>
+	{% for record in events_with_wrong_cityid %}
+		<tr>
+			<td><a href="{% url 'results:series_details' series_id=record.series.id %}">{{ record.series.id }}</a></td>
+			<td><a href="{% url 'results:event_details' event_id=record.id %}">{{ record.id }}</a></td>
+			<td>{{ record.name|safe }}</td>
+			<td>{{ record.date }}</td>
+			<td>{{ record.country_raw }}</td>
+			<td>{{ record.region_raw }}</td>
+			<td>{{ record.city_raw|safe }}</td>
+			<td><a href="{% url 'editor:city_details' city_id=record.city.id %}">{{ record.city.name_full|safe }}</a></td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>5. Серии с неправильным city_id</h4>
+Количество: {{ series_with_wrong_cityid.count }} штук.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>ID серии</th><th>Название серии</th>
+		<th>Страна</th><th>Регион</th><th>Город</th><th>Какой город проставлен</th>
+	</tr>
+	{% for record in series_with_wrong_cityid %}
+		<tr>
+			<td><a href="{% url 'results:series_details' series_id=record.id %}">{{ record.id }}</a></td>
+			<td>{{ record.name|safe }}</td>
+			<td>{{ record.country_raw }}</td>
+			<td>{{ record.region_raw }}</td>
+			<td>{{ record.city_raw|safe }}</td>
+			<td><a href="{% url 'editor:city_details' city_id=record.city.id %}">{{ record.city.name_full|safe }}</a></td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>6. Участники КЛБМатча без city_id</h4>
+Количество: {{ persons_wo_cityid.count }} штук.
+<br/>
+Исправить те строки, где справа единички, можно следующим запросом:
+<br/>
+UPDATE persons, dj_city
+SET persons.dj_city_id=dj_city.id
+WHERE persons.gorodp!="" AND ((persons.dj_city_id IS NULL) OR (persons.dj_city_id=0))
+AND (SELECT COUNT(*) FROM dj_city AS c WHERE persons.gorodp=IF(c.raion!="", CONCAT(c.raion, ", ", c.city_type, " ", c.name), c.name))=1
+AND persons.gorodp=IF(dj_city.raion!="", CONCAT(dj_city.raion, ", ", dj_city.city_type, " ", dj_city.name), dj_city.name)
+<br/>
+А двоечки - так:
+<br/>
+UPDATE persons, dj_city, dj_region
+SET persons.dj_city_id=dj_city.id
+WHERE persons.gorodp!="" AND ((persons.dj_city_id IS NULL) OR (persons.dj_city_id=0)) AND dj_city.region_id=dj_region.id
+AND (SELECT COUNT(*) FROM dj_city AS c, dj_region AS r
+WHERE persons.gorodp=IF(c.raion!="", CONCAT(c.raion, ", ", c.city_type, " ", c.name), c.name)
+AND persons.oblast=r.name AND c.region_id=r.id
+)=1
+AND persons.gorodp=IF(dj_city.raion!="", CONCAT(dj_city.raion, ", ", dj_city.city_type, " ", dj_city.name), dj_city.name)
+AND persons.oblast=dj_region.name
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>ID человека</th><th>Имя</th>
+		<th>Страна</th><th>Регион</th><th>Город</th><th>Подходящих записей в dj_city</th>
+	</tr>
+	{% for record in persons_wo_cityid %}
+		<tr>
+			<td>{{ record.id }}</td>
+			<td>{{ record.fname }} {{ record.lname }}</td>
+			<td>{{ record.country_raw }}</td>
+			<td>{{ record.region_raw }}</td>
+			<td>{{ record.city_raw|safe }}</td>
+			<td>{{ record.n_cities }}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>7. Участники КЛБМатча с неправильным city_id</h4>
+Количество: {{ persons_with_wrong_cityid.count }} штук.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>ID человека</th><th>Имя</th>
+		<th>Страна</th><th>Регион</th><th>Город</th><th>Какой город проставлен</th>
+	</tr>
+	{% for record in persons_with_wrong_cityid %}
+		<tr>
+			<td>{{ record.id }}</td>
+			<td>{{ record.fname }} {{ record.lname }}</td>
+			<td>{{ record.country_raw }}</td>
+			<td>{{ record.region_raw }}</td>
+			<td>{{ record.city_raw|safe }}</td>
+			<td><a href="{% url 'editor:city_details' city_id=record.city.id %}">{{ record.city.name_full }}</a></td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>8. Какие дистанции встречаются в ProbegYear или rezult160706, но отсутствуют в dist?</h4>
+Количество: {{ new_dists_count }} штук.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>Тип</th><th>Длина</th><th>Сырое имя</th>
+	</tr>
+	{% for distance in new_dists %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+		{% for item in distance %}
+			<td>{{ item|safe }}</td>
+		{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>9. У каких стартов не проставлены id дистанций?</h4>
+Количество: {{ races_wo_distid.count }} штук.
+<br/>
+Исправить те строки, где справа единички, можно следующим запросом:
+<br/>
+UPDATE ProbegDist, dist
+SET ProbegDist.dj_distance_id=dist.id
+WHERE ProbegDist.Dist=dist.Dist AND ProbegDist.Dist_ed=dist.Dist_ed AND ((dj_distance_id IS NULL) OR dj_distance_id=0)
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>ID серии</th><th>ID забега</th><th>Название забега</th><th>Дата</th>
+		<th>Сырая длина</th><th>Сырая единица длины</th><th>Число подходящих дистанций</th>
+	</tr>
+	{% for record in races_wo_distid %}
+		<tr>
+			<td><a href="{% url 'results:series_details' series_id=record.event.series.id %}">{{ record.event.series.id }}</a></td>
+			<td><a href="{% url 'results:event_details' event_id=record.event.id %}">{{ record.event.id }}</a></td>
+			<td>{{ record.event.name|safe }}</td>
+			<td>{{ record.event.date }}</td>
+			<td>{{ record.distance_raw }}</td>
+			<td>{{ record.race_type_raw }}</td>
+			<td>{{ record.n_distances }}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>10. Старты с неправильным distance_id</h4>
+Количество: {{ races_with_wrong_distid.count }} штук.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>ID серии</th><th>ID забега</th><th>Название забега</th><th>Дата</th>
+		<th>Сырая длина</th><th>Сырая единица длины</th><th>Какая дистанция проставлена</th>
+	</tr>
+	{% for record in races_with_wrong_distid %}
+		<tr>
+			<td><a href="{% url 'results:series_details' series_id=record.event.series.id %}">{{ record.event.series.id }}</a></td>
+			<td><a href="{% url 'results:event_details' event_id=record.event.id %}">{{ record.event.id }}</a></td>
+			<td>{{ record.event.name|safe }}</td>
+			<td>{{ record.event.date }}</td>
+			<td>{{ record.distance_raw }}</td>
+			<td>{{ record.race_type_raw }}</td>
+			<td><a href="{% url 'editor:distance_details' distance_id=record.distance.id %}">{{ record.distance }}</a></td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>11. Какие дистанции нужно добавить в ProbegDist</h4>
+
+Здесь - только не отменённые забеги, про которые есть информация в ProbegYear.Dists, но нет ни одной записи в ProbegDist.
+<br/>
+Добавить все дистанции из таблицы в ProbegDist можно по <a href="{% url 'editor:create_distances_from_dists' %}">ссылке</a>.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>ID забега</th><th>ID серии</th><th>Название забега</th><th>Дата</th>
+		<th>ProbegYear.Dists</th><th>Будем<br/>добавлять</th>
+	</tr>
+	{% for record in dists_to_add %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+		{% for item in record %}
+		{% if forloop.counter == 1 %}
+			<td><a href="{% url 'results:series_details' series_id=item %}">{{ item }}</a></td>
+		{% elif forloop.counter == 4 %}
+			<td>{{ item|date:"d.m.Y" }}</td>
+		{% else %}
+			<td>{{ item|safe }}</td>
+		{% endif %}
+		{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>12. Какие документы указаны в старых полях, но не в dj_document</h4>
+
+Добавить все эти документы в dj_document можно по <a href="{% url 'editor:add_docs' %}">ссылке</a>.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>ID забега</th><th>Название забега</th><th>Тип</th><th>Название типа</th>
+		<th>Значение</th><th>Новый путь</th><th>Новый URL</th>
+	</tr>
+	{% for record in docs_to_add %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+		{% for item in record %}
+			{% if forloop.counter == 1 %}
+				<td><a href="{% url 'results:event_details' event_id=item %}">{{ item }}</a></td>
+			{% else %}
+				<td>{{ item|safe }}</td>
+			{% endif %}
+		{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>12. Какие документы, наоборот, есть в в dj_document, но не указаны в старых полях?</h4>
+
+Заполнить старые поля можно по <a href="{% url 'editor:add_docs_to_old_fields' %}">ссылке</a>.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>Забег</th><th>Название типа</th>
+		<th>Старое локальное</th><th>Старый URL</th><th>Новое значение</th>
+	</tr>
+	{% for record in docs_to_add_old_fields %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+		{% for item in record %}
+			{% if forloop.counter == 1 %}
+				<td><a href="{% url 'results:event_details' event_id=item.id %}">{{ item.name }}</a></td>
+			{% else %}
+				<td>{{ item|safe }}</td>
+			{% endif %}
+		{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+
+{% endblock %}

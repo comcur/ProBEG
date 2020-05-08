@@ -1,0 +1,142 @@
+{% extends 'report_russia/generator/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+	<br/>
+	{% if show_manual_text %}
+<p>По нашим данным, беговой {{ year }} год в России удался! Растет и массовость забегов, и их количество. В этом году проведено по крайней мере {{ n_events_total }} беговых мероприятия ({% include 'tools/percent_with_sign.html' with new=n_events_total old=n_events_total_old %} по сравнению с {{ year|subtract:1 }} годом, {% include 'tools/percent_with_sign.html' with new=n_events_total old=n_events_total_2yr %} по сравнению с {{ year|subtract:2 }}). В рамках этих мероприятий любители бега покорили {{ n_races_total }} дистанций ({% include 'tools/percent_with_sign.html' with new=n_races_total old=n_races_total_old %} по сравнению с {{ year|subtract:1 }} годом, {% include 'tools/percent_with_sign.html' with new=n_races_total old=n_races_total_2yr %} по сравнению с {{ year|subtract:2 }}).</p>
+
+<p>Забеги <a href="http://www.parkrun.ru/">parkrun</a> по-прежнему составляют значительную часть от проводимых в стране беговых мероприятий. В {{ year }} году прошел {{ n_events_parkrun }} паркран ({{ n_events_parkrun_percent }}% от всех забегов в России). На конец {{ year }} года в движении участвует уже {{ n_parkrun_cities }} город страны, {{ n_parkrun_cities|subtract:n_parkrun_cities_old }} из них присоединилось за последний год. Количество стартов по сравнению с {{ year|subtract:1 }} годом в них выросло: {% include 'tools/percent_with_sign.html' with new=n_events_parkrun old=n_events_parkrun_old %}.</p>
+
+<p>Без учета паркранов рост числа беговых мероприятий оказался совсем небольшой: {% include 'tools/percent_with_sign.html' with new=n_events_wo_parkrun old=n_events_wo_parkrun_old %} ({{ n_events_wo_parkrun }} в {{ year }} году против {{ n_events_wo_parkrun_old }} годом раньше). Это может говорить о том, что потребность россиян в крупных беговых событиях близка к имеющемуся предложению. Крупные забеги в форматах марафона и полумарафона теперь проходят в каждом большом российском городе, а соревнования в трейловом формате ограничены транспортной недоступностью значительной территории России.</p>
+	{% endif %}
+	{% if show_automatic_text %}
+		<p class="lead">
+			В&nbsp;{{ country.prep_case }} в&nbsp;{{ year }}&nbsp;году прошли по&nbsp;крайней мере
+			{{ n_events_total }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_events_total old=n_events_total_old %} по сравнению с {{ year|subtract:1 }} годом)&nbsp;беговых мероприятия.
+			В&nbsp;их&nbsp;рамках любители бега стартовали
+			на&nbsp;{{ n_races_total }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_races_total old=n_races_total_old %})&nbsp;дистанци{{ n_races_total|ending:14 }}.</p>
+		{% if n_events_moscow %}
+			<p>{{ n_events_moscow }}&nbsp;забегов
+				({% include 'tools/percent_with_sign.html' with new=n_events_moscow old=n_events_moscow_old %};
+				{% widthratio n_events_moscow n_events_total 100 %}% от&nbsp;всех)
+				прошли в&nbsp;Москве;
+				ещё {{ n_events_petersburg }}
+				({% include 'tools/percent_with_sign.html' with new=n_events_petersburg old=n_events_petersburg_old %};
+				{% widthratio n_events_petersburg n_events_total 100 %}% от&nbsp;всех)&nbsp;— в&nbsp;Санкт-Петербурге.
+				Третье место&nbsp;— у&nbsp;Московской области.
+			</p>
+		{% endif %}
+		{% if n_events_parkrun %}
+			<p>{{ n_events_parkrun }}&nbsp;забегов ({{ n_events_parkrun_percent }}%)&nbsp;— это забеги <a href="http://www.parkrun.ru">parkrun</a>,
+			проходившие еженедельно
+			в&nbsp;{{ n_parkrun_cities }}&nbsp;(<strong><span class="text-success">+{{ n_parkrun_cities|subtract:n_parkrun_cities_old }}</span></strong>)&nbsp;городах.
+			</p>
+		{% endif %}
+	{% endif %}
+	<br/>
+{% endblock %}
+{% block main_part %}
+<div class="row">
+	<div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<h4 class="text-center">Крупнейшие забеги</h4>
+		<table class="table table-condensed table-hover table-striped">
+			<tr class="info">
+				<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th><th class="text-center">Дистанции</th>
+				<th class="text-center" colspan="2">Финишировало:</th><th></th><th class="text-right">Рост</th>
+			</tr>
+			<tr class="info">
+				<th colspan="4"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				<th class="text-right">с&nbsp;{{ year|subtract:1 }}&nbsp;г.</th>
+			</tr>
+			{% for item in largest_events %}{% with event=item.event %}
+				<tr>
+					<td>{{ forloop.counter }}</td>
+					<td>
+						<a href="{{ event.get_absolute_url }}">{{ event.name }}</a>
+						<br/>({{ event.strCityCountry|safe }})
+					</td>
+					<td class="text-right nobr">
+						{{ event.start_date|date:'j E' }}
+					</td>
+					<td class="text-center">
+						{% for race in event.race_set.all %}
+							{% if not forloop.first %}<br/>{% endif %}
+							<a href="{{ race.get_absolute_url }}">{{ race.distance|safe }}</a>
+							{% if race.precise_name %}({{ race.precise_name }}){% endif %}
+						{% endfor %}
+					</td>
+					{% include 'tools/progress_bar_ratio.html' with all=event.np men=event.np_men %}
+					<td class="text-right">
+						{{ event.np }}
+					</td>
+					<td class="text-right">
+						{% if item.n_participants_old %}
+							{% include 'tools/percent_with_sign.html' with new=event.np old=item.n_participants_old %}
+						{% endif %}
+					</td>
+				</tr>
+			{% endwith %}{% endfor %}
+		</table>
+		{% if show_manual_text %}
+<p>Сохраняет статус самого массового забега в России и продолжает наращивать массовость <a href="/event/23906/">Московский марафон</a> — это 23142 участника, что на 8% больше, чем в {{ year|subtract:1 }} году. При таком масштабе это весьма значительный рост. <a href="/event/23715/">Московский полумарафон</a> вернул себе второе место, собрав 15618 любителей бега. Рост в более чем в два раза обеспечен тем, что в формат мероприятия вернули дистанции 10 км и 5 км. <a href="/event/22706/">Казанский марафон</a>, собравший 10774 участника и занявший третье место по массовости, показал рост в 56%, и стал одним из ярчайших беговых событий года. Благодаря PR-кампании, развернутой ведущими марафонцами нашей страны <a href="/runner/202992/">Степаном Киселевым</a> и <a href="/runner/18985/">Искандером Ядгаровым</a>, проходивший в рамках этого бегового события чемпионат России по марафону привлек большое медийное внимание. Четвертое место — у петербургского марафона «<a href="/event/23035/">Белые ночи</a>» с 9650 участниками и ростом на 18%; пятое – у <a href="/event/27277/">Пермского международного марафона</a>, привлекшего 9151 атлета и показавшего рост в 28%. Таким образом, крупнейшие беговые события в России показывают заметный рост, возможно, отнимая участников у более мелких забегов. Об этом также свидетельствует уменьшение количества забегов на марафонской (203 старта, -14%) и полумарафонской дистанциях (433 старта, -1%) в {{ year }} году. </p>
+<p class="lead">Лучшее время на марафоне было показано на чемпионате России по марафону, прошедшем в рамках <a href="/race/42681">Казанского марафона</a>. Победу на нём одержал <a href="/runner/202992/">Степан Киселев</a> с результатом 2:12:56, за ним идут <a href="/runner/223380/">Андрей Лейман</a>  (2:14:11) и <a href="/runner/13729/">Юрий Чечун</a> (2:15:29). Среди женщин лучший результат сезона — 2:29:26 — показала <a href="/runner/25052/">Марина Ковалева</a> на <a href="/race/45285">Московском марафоне</a>. Второй стала <a href="/runner/26688/">Татьяна Архипова</a> (2:30:04) на <a href="/race/52320">Пермском международном марафоне</a>, третьей — <a href="/runner/199723/">Сардана Трофимова</a>, показавшая на <a href="/race/42681">чемпионате России по марафону в Казани</a> результат 2:31:31 и завоевавшая титул чемпионки России.</p>
+<p>На полумарафонской дистанции лучшее время среди российских бегунов в {{ year }} году показал <a href="/runner/236405/">Владимир Никитин</a> (1:03:26) на <a href="/race/45287">полумарафоне «Северная столица»</a>, всего на секунду обогнав в заочном противостоянии <a href="/runner/223380/">Андрея Леймана</a>, пробежавшего <a href="/race/46159">Полумарафон «Сочи Автодром»</a> за 1:03:27. Среди женщин противостояние за лучшее время в сезоне на полумарафонской дистанции развернулось на <a href="/race/47249">Ярославском полумарафоне «Золотое кольцо»</a>: первой стала <a href="/runner/244177/">Елена Коробкина</a>, преодолевшая дистанцию за 1:10:27, второй – <a href="/runner/25052/">Марина Ковалева</a> с результатом 1:11:15.</p>
+<p>Лучшее время на дистанции в 10 км было показано на <a href="/race/54940">Чемпионате России по легкой атлетике в Чебоксарах</a>. В напряженном противостоянии сошлись братья-близнецы <a href="/runner/201894/">Евгений</a> и <a href="/runner/201895/">Анатолий Рыбаковы</a> – на финише их разделила лишь сотая секунды (0:28:18,90 – Евгений, 0:28:18,91 — Анатолий)! Чемпионат в Чебоксарах стал ареной битвы за лучшую десятку года и среди женщин. На этой дистанции первой стала снова <a href="/runner/244177/">Елена Коробкина</a> с результатом 0:32:16,01! Вторая – <a href="/runner/219515/">Елена Седова</a> (0:32:20,45), обладательница лучшего времени на 10 км в прошлом году, которая хоть и преодолела дистанцию на 25 секунд быстрее, чем в {{ year|subtract:1 }}, но не смогла угнаться за лидером.</p>
+			<div class="well well-sm">
+				Подробнее о&nbsp;крупнейших забегах и лучших результатах на основных дистанциях —
+				в <a href="{% url report_url year=year tab=1 %}">Части 1</a>.
+			</div>
+		{% endif %}
+		<br/>
+		{% if show_manual_text %}
+<p class="lead">Всего в {{ year }} году мы зафиксировали {{ n_finishers_total_thousands }}&nbsp;тысяч{{ n_finishers_total_thousands|ending:20 }} финишировавших — {% include 'tools/percent_with_sign.html' with new=n_finishers_total old=n_finishers_total_old %} по сравнению с прошлым годом. Лидером по массовости, как и прежде, является Москва, на которую приходится {% widthratio n_finishers_moscow n_finishers_total 100 %}% участников, что на два процента меньше, чем {{ year|subtract:1 }} году. На петербургские забеги приходится {% widthratio n_finishers_petersburg n_finishers_total 100 %}% от общего числа финишных записей. Доля женщин среди российских бегунов второй год подряд составляет  {% widthratio n_finishers_women n_finishers_total 100 %}%.</p>
+		{% endif %}
+		{% if show_automatic_text %}
+			<p class="lead">Всего на&nbsp;всех забегах финишировало не&nbsp;меньше
+				{{ n_finishers_total_thousands }}&nbsp;тысяч{{ n_finishers_total_thousands|ending:18 }} человек
+				({% include 'tools/percent_with_sign.html' with new=n_finishers_total old=n_finishers_total_old %}).
+				{% if n_finishers_moscow %}
+					{% widthratio n_finishers_moscow n_finishers_total 100 %}%
+					(было&nbsp;{% widthratio n_finishers_moscow_old n_finishers_total_old 100 %}%)&nbsp;— в Москве,
+					{% widthratio n_finishers_petersburg n_finishers_total 100 %}%
+					(было&nbsp;11%)&nbsp;— в&nbsp;Санкт-Петербурге.
+				{% endif %}
+				{% widthratio n_finishers_women n_finishers_total 100 %}%&nbsp;из&nbsp;них&nbsp;— женщины
+				(год назад было&nbsp;{% widthratio n_finishers_women_old n_finishers_total_old 100 %}%).
+			</p>
+		{% endif %}
+<p>Всего хотя&nbsp;бы в&nbsp;одном забеге поучаствовали по&nbsp;крайней мере
+{{ n_distinct_participants_thousands }}&nbsp;тысяч{{ n_distinct_participants_thousands|ending:19 }} человек.
+Год назад было {{ n_distinct_participants_thousands_old }}&nbsp;тысяч{{ n_distinct_participants_thousands_old|ending:19 }};
+но оба числа — только оценки снизу, так что насколько это число выросло, неясно.</p>
+		{% if show_manual_text %}
+			<br/>
+<p class="lead">Москва остается «беговой столицей» России. В {{ year }} году здесь проведен{{ n_events_moscow|ending:21 }} {{ n_events_moscow }} забег{{ n_events_moscow|ending:1 }}, причем в отличии от прошлого года продемонстрирован значительный рост: {% include 'tools/percent_with_sign.html' with new=n_events_moscow old=n_events_moscow_old %}. При этом доля столичных забегов в общем количестве российских снижается третий год подряд — с {{ n_events_moscow_ratio_old }}% до {{ n_events_moscow_ratio }}%.</p>
+
+<p>На втором месте по количеству проводимых беговых событий — Московская область, где прошло {{ n_events_moscow_region }} забегов ({% include 'tools/percent_with_sign.html' with new=n_events_moscow_region old=n_events_moscow_region_old %} за год). Более активный рост продемонстрировали Санкт-Петербург и Ленинградская область: количество забегов в Северной столице выросло на {% include 'tools/percent_with_sign.html' with new=n_events_petersburg old=n_events_petersburg_old %} до {{ n_events_petersburg }} мероприятий, в области — на {% include 'tools/percent_with_sign.html' with new=n_events_petersburg_region old=n_events_petersburg_region_old %} до {{ n_events_petersburg_region }}. Роста числа проводимых событий в два и более раза в десятке регионов-лидеров, как в прошлом году, больше не отмечается.</p>
+<p class="lead">
+Ярославская область с 2016 года удерживает лидерство по количеству финишировавших участников забегов на тысячу жителей. В {{ year }} году это число возросло на 19% до 17,2! Однако и конкуренты – Москва, Санкт-Петербург, Ленинградская область и Пермский край — демонстрируют существенный рост; в последнем число участников забегов на тысячу жителей почти удвоилось.</p>
+		{% endif %}
+		<div class="well well-sm">
+			Cтатистика забегов и участников по регионам —
+			в <a href="{% url report_url year=year tab=2 %}">Части 2</a>.
+		</div>
+		<br/>
+		{% if show_manual_text %}
+<p class="lead">Половина всех финишировавших на марафонах мужчин выбежала из 3 часов 58 минут; половина женщин — из 4 часов 24 минут.
+<br/>На полумарафонах половина мужчин выбежала из 1 часа 50 минут; половина женщин — из 2 часов 5 минут.
+<br/>Для 10 км этот показатель — медианное время — составил 52 минуты у мужчин и 61 минуту у женщин;
+<br/>на 5 километрах — соответственно 0:25:15 и 0:30:56.</p>
+<p>Результаты близки к прошлогодним, заметного ускорения или замедления виртуального всероссийского пелотона не наблюдается.</p>
+		{% endif %}
+		<div class="well well-sm">
+			Распределение результатов на основных дистанциях —
+			в <a href="{% url report_url year=year tab=3 %}">Части 3</a>.
+		</div>
+		{% if show_manual_text %}
+			<p>Мы благодарны Булату Гарифуллину за большую помощь в подготовке этого отчёта.</p>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

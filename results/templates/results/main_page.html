@@ -1,0 +1,163 @@
+{% extends 'results/base.html' %}
+{% load humanize %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-8 col-md-offset-4 col-sm-12 col-sm-offset-0">
+	<h3>&nbsp;&nbsp;Портал для любителей бега «ПроБЕГ»</h3>
+	{% if 1 %}
+		<div class="alert alert-danger" role="alert">
+			Опубликовано положение и открыта регистрация в <strong><a href="{% url 'results:about_match' year=2020 %}" class="underlined">КЛБМатч–2020</a></strong>!
+		</div>
+	{% endif %}
+</div></div>
+<div class="row">
+	<div class="col-md-4 col-sm-12 col-xs-12">
+		{% if not is_authenticated %}
+			<h4>Уже участвуете в соревнованиях?</h4>
+			<p>Соберите вместе свои результаты с забегов со всего мира!</p>
+			<p>В нашей базе
+			<strong><a href="{% url 'results:races' date_region='1' %}">{{ n_events_in_past|intcomma }}</a></strong>
+			завершивши{{ n_events_in_past|plural_ending_5 }}ся
+			забег{{ n_events_in_past|plural_ending_1 }}
+			и <strong><a href="{% url 'results:results' %}">{{ n_results|intcomma }}</a></strong>
+			обработанны{{ n_results|plural_ending_5 }}
+			результат{{ n_results|plural_ending_1 }},
+			в том числе {{ n_results_with_runner|intcomma }}
+			<a href="{% url 'results_binding' %}">привязаны к людям.</a></p>
+
+			<h4>Только думаете начать?</h4>
+			<p>Найдите ближайшие к вам забеги и бегите!</p>
+			<p>У нас — самый полный календарь забегов в России и сопредельных странах:
+			<strong><a href="{% url 'results:races' date_region='2' %}">{{ n_events_in_future|intcomma }}</a></strong>
+			предстоящи{{ n_events_in_future|plural_ending_5 }}
+			забег{{ n_events_in_future|plural_ending_1 }},
+			из них <strong><a href="{% url 'results:races' %}">{{ n_events_this_month_RU_UA_BY|intcomma }}</a></strong> — в ближайший месяц в России, Украине и Беларуси.</p>
+
+			<h4>Вы — организатор забега?</h4>
+			<p>Зарегистрируйтесь, <a href="mailto:info@probeg.org">напишите нам</a> —
+			и сможете сами оперативно обновлять информацию и добавлять новости о своих мероприятиях.</p>
+			<p class="text-center">
+				<a href="{% url 'probeg_auth:login' %}">
+					<button type="button" class="btn btn-lg btn-success">Войти или зарегистрироваться</button></a>
+			</p>
+			<br/><br/>
+		{% endif %}
+		{% include 'tools/runners_search_form.html' %}
+		<br/>
+		<a href="#" class="btnAddSeries">Сообщить нам о забеге, которого нет в календаре</a>
+		<br/><br/>
+		<h4>Лидеры КЛБМатча–{{ year }}&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'results:klb_match_summary' %}">Полная таблица</a></h4>
+		<table class="table table-condensed table-hover">
+			<tr>
+				<th></th><th>Команда</th><th class="text-center">Участников</th><th class="text-right">Очки</th>
+			</tr>
+			{% for category in klb_categories %}
+				<tr><td colspan="4" class="info text-center"><strong><a href="{{ category.link }}">{{ category.name }}</a></strong></td></tr>
+				{% for team in category.teams %}
+					<tr 
+						{% if team.place_medium_teams %}
+							class="warning"
+						{% elif team.place_small_teams %}
+							class="danger"
+						{% endif %}
+					>
+						<td class="text-right">{{ forloop.counter }}</td>
+						<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</a>
+							{% if team.club.city %}
+								({{ team.club.strCityShort|safe }})
+							{% endif %}
+						</td>
+						<td class="text-center">{{ team.n_members }}</td>
+						<td class="text-right">{{ team.score|floatformat:3 }}</td>
+					</tr>
+				{% endfor %}
+			{% endfor %}
+				<tr><td colspan="4" class="info text-center"><strong><a href="{{ absolute_table_link }}">Личный зачёт</a></strong></td></tr>
+				<tr>
+					<th></th><th>Имя</th><th class="text-center">Выступлений</th><th class="text-right">Очки</th>
+				</tr>
+				{% for participant in participants %}{% with person=participant.klb_person %}
+					<tr{% if person.gender == 1 %} class="success"{% endif %}>
+						<td class="text-right">{{ forloop.counter }}</td>
+						<td><a href="{{ person.get_absolute_url }}">{{ person.fname }} {{ person.lname }}</a>
+							({{ person.city.nameWithCountry|safe }})
+						</td>
+						<td class="text-center">{{ participant.n_starts }}</td>
+						<td class="text-right">{{ participant.score_sum|floatformat:3 }}</td>
+					</tr>
+				{% endwith %}{% endfor %}
+		</table>
+		<div class="row">
+			<div class="col-md-4">
+				<a href="{% url 'results:about_match' %}">Что такое КЛБМатч?</a>
+			</div>
+			<div class="col-md-4 text-center">
+				<a href="http://probeg.org/klb">История КЛБМатча</a>
+			</div>
+			<div class="col-md-4 text-right">
+				<a href="{% url 'results:calculator' %}">Расчёт очков</a>
+			</div>
+		</div>
+		<br/><br/>
+		{% include 'generated/last_added_reviews.html' %}
+		<br/><br/>
+		{% include 'generated/last_loaded_protocols.html' %}
+		<br/>
+		<div class="text-center">
+			{% include 'misc/adsense_high.html' %}
+		</div>
+		<br/><br/>
+		<div id="vk_comments_browse"></div>
+		<script type="text/javascript" src="//vk.com/js/api/openapi.js?146"></script>
+		<script type="text/javascript">
+			VK.init({apiId: 5410674, onlyWidgets: true});
+			VK.Widgets.CommentsBrowse('vk_comments_browse', {limit: 10});
+		</script>
+	</div>
+	<div class="col-md-8 col-sm-12 col-xs-12">
+		<h4>&nbsp;&nbsp;&nbsp;Последние новости
+			&nbsp;&nbsp;&nbsp;<a href="{% url 'results:all_news' %}">Все новости</a>
+		</h4>
+		{% for news in all_news %}
+			<table class="table table-bordered" cellspacing="0" width="100%">
+				<tr><td>
+					<h4 style="margin-bottom: 0px;">{{ news.date_posted|date:'d.m.Y' }}
+					{% if news.event %}
+						<small>
+							Забег:
+							<a href="{{ news.event.get_absolute_url }}">{{ news.event.name|safe }}</a>
+							({{ news.event.strCityCountry|safe }})
+						</small>
+					{% endif %}
+					</h4>
+					{% if 0 and is_admin %}
+						{% if news.is_for_social %}
+							(только для соцсетей)
+						{% endif %}
+						Автор: {{ news.author|safe }}
+						{% if news.created_by %}
+							Выложил: {% include 'editor/user_name_with_link.html' with person=news.created_by %}
+						{% endif %}
+					{% endif %}
+				</td></tr>
+				<tr><td>
+					<h4>
+						<a href="{{ news.get_absolute_url }}">{{ news.title|safe|default:'без названия' }}</a>
+					</h4>
+					{% if news.image %}
+						<a href="{{ news.get_image_url }}">
+							<img src="{{ news.get_image_thumb_url }}" border="0" alt="Увеличить" hspace="5" vspace="5" align="right"/>
+						</a>
+					{% endif %}
+					{{ news.preview|safe }}
+				</td></tr>
+			</table>
+			{% if forloop.counter|divisibleby:5 %}
+				<div class="text-center">{% include 'misc/adsense_bottom.html' %}</div>
+				<p></p>
+			{% endif %}
+		{% endfor %}
+		<h4><a href="{% url 'results:all_news' %}">Все новости</a></h4>
+	</div>
+</div>
+{% endblock %}

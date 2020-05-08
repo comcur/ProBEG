@@ -1,0 +1,61 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+{% include 'klb/team_header.html' %}
+<br/>
+<div class="row"> <!-- Header -->
+	{% include 'tools/klb_team_table_detailed.html' %}
+	<div class="col-md-7">
+		<h4>Добавление в команду нового участника: шаг 2</h4>
+			{% if runners|length > 1 %}
+				<p>В нашей базе есть несколько человек, похожих на нужного. Пожалуйста, выберите нужного;
+					при клике по имени результаты человека откроются в новом окне.
+					<br/>
+					Если сомневаетесь, лучше создайте нового участника забегов.
+				</p>
+			{% else %}
+				<p>В нашей базе есть человек, похожий на нужного. Посмотрите, не он ли Вам нужен;
+					при клике по имени результаты человека откроются в новом окне.
+					<br/>
+					Если сомневаетесь, лучше создайте нового участника забегов.
+				</p>
+			{% endif %}
+		<form id="frmAddNewParticipants" action="" method="POST">
+			{% csrf_token %}
+			{% for field in form %}
+				{{ field.as_hidden }}
+			{% endfor %}
+			<input type="radio" name="runner_id" value="-1" checked>
+			Создать нового участника:
+			{% with new_runner=form.instance %}
+				{{ new_runner.name_with_midname }}, {{ new_runner.birthday|date:'d.m.Y' }}, {{ new_runner.city.nameWithCountry }}
+			{% endwith %}
+			{% for runner_dict in runners %}
+				<br/><br/>
+				<input type="radio" name="runner_id" value="{{ runner_dict.runner.id }}"
+					{% if runner_dict.cur_participant %}disabled{% endif %}
+				>&nbsp;
+				<a href="{{ runner_dict.runner.get_runner_or_user_url }}" target="_blank">{{ runner_dict.runner.name_with_midname }}</a>,
+				{{ runner_dict.info }}
+				{% if runner_dict.cur_participant %}
+					<br/>
+					Уже заявлен в КЛБМатч-{{ team.year }}
+					{% if runner_dict.cur_participant.team %}
+						за команду <a href="{{ runner_dict.cur_participant.team.get_absolute_url }}">
+							{{ runner_dict.cur_participant.team.name }}</a>
+					{% else %}
+						как индивидуальный участник
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+			<br/><br/>
+			<input type="submit" name="step2_submit" value="Добавить отмеченного человека в команду {{ team.name }}"
+				class="btn btn-success"
+			/>
+			<span class="pull-right">
+				<a href="{{ team.get_absolute_url }}">Вернуться на страницу команды</a>
+			</span>
+		</form>
+	</div>
+</div>
+{% endblock %}

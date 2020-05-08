@@ -1,0 +1,142 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+{% include 'klb/team_header.html' %}
+<br/>
+<div class="row"> <!-- Header -->
+	<div class="col-md-5">
+		<h4>Состав команды</h4>
+		<form id="frmDeleteParticipants" action="{{ team.get_delete_participants_url }}" method="POST">
+			{% csrf_token %}
+			<table class="table table-condensed table-hover">
+				<tr><th>№</th><th>Участник</th><th>Дата рожд.</th><th class="text-center">Стартов</th>
+					<th class="text-right">
+						<abbr title="Жирным выделены 15 лучших результатов участников – только они учитываются в очках команды">Очки</abbr>
+					</th>
+					<th class="text-right">Бонусы</th><th class="text-right">Всего</th>
+					{% if has_participants_to_delete %}
+						<th>Удалить?</th>
+					{% endif %}
+				</tr>
+				<tr class="info">
+					<td></td>
+					<td><strong>Всего</strong></td>
+					<td></td>
+					<td class="text-center"></td>
+					<td class="text-right">{{ team.get_clean_score|floatformat:3 }}</td>
+					<td class="text-right">{{ team.bonus_score|floatformat:3 }}</td>
+					<td class="text-right"><strong>{{ team.score|floatformat:3 }}</strong></td>
+				</tr>
+				{% for participant in participants %}{% with person=participant.klb_person %}
+					<tr{% if person.gender == 1 %} class="success"{% endif %}>
+						<td>{{ forloop.counter }}</td>
+						<td>{% if participant.n_starts > 0 %}
+							<a href="#person{{ person.id }}" class="dash-underlined">{{ person.fname }} {{ person.lname }}</a>
+							{% else %}
+								{{ person.fname }} {{ person.lname }}
+							{% endif %}
+							<a href="{{ person.get_absolute_url }}"><span class="glyphicon glyphicon-new-window pull-right" aria-hidden="true"></span></a>
+						</td>
+						<td>{% if person.birthday %}{{ person.birthday|date:'d.m.Y' }}{% endif %}</td>
+						<td class="text-center">{{ participant.n_starts }}</td>
+						<td class="text-right">
+							{% if participant.is_in_best %}
+								<strong>{{ participant.clean_sum|floatformat:3 }}</strong>
+							{% else %}
+								{{ participant.clean_sum|floatformat:3 }}
+							{% endif %}
+						</td>
+						<td class="text-right">{{ participant.bonus_sum|floatformat:3 }}</td>
+						<td class="text-right"><strong>{{ participant.score_sum|floatformat:3 }}</strong></td>
+						{% if has_participants_to_delete %}
+							<td class="text-center">
+								{% if participant.n_starts == 0 %}
+									<input type="checkbox" name="to_delete_{{ person.id }}" class="chkbox"/>
+								{% endif %}
+							</td>
+						{% endif %}
+					</tr>
+					<tr{% if person.gender == 1 %} class="success"{% endif %}>
+						<td></td>
+						<td colspan="7">
+							{% if participant.date_registered %}
+								Заявлен{% if person.gender == 1 %}а{% endif %} в команду
+								{{ participant.date_registered }}{% if participant.date_removed %}.{% endif %}
+							{% endif %}
+							{% if participant.date_removed %}
+								Удален{% if person.gender == 1 %}а{% endif %} из команды
+								{{ participant.date_removed }}
+							{% endif %}
+						</td>
+					</tr>
+				{% endwith %}{% endfor %}
+			</table>
+			{% if has_participants_to_delete %}
+				<input type="submit" name="delete_submit"
+					value="Удалить отмеченных участников из команды {{ team.name }}" class="btn btn-danger"/>
+				<br/><br/>
+				Если вы хотите удалить участников, которые уже имеют результаты в зачёт КЛБМатча–{{ team.year }},
+				напишите в секретариат матча по адресу <a href="mailto:klb@probeg.org">klb@probeg.org</a>.
+			{% endif %}
+		</form>
+	</div>
+	<div class="col-md-7">
+		<h4>Добавление в команду нового участника: шаг 1</h4>
+		{% if has_old_participants_to_add %}
+			<p>Людей, которые выступали за ваш клуб в прошлом году
+			или которые <a href="{% url 'results:about_club_membership' %}" target="_blank">введены как члены клуба</a>, можно добавить проще —
+				<a href="{{ team.get_add_old_participants_url }}">на этой странице</a>.
+			</p>
+		{% endif %}
+		<p>Для каждого участника необходимо указать либо его адрес электронной почты, либо мобильный телефон.</p>
+		<p>Телефон нужно указать так, чтобы можно было позвонить на него из любой точки России.
+			Так что российские номера должны состоять из 10 цифр и начинаться на 8 или +7; иностранные должны начинаться на + и код страны.
+			Можно вводить телефоны вместе со скобками, пробелами и тире.
+		</p>
+		<p>Все {% if show_contact_fields %}остальные{% endif %} поля — обязательные.
+			После выбора страны или региона нужно либо выбрать город из выпадающего меню, либо ввести название города в нижнем поле.
+		</p>
+		<form id="frmAddNewParticipants" action="" method="POST" class="form-horizontal">
+			{% csrf_token %}
+			{% for error in form.non_field_errors %}
+				<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+			{% endfor %}
+			{% for field in form.visible_fields %}
+				<div class="form-group">
+					{{ field|label_with_classes:"col-sm-4 control-label" }}
+					<div class="col-sm-8">
+						{{ field }}
+						{% if field.errors %}
+							{% for error in field.errors %}
+								<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+			<input type="checkbox" name="is_responsible" id="chkIsResponsible"/>
+			Я&nbsp;или&nbsp;руководитель клуба получили согласие этого человека на&nbsp;включение в&nbsp;состав команды
+			«{{ team.name }}» в&nbsp;КЛБМатче–{{ team.year }} и&nbsp;на&nbsp;размещение его&nbsp;персональных данных (ФИО, год рождения, город)
+			на&nbsp;страницах сайта КЛБМатча, а&nbsp;также на&nbsp;хранение администрацией КЛБМатча его&nbsp;электронного адреса или телефона
+			<br/><br/>
+			<input type="checkbox" name="and_to_club_members" checked/> 
+			Также добавить этого человека в члены клуба на {{ year }} год
+			<br/><br/>
+			<input type="submit" name="step1_submit" value="Добавить этого человека в команду {{ team.name }}"
+				class="btn btn-success" id="btnSubmit" disabled
+			/>
+			<span class="pull-right">
+				<a href="{{ team.get_absolute_url }}">Вернуться на страницу команды</a>
+			</span>
+		</form>
+	</div>
+</div>
+<script language="javascript">
+var ajax_city_prefix = "id_";
+var ajax_city_fullname = 1;
+{% if form.instance.city.id %}
+	var ajax_city_default = "{{ form.instance.city.id }}";
+{% endif %}
+</script>
+<br/><br/>
+{% endblock %}

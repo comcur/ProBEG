@@ -1,0 +1,100 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+
+{% include 'results/panel_header_before_title.html' %}
+	Параметры вопроса «{{ question.title }}»
+	при <a class="underlined" href="{{ registration.get_info_url }}">регистрации</a>
+	на забег <a class="underlined" href="{{ event.get_absolute_url }}">{{ event|safe }}</a>
+{% include 'results/panel_header_after_title.html' %}
+<form id="frmChoices" method="POST" action="{{ question.get_editor_url }}" enctype="multipart/form-data">
+	{{ frmChoices.management_form }}{% csrf_token %}
+	<div class="row">
+		<div class="col-md-6">
+			<h4>Общие параметры
+				<small>(изменить их можно на странице правки регистрации)</small>
+			</h4>
+			<table class="table table-condensed table-borderless">
+				<tr><td class="text-right">{% get_verbose_field_name question "title" %}:</td><td>{{ question.title }}</td></tr>
+				<tr><td class="text-right">{% get_verbose_field_name question "name" %}:</td><td>{{ question.name }}</td></tr>
+				<tr><td class="text-right">{% get_verbose_field_name question "finish_date" %}:</td><td>{{ question.finish_date|default:'До закрытия регистрации' }}</td></tr>
+				<tr><td class="text-right">{% get_verbose_field_name question "multiple_answers" %}:</td><td>{% include 'tools/small_bool_span.html' with value=question.multiple_answers %}</td></tr>
+				<tr><td class="text-right">{% get_verbose_field_name question "is_required" %}:</td><td>{% include 'tools/small_bool_span.html' with value=question.is_required %}</td></tr>
+			</table>
+		</div>
+		<div class="col-md-3">
+			<h4>На каких дистанциях задаем вопрос</h4>
+			{% for error in frmQuestion.non_field_errors %}
+				<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+			{% endfor %}
+			{{ frmQuestion.race_set }}
+			{% for error in frmQuestion.race_set.errors %}
+				<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+			{% endfor %}
+		</div>
+		{% if question.image %}
+			<div class="col-md-3">
+				<h4>Картинка к вопросу</h4>
+				<img src="{{ question.image|add_prefix }}" align="right" style="max-height: 300px; max-width: 100%;"/>
+			</div>
+		{% endif %}
+		<div class="col-md-12">
+			<h4>Варианты ответа</h4>
+			{% for error in frmChoices.non_form_errors %}
+				<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+			{% endfor %}
+			<table class="table table-condensed">
+				<tr class="text-center">
+					<th>Номер<br/>варианта</th><th>Текст</th><th class="min-width nobr">Сколько добавляем<br/>к стоимости (руб.)</th>
+					<th>Показываем<br/>пользователю?</th><th>Выбран<br/>по умолчанию?</th><th></th><th>Удалить?</th>
+				</tr>
+				{% for form in frmChoices %}{% with choice=form.instance with_raw_value=0 no_title=1 %}{% with n_answers=choice.reg_answer_set.count %}
+					<tr>
+						<td class="text-center">{{ form.id }}
+							{% for error in form.non_field_errors %}
+								<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+							{% endfor %}
+							{{ form.reg_question }}
+							{{ form.created_by }}
+							{% if choice.id %}
+								{{ choice.number }}
+								{% if n_answers %}
+									<br/>
+									(уже выбрали {{ n_answers }} человек{{ n_answers|plural_ending_9 }})
+								{% endif %}
+							{% else %}
+								(новый пункт)
+							{% endif %}
+						</td>
+						<td>{% include 'results/form_field.html' with field=form.name %}</td>
+						<td class="min-width">{% include 'results/form_field.html' with field=form.cost %}</td>
+						<td class="text-center">{% include 'results/form_field.html' with field=form.is_visible %}</td>
+						<td class="text-center">{% include 'results/form_field.html' with field=form.is_default %}</td>
+						{% if choice.id %}
+							<td class="text-center">
+								<input type="submit" name="move_choice_{{ choice.id }}_submit" value="Переместить" class="btn btn-xs btn-primary"/>
+								<select name="move_choice_{{ choice.id }}">
+									{% for value, name in move_choices %}
+										<option value="{{ value }}">{{ name }}</option>
+									{% endfor %}
+								</select>
+							</td>
+							{% if not n_answers %}
+								<td class="text-center">{% include 'results/form_field.html' with field=form.DELETE %}</td>
+							{% endif %}
+						{% endif %}
+					</tr>
+				{% endwith %}{% endwith %}{% endfor %}
+			</table>
+			При нажатии любой из кнопок «Переместить» никакие другие внесённые изменения не сохранятся.
+		</div>
+	</div>
+	<span class="pull-right">
+		<a onclick="window.close();"><button type="button" class="btn btn-primary">Закрыть вкладку</button></a>
+	</span>
+	<input type="submit" name="frmQuestion_submit" value="Сохранить" class="btn btn-success"/>
+</form>
+{% include 'results/panel_footer.html' %}
+
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'letters/base.html' %}
+{% load results_extras %}
+{% block page_title %}ПроБЕГ: Новости за март-2017{% endblock %}
+{% block page_header %}ПроБЕГ: Новости за март-2017{% endblock %}
+{% block main %}
+	<tr>
+		<td style="font-size: 16px; padding: 0 0 15px;">
+			{% if user_name %}
+				{{ user_name }}, добрый день!
+			{% else %}
+				Добрый день!
+			{% endif %}
+		</td>
+	</tr>
+	<tr><td>
+		<p>Вот что появилось у нас за февраль-март.</p>
+		<p>1. Мы закончили работу над отчётом о беге на длинные дистанции в России в 2016 году — собрали вместе
+			результаты всех забегов, которые нашлись в открытом доступе.
+			<br/>
+			В каком регионе на каждого жителя приходится больше всего участников забегов (нет, это не Москва и не Санкт-Петербург)?
+			Кто показал лучшие в России результаты на самых популярных дистанциях?
+			Кто раньше начинает бегать марафоны — мужчины или женщины?
+			За сколько нужно пробежать 10 километров, чтобы попасть в топ-10% по стране?
+			<br/>
+			Ответы на эти и массу других вопросов — в нашем отчёте:
+			<a href="{{ url_start }}{% url 'results:russia_report' %}">http://base.probeg.org/russia_report</a>
+		</p>
+		<p>2. Видите на сайте забег в незнакомом населённом пункте? Нажмите на его название — и увидите не только календарь всех
+			забегов в этом городе или селе, но и ссылку на википедию, например: 
+			<a href="{{ url_start }}{% url 'results:races' city_id=4493 %}">{{ url_start }}{% url 'results:races' city_id=4493 %}</a>
+			<br/>
+			Это работает для всех российских населённых пунктов и многих (но пока не всех) иностранных.
+		</p>
+		<p>3. На вашей странице
+			<a href="{{ url_start }}{% url 'results:home' %}">{{ url_start }}{% url 'results:home' %}</a>
+			теперь вверху есть постоянная ссылка на Вашу страницу. Если дадите эту ссылку друзьям, они смогут следить за вашими выступлениями.
+		</p>
+	</td></tr>
+	{% if n_unclaimed_results %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Результаты, похожие на Ваши
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }},
+			похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}.
+			Проверьте: <a href="{{ url_start }}{% url 'results:find_results' %}" style="color: #337ab7; text-decoration: none;">не
+			Ваш{{ n_unclaimed_results|plural_ending_12 }} ли?</a>
+		</td></tr>
+	{% endif %}
+	{% if participant %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br /><br />
+			Ваше положение в КЛБМатче
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_person_places.html' with is_admin=0 link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if team %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Команда <a href="{{ url_start }}{{ team.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">{{ team.name }}</a>
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_team_places.html' with link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if user_city %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Поищите предстоящие забеги
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<p><a href="{{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В городе {{ user_city }}</a></p>
+			{% if user_city.region.active %}
+				<p><a href="{{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}"
+					style="color: #337ab7; text-decoration: none;">В регионе {{ user_city.region }}</a></p>
+			{% endif %}
+			<p><a href="{{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В стране {{ user_city.region.country }}</a></p>
+		</td></tr>
+	{% endif %}
+	<tr>
+		<td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<br />
+			Успешных Вам стартов весной!
+		</td>
+	</tr>
+{% endblock %}

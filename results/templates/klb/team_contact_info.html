@@ -1,0 +1,137 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+{% include 'klb/team_header.html' with show_link_to_team_page=1 %}
+<div class="row"><div class="col-md-12">
+	<h4>Подробный состав команды <small>(Эту страницу видят только администраторы матча и капитан команды)</small></h4>
+	<p>В колонке "Клуб в «Личных данных»" дата регистрации на сайте указана только у тех, кто зарегистрировался после начала этого матча. В таком случае для забегов, которые прошли до дня регистрации, клуб в «Личных данных» значения не имеет — важно только, какой клуб указан в протоколе.
+	</p>
+	<table class="table table-condensed table-hover">
+		<tr class="info"><th>№</th>
+			<th>Имя&nbsp;<a class="arrow{% if ordering == 1 %}-active{% endif %}" href="{% url 'editor:klb_team_contact_info' team_id=team.id ordering=1 %}">▼</a></th>
+			<th class="text-center">Дата рожд.</th>
+			{% if team.year >= 2019 %}
+				<th class="text-center">Опл</th>
+			{% endif %}
+			<th class="text-center">Стартов&nbsp;<a class="arrow{% if ordering == 4 %}-active{% endif %}" href="{% url 'editor:klb_team_contact_info' team_id=team.id ordering=4 %}">▼</a></th>
+			<th class="text-right">
+				<abbr title="Жирным выделены {{ n_runners_for_team_clean_score }} лучших спортивных результатов участников – только они учитываются в очках команды">Очки</abbr>&nbsp;<a
+				class="arrow{% if ordering == 3 %}-active{% endif %}" href="{% url 'editor:klb_team_contact_info' team_id=team.id ordering=3 %}"
+				>▼</a>
+			</th>
+			<th>+</th>
+			<th colspan="2">
+				<abbr title="Бонус каждого участника — сумма лучших {{ n_results_for_bonus_score }} бонусных очков за его старты. Бонус команды — сумма бонусов всех её участников">Бонусы</abbr>&nbsp;<a
+				class="arrow{% if ordering == 2 %}-active{% endif %}" href="{% url 'editor:klb_team_contact_info' team_id=team.id ordering=2 %}"
+				>▼</a>
+			</th>
+			<th class="text-right">Σ&nbsp;<a
+				class="arrow{% if ordering == 0 %}-active{% endif %}" href="{% url 'editor:klb_team_contact_info' team_id=team.id ordering=0 %}">▼</a>
+			</th>
+			<th class="text-center">Добавлен в&nbsp;команду</th>
+			<th class="text-center">Клуб в<br/>«Личных данных»</th>
+			<th class="text-right">Возрастная группа</th>
+			<th>E-mail</th>
+			<th>Телефон</th>
+			<th>Населённый пункт</th>
+			{% if is_active_klb_year %}
+				<th></th>
+			{% endif %}
+		</tr>
+		{% for participant in participants %}{% with person=participant.klb_person triple=participant.did_user_set_correct_club %}
+		{% with is_club_ok=triple.0 user_club=triple.1 date_joined=triple.2 %}
+			<tr{% if person.gender == 1 %} class="success"{% endif %}>
+				<td>{{ forloop.counter }}</td>
+				<td>{% include 'tools/runner_or_user_name_with_link.html' with runner=person.runner with_midname=1 %}</td>
+				<td class="text-center">{{ person.birthday|date:"d.m.Y"|default:'' }}</td>
+				{% if team.year >= 2019 %}
+					<td class="text-center">
+						{% if participant.paid_status == 0 %}
+							<span class="label label-danger small-label">нет</span>
+						{% elif participant.paid_status == 1 %}
+							<span class="label label-warning small-label">
+								{% if is_admin %}<a href="{{ participant.payment.get_absolute_url }}">беспл</a>{% else %}беспл{% endif %}
+							</span>
+						{% else %}
+							<span class="label label-success small-label">
+								{% if is_admin %}<a href="{{ participant.payment.get_absolute_url }}">опл</a>{% else %}опл{% endif %}
+							</span>
+						{% endif %}
+					</td>
+				{% endif %}
+				<td class="text-center">{{ participant.n_starts }}</td>
+				{% if participant.n_starts %}
+					<td class="text-right">
+						{% if participant.is_in_best %}
+							<strong>{{ participant.clean_sum|floatformat:3 }}</strong>
+						{% else %}
+							{{ participant.clean_sum|floatformat:3 }}
+						{% endif %}
+					</td>
+					<td>+</td>
+					<td class="text-right min-width"><strong>{{ participant.bonus_sum|floatformat:3 }}</strong></td>
+					<td>=</td>
+					<td class="text-right min-width">
+						{% if participant.is_in_best %}
+							<strong>{{ participant.score_sum|floatformat:3 }}</strong>
+						{% else %}
+							{{ participant.score_sum|floatformat:3 }}
+						{% endif %}
+					</td>
+				{% else %}
+					<td colspan="5"></td>
+				{% endif %}
+				<td class="text-center">{{ participant.date_registered|date:"d.m.Y"|default:'' }}</td>
+				<td>{% if date_joined %}
+						<span class="pull-right">{% include 'tools/span_yes_no.html' with value=is_club_ok %}</span>
+						{{ user_club|default:'(не указан никакой)' }}
+						{% if date_joined.year == team.year %}
+							<br/><i>Зарегистрировался {{ date_joined|date:"d.m.Y" }}</i>
+						{% endif %}
+					{% else %}
+						<i>Не зарегистрирован</i>
+					{% endif %}
+				</td>
+				<td class="text-right"><a href="{{ participant.age_group.get_absolute_url }}">{{ participant.age_group.name|default:'' }}</a></td>
+				<td>{{ participant.email }}</td>
+				<td>{{ participant.phone_number }}</td>
+				<td>{% if person.city %}<a href="{{ person.city.get_races_url }}">{{ person.city.nameWithCountry|safe }}</a>{% endif %}</td>
+				{% if is_active_klb_year %}
+					<td><a href="{{ participant.get_edit_contact_info_url }}"><button type="button" class="btn btn-xs btn-primary">Редактировать</button></a></td>
+				{% endif %}
+			</tr>
+		{% endwith %}{% endwith %}{% endfor %}
+		<tr>
+			<td colspan="13"></td>
+			<td colspan="3">
+				<a href="#"><button type="button" id="btnCopyEmails" class="btn btn-xs btn-primary">Скопировать все адреса в буфер обмена</button></a>
+			</td>
+		</tr>
+	</table>
+	</div>
+</div>
+<script type="text/javascript">
+$("#btnCopyEmails").click(function(){
+	var textArea = document.createElement("textarea");
+ 	textArea.style.position = 'fixed';
+ 	textArea.style.top = 0;
+	textArea.style.left = 0;
+	textArea.style.width = '2em';
+	textArea.style.height = '2em';
+	textArea.style.padding = 0;
+	textArea.style.border = 'none';
+	textArea.style.outline = 'none';
+	textArea.style.boxShadow = 'none';
+	textArea.style.background = 'transparent';
+	textArea.value = '{{ all_emails }}';
+	document.body.appendChild(textArea);
+	textArea.select();
+	try {
+		var successful = document.execCommand('copy');
+	} catch (err) {
+	}
+	document.body.removeChild(textArea);
+	return false;
+});
+</script>
+{% endblock %}

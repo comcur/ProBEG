@@ -1,0 +1,143 @@
+{% extends 'results/base.html' %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+	{% if is_admin %}
+		<span class="pull-right">
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="{{ person.get_history_url }}">
+				<button type="button" class="btn btn-xs btn-primary">История изменений</button></a>
+		</span>
+		<span class="pull-right">
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="{{ person.get_refresh_url }}">
+				<button type="button" class="btn btn-xs btn-primary">Пересчитать результаты</button></a>
+		</span>
+		<span class="pull-right">
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="{{ person.get_editor_url }}">
+				<button type="button" class="btn btn-xs btn-primary">Редактировать</button></a>
+		</span>
+	{% endif %}
+	<h3><a href="{% url 'results:klb_match_summary' %}">КЛБМатч</a>: {{ person.fname }} {{ person.midname }} {{ person.lname }}</h3>
+</div></div>
+<div class="row"><div class="col-md-12">
+	{% if diplom_year %}
+		<span class="pull-right text-right">
+			<a href="{{ person.get_diplom_url }}" target="_blank">Напечатать диплом за {{ diplom_year }} год</a>
+			<p>Не получается сохранить диплом в формате PDF?
+				<br/>Скопируйте ссылку выше,
+				откройте <a href="http://document.online-convert.com/ru/convert-to-pdf" target="_blank">вот этот бесплатный сервис</a>,
+				<br/>нажмите «ввести URL», вставьте адрес диплома, и нажмите «Добавьте URL» и затем «Начать конвертирование».
+			</p>
+		</span>
+	{% endif %}
+	{% if person.city %}<p>{{ person.city.nameWithCountry|safe }}</p>{% endif %}
+	{% if is_admin %}
+		<p class="for-admin">
+			{% if person.birthday %}
+				<br/>Дата рождения: {{ person.birthday|date:"j E Y" }}
+			{% endif %}
+			{% include 'tools/user_email_for_admin.html' with user=person.runner.user %}
+			{% if person.email %}
+				<br/>E-mail: {{ person.email }}
+			{% endif %}
+			{% if person.disability_group %}
+				<br/>Группа инвалидности: {{ person.get_disability_group_display }}
+			{% endif %}
+			{% if person.phone_number %}
+				<br/>Телефон: {{ person.phone_number }}
+			{% endif %}
+			{% if person.skype %}
+				<br/>Skype: {{ person.skype }}
+			{% endif %}
+			{% if person.ICQ %}
+				<br/>ICQ: {{ person.ICQ }}
+			{% endif %}
+			{% if person.comment %}
+				<br/>Комментарий: {{ person.comment }}
+			{% endif %}
+			{% if person.nickname %}
+				<br/>Ник: {{ person.nickname }}
+			{% endif %}
+		</p>
+	{% else %}
+		{% if person.birthday %}<p>Год рождения: {{ person.birthday.year }}</p>{% endif %}
+	{% endif %}
+</div></div>
+{% if cur_year_participant and cur_year_participant.score_sum > 0 %}
+	{% with p=cur_year_participant %}
+	{% with overall_group=p.get_overall_group gender_group=p.get_gender_group age_group=p.age_group %}
+		<div class="row"><div class="col-md-12">
+			<h4>Результаты в КЛБМатче–{{ cur_year }}</h4>
+			{% if p.place %}
+				<p>Место в <a href="{{ overall_group.get_absolute_url }}">общем зачёте</a>:
+				{{ p.place }} из {{ overall_group.n_participants_started }}
+				{% include 'klb/participants_next_prev.html' with participant_next=p.get_next_overall participant_prev=p.get_prev_overall %}</p>
+			{% endif %}
+			{% if p.place_gender %}
+				<p>Место среди <a href="{{ gender_group.get_absolute_url }}">{% if p.klb_person.gender == 2 %}мужчин{% else %}женщин{% endif %}</a>:
+				{{ p.place_gender }} из {{ gender_group.n_participants_started }}
+				{% include 'klb/participants_next_prev.html' with participant_next=p.get_next_gender participant_prev=p.get_prev_gender %}</p>
+			{% endif %}
+			{% if p.place_group %}
+				<p>Место в группе <a href="{{ age_group.get_absolute_url }}">{{ age_group.name }}</a>:
+				{{ p.place_group }} из {{ age_group.n_participants_started }}
+				{% include 'klb/participants_next_prev.html' with participant_next=p.get_next_group participant_prev=p.get_prev_group %}</p>
+			{% endif %}
+			{% for stat in p.klb_participant_stat_set.all %}{% with category=stat.get_match_category %}
+				<p><a href="{{ stat.get_stat_url }}">{{ stat.get_stat_type_display }}</a>: {{ stat|safe }} ({{ stat.place }}
+					место{% if category.n_participants_started %}
+				 		из {{ category.n_participants_started }}{% endif %})
+				</p>
+			{% endwith %}{% endfor %}
+		</div></div>
+		<br/>
+	{% endwith %}{% endwith %}
+{% endif %}
+<div class="row"> <!-- Header -->
+	<div class="col-md-4">
+		{% if participations %}
+			<h4>Участия в КЛБМатчах</h4>
+			{% for participant in participations %}{% with team=participant.team year=participant.match_year %}
+				<p>
+					{{ year }} –
+					{% if team %}
+						команда <a href="{{ team.get_absolute_url }}">{{ team.name }}</a>
+						{% if team.club and team.club.city %}
+							({{ team.club.strCity|safe }})
+						{% endif %}
+					{% else %}
+						индивидуальный участник
+					{% endif %}
+					{% if participant.id in cur_participant_ids %}
+						{% include 'tools/klb_participant_payment_link.html' %}
+					{% endif %}
+				</p>
+				{% include 'tools/klb_participation.html' %}
+				<br/>
+			{% endwith %}{% endfor %}
+		{% endif %}
+	</div>
+	<div class="col-md-8">
+			<h4>Выступления в зачёт КЛБМатча&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ person.runner.get_runner_or_user_url }}">Все выступления</a></h4>
+			{% if klb_results %}
+				<table class="table table-condensed table-hover">
+					{% include 'klb/result_header.html' %}
+					{% for year, obj in klb_results.items %}
+						<tr><th colspan="10" class="info text-center">
+							{{ year }} год
+							{% if year > 2010 %}
+								<span style="float: right;"><a href="{{ obj.old_link }}">старая страница результатов</a></span>
+							{% endif %}
+						</th></tr>
+						{% for klb_result in obj.results %}{% with event=klb_result.race.event ignore_gender=1 %}
+							{% include 'klb/result_row.html' %}
+						{% endwith %}{% endfor %}
+					{% endfor %}
+				</table>
+			{% else %}
+				Пока нет ни одного результата.
+			{% endif %}
+	</div>
+</div>
+{% endblock %}

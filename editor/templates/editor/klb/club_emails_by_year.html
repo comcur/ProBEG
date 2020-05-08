@@ -1,0 +1,22 @@
+{% extends 'results/base.html' %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+	<h3 class="text-center"><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч–{{ year }}</a>:
+		Адреса всех имеющих права на клубы, участвующие в матче</h3>
+	<br/>
+	<br/><br/>	
+	<table class="table table-condensed table-hover">
+		<tr><th>Сотня</th><th>Адреса</th></tr>
+		{% for emails in correct_emails %}
+			<tr>
+				<td>{{ forloop.counter }}</td>
+				<td>{{ emails }}</td>
+			</tr>
+		{% endfor %}
+		<tr>
+			<td>Некорректные</td>
+			<td>{{ incorrect_emails }}</td>
+		</tr>
+	</table>
+</div></div>
+{% endblock %}

@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /races/?csrf
+Disallow: /runners/?csrf
+Disallow: /login/
+Disallow: /home/
+Disallow: /user/642/

@@ -1,0 +1,60 @@
+{% extends 'letters/base.html' %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block page_header %}{{ page_title }}{% endblock %}
+{% block main %}
+	{% if test_mode %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			Это — тестовое письмо, оно отправлено только на info@.
+		</td></tr>
+	{% endif %}
+	<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+		{% if user_name %}
+			{{ user_name }}, добрый день!
+		{% else %}
+			Добрый день!
+		{% endif %}
+	</td></tr>
+	<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+		{% block content %}{% endblock %}
+	</td></tr>
+	{% if participant %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Ваше положение в КЛБМатче
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_person_places.html' with is_admin=0 link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if team %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Команда <a href="{{ url_start }}{{ team.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">{{ team.name }}</a>
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_team_places.html' with link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if user_city %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Поищите предстоящие забеги
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<p><a href="{{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В городе {{ user_city }}</a></p>
+			{% if user_city.region.active %}
+				<p><a href="{{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}"
+					style="color: #337ab7; text-decoration: none;">В регионе {{ user_city.region }}</a></p>
+			{% endif %}
+			{% if user_city.region.country.prep_case %}
+				<p><a href="{{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}"
+					style="color: #337ab7; text-decoration: none;">В {{ user_city.region.country.prep_case }}</a></p>
+			{% endif %}
+		</td></tr>
+	{% endif %}
+	<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+		<br />
+		Успешных Вам стартов!
+	</td></tr>
+{% endblock %}

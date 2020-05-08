@@ -1,0 +1,48 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<h3>Самые заметные забеги в России в 2017 году</h3>
+<p class="lead">Проект сайта «ПроБЕГ»</p>
+
+<div class="row"><div class="col-md-12">
+	<div class="row">
+		<div class="col-md-6">
+			<h4>Марафон «Дорога жизни»</h4>
+			<p>Ладожское озеро — Санкт-Петербург. 29 января</p>
+			<p><a href="http://www.wnmarathon.ru/dor-gizni.php">http://www.wnmarathon.ru/dor-gizni.php</a></p>
+			<table class="table">
+				<tr><th>Дистанция</th><th>Цена</th><th>Участников в 2016</th></tr>
+				<tr><td>марафон</td><td>600 ₽</td><td>596</td></tr>
+				<tr><td>полумарафон</td><td>500 ₽</td><td>579</td></tr>
+				<tr><td>5 км</td><td>200 ₽</td><td>479</td></tr>
+			</table>
+			<p>
+				Трасса марафона проходит по наземной части легендарной транспортной магистрали Дорога жизни,
+				которая в годы войны связала блокадный Ленинград со страной.
+				Основан жителем блокадного Ленинграда Григорием Колгашкиным.
+				Линейный маршрут: старт и финиш — в разных местах.
+				Недостатки: Тяжёлая погода и покрытие трассы — заметного плюса в январе в Петербурге ждать не приходится.
+			</p>
+		</div>
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-md-6 center-block">
+					<img src="{% static 'images/articles/russiabest2017/zhizni1_t.jpg' %}" alt="Автор: Алёна Галкина" class="img-responsive"/>
+					<br/><br/>
+					<img src="{% static 'images/articles/russiabest2017/zhizni1_t.jpg' %}" alt="Автор: Алёна Галкина" class="img-responsive"/>
+				</div>
+				<div class="col-md-6 center-block">
+					<img src="{% static 'images/articles/russiabest2017/zhizni1_t.jpg' %}" alt="Автор: Алёна Галкина" class="img-responsive"/>
+					<br/><br/>
+					<img src="{% static 'images/articles/russiabest2017/zhizni1_t.jpg' %}" alt="Автор: Алёна Галкина" class="img-responsive"/>
+				</div>
+			</div>
+			<div class="row"><div class="col-md-12">
+				<div class="embed-responsive embed-responsive-16by9">
+					<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/4EYp-yaBWDQ" frameborder="0" allowfullscreen></iframe>
+				</div>
+			</div></div>
+		</div>
+	</div>
+</div></div>
+{% endblock %}

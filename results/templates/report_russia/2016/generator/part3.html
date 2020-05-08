@@ -1,0 +1,63 @@
+{% extends 'report_russia/generator/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+	<br/><br/>
+	<img src="{% static 'images/articles/russia_2016/all-by-gender.png' %}" alt="Распределение возрастов мужчин и женщин"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>У&nbsp;мужчин и&nbsp;женщин пик активности приходится на&nbsp;разные возрастные группы:
+	30–34 года у&nbsp;мужчин и&nbsp;25–29 лет у&nbsp;женщин.
+	При этом и&nbsp;у&nbsp;тех, и&nbsp;у&nbsp;других самый резкий рост активности происходит из&nbsp;группы 20–24 в&nbsp;группу 25–29.
+	Мужчины и&nbsp;женщины одновременно забывают ужасы школьной физкультуры?</p>
+	<br/><br/><br/>
+	<img src="{% static 'images/articles/russia_2016/all-by-gender-weighted.png' %}" alt="Распределение возрастов, взвешенное по полу"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>
+	Здесь сумма красных столбиков составляет 100% и сумма синих столбиков равна 100%.
+	<br/>Женщины относительно активнее до&nbsp;34&nbsp;лет, но&nbsp;затем мужчины берут верх.</p>
+	<br/><br/><br/>
+	<img src="{% static 'images/articles/russia_2016/distances.png' %}" alt="Популярные дистанции"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>Среди молодёжи короткие дистанции ожидаемо популярнее, чем&nbsp;марафон и&nbsp;полумарафон.
+	Длинные дистанции особенно популярны в&nbsp;диапазоне 50-75 лет.
+	Интересно, что&nbsp;в&nbsp;группе 60-64&nbsp;года все четыре дистанции совершенно одинаково популярны.</p>
+	<br/><br/><br/>
+	<img src="{% static 'images/articles/russia_2016/distances-weighted.png' %}" alt="Популярные дистанции, взвешенные по дистанциям"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>	Здесь снова сумма всех столбиков любого цвета составляет 100%.
+	<br/>Отметим, что&nbsp;полумарафон особенно популярен у&nbsp;30-39-летних, а&nbsp;марафон берёт своё, начиная с&nbsp;50&nbsp;лет.</p>
+	<br/><br/><br/>
+	<img src="{% static 'images/articles/russia_2016/marathon.png' %}" alt="Марафон. Распределение возрастов"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>В марафоне особенно заметен перевес мужчин: женщины составляют лишь 15% из&nbsp;всех финишировавших.
+	Удивительно, что&nbsp;у&nbsp;женщин даже на&nbsp;столь серьёзной дистанции самая популярная группа — всего лишь 25-29 лет!</p>
+	<br/><br/><br/>
+	<img src="{% static 'images/articles/russia_2016/halfmarathon.png' %}" alt="Полумарафон. Распределение возрастов"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>Картина очень похожа на&nbsp;предыдущую, разве что женщин заметно больше: уже&nbsp;24&nbsp;процента.</p>
+	<br/><br/><br/>
+	<img src="{% static 'images/articles/russia_2016/10km.png' %}" alt="10 км. Распределение возрастов"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>На&nbsp;10&nbsp;километрах женщин становится уже 42% от&nbsp;общего числа финишёров!
+	Во&nbsp;многом это связано с&nbsp;тем, что самые крупные забеги на&nbsp;10&nbsp;км в&nbsp;стране — спутники марафонов:
+	Московского и&nbsp;«Белых ночей»
+	(см.&nbsp;<a href="{% url 'results:russia_report' year=year tab=1 %}">первую часть отчета</a>). На&nbsp;них число женщин финишировало
+	и&nbsp;вовсе больше, чем мужчин.</p>
+	<br/><br/><br/>
+	<img src="{% static 'images/articles/russia_2016/5km.png' %}" alt="5 км. Распределение возрастов"
+		align="center" style="max-width:100%;"/>
+	<br/><br/>
+	<p>Забеги на&nbsp;5&nbsp;км, львиную долю которых составляют паркраны, часто проходят без&nbsp;всяких спутников.
+	Здесь мужчины снова уходят в&nbsp;отрыв, но&nbsp;уже в&nbsp;меньший: женщины составляют 34%&nbsp;финишёров.
+	Мужская группа 25-29 лишь&nbsp;тут смогла вплотную приблизиться к&nbsp;следующей,
+	а&nbsp;также в&nbsp;2,7 раза оторвалась от&nbsp;группы&nbsp;20-24.</p>
+{% endblock %}
+{% block main_part %}
+{% endblock %}

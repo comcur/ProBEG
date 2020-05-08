@@ -1,0 +1,103 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="row">
+	<div class="col-md-5 col-sm-6">
+		<h3>
+			{% if cur_user %}
+				Все платежи пользователя <a href="{{ cur_user.user_profile.get_absolute_url }}">{{ cur_user.get_full_name }}</a>
+				&nbsp;&nbsp;&nbsp;&nbsp;<small><a href="{% url 'editor:all_payments' %}">Вообще все платежи</a></small>
+			{% else %}
+				{{ page_title }}
+			{% endif %}
+		</h3>
+	</div>
+	<div class="col-md-7 col-sm-6 text-right">
+		<p><a href="{% url 'editor:all_medal_payments' %}">Все платежи за медали</a></p>
+	</div>
+</div>
+<div class="row"><div class="col-md-12">
+	<br/><br/>
+	{% if not cur_user %}
+		<form action="" method="POST" class="form-inline">
+			{% csrf_token %}
+			<input type="submit" class="btn btn-primary" name="btnCreateReport" value="Создать отчёт XLSX" />
+			со всеми платежами с
+			<input name="start_date" id="id_start_date" type="date" class="form-control" />
+			по
+			<input name="end_date" id="id_end_date" type="date" class="form-control" />
+			(поля можно оставить пустыми)
+		</form>
+		<br/><br/>
+		<form action="{% url 'editor:payment_create' %}" method="POST" class="form-inline">
+			{% csrf_token %}
+			<input type="submit" class="btn btn-warning" name="btnCreatePayment" value="Создать новый платёж" />
+			с описанием
+			<input name="description" id="id_description" type="text" class="form-control" maxlength="500" />
+			на сумму
+			<input name="amount" id="id_amount" type="number" class="form-control" min="0" max="100000" />
+			₽
+		</form>
+		<br/><br/>
+		<form action="" method="POST" class="form-inline">
+			{% csrf_token %}
+			<input name="show_unpaid_payments" id="id_show_unpaid_payments" type="checkbox"{% if show_unpaid_payments %} checked{% endif %} />
+			&nbsp;&nbsp;<label for="id_show_unpaid_payments" style="font-weight: 100; margin-bottom: 0px;">Показать и неоплаченные платежи</label>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="submit" class="btn btn-xs btn-primary" name="btnUpdateFilter" value="Обновить список" />
+		</form>
+	{% endif %}
+	<br/><br/>
+	<table class="table table-condensed table-hover table-striped">
+		<tr class="info">
+			<th class="text-center">Время создания</th>
+			<th class="text-right">ID</th>
+			{% if not cur_user %}
+				<th>Пользователь</th>
+			{% endif %}
+			<th class="text-center">Описание</th>
+			<th class="text-right">За сколько человек</th>
+			<th class="text-right">Поступило</th>
+			<th class="text-right">Сумма<br/>по людям</th>
+			<th class="text-right">Получено</th>
+			<th class="text-right">Комиссия</th>
+			<th class="text-center">Оплачен?</th>
+			<th class="text-center">Время оплаты</th>
+		</tr>
+		{% for payment in payments %}
+			<tr>
+				<td class="text-center nobr">{{ payment.added_time|date:'SHORT_DATETIME_FORMAT' }}</td>
+				<td class="text-right"><a href="{{ payment.get_absolute_url }}">{{ payment.id }}</a></td>
+				{% if not cur_user %}
+					<td class="nobr">{% include 'editor/user_name_with_link.html' with person=payment.user %}</td>
+				{% endif %}
+				<td>{% if not payment.is_active %}
+						<span class="pull-right"><span class="label label-danger small-label">не активен</span></span>
+					{% endif %}
+					{{ payment.description }}
+				</td>
+				<td class="text-right nobr">{{ payment.klb_participant__count }}</td>
+				<td class="text-right nobr">{{ payment.amount }} ₽</td>
+				<td class="text-right nobr">
+					{% if payment.n_participants_paid == payment.amount %}
+						--//--
+					{% else %}
+						{{ payment.n_participants_paid }} ₽
+					{% endif %}
+				</td>
+				<td class="text-right nobr">{{ payment.withdraw_amount }} ₽</td>
+				<td class="text-right nobr">{{ payment.get_fee_percent }}{% if payment.is_paid and payment.amount %} %{% endif %}</td>
+				<td class="text-center">
+					{% if payment.is_dummy %}
+						<span class="label label-primary small-label">фиктивный</span>
+					{% else %}
+						{% include 'tools/span_yes_no.html' with value=payment.is_paid %}
+					{% endif %}
+				</td>
+				<td class="text-center nobr">{{ payment.response.added_time|date:'SHORT_DATETIME_FORMAT'|default:'' }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+	<p><a href="{% url 'results:payment_form' %}">Страница приёма платежей</a></p>
+</div></div>
+{% endblock %}

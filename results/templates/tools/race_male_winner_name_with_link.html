@@ -1,0 +1,7 @@
+{% if race.winner_male_user and race.winner_male_user.user_profile.is_public %}
+	<a href="{{ race.winner_male_user.user_profile.get_absolute_url }}"><strong>{{ race.winner_male }}</strong></a>&nbsp;<span class="glyphicon glyphicon-user small-label" aria-hidden="true"></span><span class="sr-only">Зарегистрирован на сайте</span>
+{% elif race.winner_male_runner %}
+	<a href="{{ race.winner_male_runner.get_absolute_url }}"><strong>{{ race.winner_male }}</strong></a>
+{% else %}
+	<strong>{{ race.winner_male }}</strong>
+{% endif %}

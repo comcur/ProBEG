@@ -1,0 +1,10 @@
+{% load results_extras %}{% with percent=all|percent:men women=all|subtract:men %}<td colspan="2" style="min-width:200px;">
+	<div class="progress">
+		<div class="progress-bar text-left" style="width: {{ percent }}%">
+			<span class="text-left">{{ men }}</span>
+		</div>
+		<div class="progress-bar progress-bar-danger text-right" style="width: {{ 100|subtract:percent }}%">
+			<span class="text-right">{{ women }}</span>
+		</div>
+	</div>
+</td>{% endwith %}

@@ -1,0 +1,132 @@
+{% extends 'letters/base.html' %}
+{% load results_extras %}
+{% block page_title %}ПроБЕГ: Ваши новые результаты{% endblock %}
+{% block page_header %}ПроБЕГ: Ваши новые результаты{% endblock %}
+{% block main %}
+	<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+		{% if user_name %}
+			{{ user_name }}, добрый день!
+		{% else %}
+			Добрый день!
+		{% endif %}
+	</td></tr>
+	<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+		{% if claimed_results.exists %}
+			<p>За последнее время Вам были добавлены следующие результаты:</p>
+			<table class="table table-borderless" style="border-spacing: 0; border-collapse: collapse; width: 100%;">
+				{% for result_for_mail in claimed_results %}{% with result=result_for_mail.result %}
+					<tr>
+						<td style="vertical-align: top; padding: 5px;">{{ result.race.event.date|safe }}</td>
+						<td style="vertical-align: top; padding: 5px;">
+							<a href="{{ url_start }}{{ result.race.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">
+								{{ result.race.name_with_event }}</a>
+						</td>
+						<td style="vertical-align: top; padding: 5px;">{{ result }}</td>
+					</tr>
+				{% endwith %}{% endfor %}
+			</table>
+			{% if n_unclaimed_results %}
+				<p>
+					Кроме того, есть {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }},
+					похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}.
+					Проверьте: <a href="{{ url_start }}{% url 'results:find_results' %}" style="color: #337ab7; text-decoration: none;">не
+					Ваш{{ n_unclaimed_results|plural_ending_12 }} ли?</a>
+				</p>
+			{% endif %}
+		{% elif n_unclaimed_results %}
+			<p>
+				Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }},
+				похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}.
+				Проверьте: <a href="{{ url_start }}{% url 'results:find_results' %}" style="color: #337ab7; text-decoration: none;">не
+				Ваш{{ n_unclaimed_results|plural_ending_12 }} ли?</a>
+			</p>
+		{% endif %}
+	</td></tr>
+	{% if added_to_team_data %}{% with added_profile=added_to_team_data.added_by.user_profile %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Заявка в КЛБМатч
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% if added_to_team_data.added_by_admin %}
+				Администраторы КЛБМатча заявили
+			{% else %}
+				<a href="{{ url_start }}{{ added_profile.get_absolute_url }}"
+					style="color: #337ab7; text-decoration: none;">{{ added_to_team_data.added_by.get_full_name }}</a>
+				заявил{% if added_profile.is_female %}а{% endif %}
+			{% endif %}
+			Вас
+			{% if added_to_team_data.date_registered %}
+				с {{ added_to_team_data.date_registered|date_rus }}
+			{% endif %}
+			в команду
+			<a href="{{ url_start }}{{ added_to_team_data.team.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">{{ added_to_team_data.team.name }}</a>
+			для участия в КЛБМатче–{{ added_to_team_data.team.year }}.
+
+			<p>Если Вы не давали согласия на включение в команду, пожалуйста, напишите нам (например, просто ответив на это письмо).</p>
+			<p>Если же всё в порядке — мы рады видеть Вас в числе участников нового матча!</p>
+		</td></tr>
+	{% endwith %}{% endif %}
+	{% if added_to_club_data %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Клубы
+		</td></tr>
+		{% for item in added_to_club_data %}{% with added_profile=item.added_data.added_by.user_profile %}
+			<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+				{% if item.added_by_admin %}
+					Администраторы сайта добавили
+				{% else %}
+					<a href="{{ url_start }}{{ added_profile.get_absolute_url }}"
+						style="color: #337ab7; text-decoration: none;">{{ item.added_data.added_by.get_full_name }}</a>
+					добавил{% if added_profile.is_female %}а{% endif %}
+				{% endif %}
+				Вас
+				{% if item.club_member.date_registered %}
+					с {{ item.club_member.date_registered|date_rus }}
+				{% endif %}
+				в клуб
+				<a href="{{ url_start }}{{ item.club_member.club.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">{{ item.club_member.club.name }}</a> (не в КЛБМатч, а просто в состав клуба).
+			</td></tr>
+		{% endwith %}{% endfor %}
+		<p>Если Вы не давали согласия на включение в клуб, пожалуйста, напишите нам (например, просто ответив на это письмо).</p>
+	{% endif %}
+	{% if participant %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Ваше положение в КЛБМатче
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_person_places.html' with is_admin=0 link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if team %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Команда <a href="{{ url_start }}{{ team.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">{{ team.name }}</a>
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_team_places.html' with link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if user_city %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 24px; padding: 0 0 15px;">
+			<br />
+			Поищите предстоящие забеги
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<p><a href="{{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В городе {{ user_city }}</a></p>
+			{% if user_city.region.active %}
+				<p><a href="{{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}"
+					style="color: #337ab7; text-decoration: none;">В регионе {{ user_city.region }}</a></p>
+			{% endif %}
+			<p><a href="{{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В стране {{ user_city.region.country }}</a></p>
+		</td></tr>
+	{% endif %}
+	<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+		<br />
+		Успешных Вам стартов!
+	</td></tr>
+{% endblock %}

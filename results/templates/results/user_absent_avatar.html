@@ -1,0 +1,6 @@
+{% load staticfiles %}
+{% if profile.gender == 1 %}
+	<img src="{% static 'images/qirl-black-square-200.png' %}" alt="Аватара нет" width="200" height="200"/>
+{% else %}
+	<img src="{% static 'images/boy-black-square-200.png' %}" alt="Аватара нет" width="200" height="200"/>
+{% endif %}

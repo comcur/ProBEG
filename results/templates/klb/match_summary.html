@@ -1,0 +1,151 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block main %}
+<div class="row"> <!-- Name, old link -->
+	<div class="col-md-5 col-sm-6">
+		<h3>{% if 0 and is_admin and is_active_klb_year %}
+				<span class="pull-right">
+					<a href="{% url 'editor:klb_update_match' year=year %}">
+						<button type="button" class="btn btn-xs btn-primary">Пересчитать места</button></a>
+				</span>
+			{% endif %}
+			КЛБМатч: Общий зачёт ({{ year }} год)
+		</h3>
+		{% if year == 2016 %}
+			<p><a href="/event/15059/#news3818">Подробные итоги Матча</a></p>
+		{% endif %}
+	</div>
+	<div class="col-md-7 col-sm-6 text-right">
+		<p><a href="{% url 'results:about_match' year=year %}">Что это такое?</a></p>
+		{% if regulations_link %}
+			<p><a href="{% static regulations_link %}">Положение</a></p>
+		{% endif %}
+		{% if show_link_on_winners_by_regions %}
+			<p><a href="{% url 'results:klb_winners_by_regions' year=year %}">Итоги матча по регионам</a> (NEW!)</p>
+		{% endif %}
+		{% if old_match_link %}
+			<p><a href="{{ old_match_link }}">Старая страница КЛБМатча</a></p>
+		{% endif %}
+		{% if year == 2017 %}
+			<p><a href="http://probeg.org/klb/2017/klb_spisok.php">Старая страница со списком команд</a></p>
+		{% endif %}
+		<p><a href="http://probeg.org/klb">История КЛБМатча</a></p>
+	</div>
+</div>
+<div class="row"> <!-- Header -->
+	<div class="col-md-5 col-sm-6">
+		<ul class="nav nav-tabs">
+			<li class="text-center {% if active_tab == "all" %}active{% endif %}">
+				<a data-toggle="tab" href="#tab_all">Абсолютный зачёт</a>
+			</li>
+			<li class="text-center warning{% if active_tab == "medium" %} active{% endif %}">
+				<a data-toggle="tab" href="#tab_medium">Средние клубы<br/>({{ small_team_size|add:1 }}–{{ medium_team_size }} человек)</a>
+			</li>
+			<li class="text-center danger{% if active_tab == "small" %} active{% endif %}">
+				<a data-toggle="tab" href="#tab_small">Малые клубы<br/>(до {{ small_team_size }} человек)</a>
+			</li>
+			{% if year >= 2019 %}
+				<li class="text-center secondary{% if active_tab == "secondary" %} active{% endif %}">
+					<a data-toggle="tab" href="#tab_secondary">Вторые<br/>команды</a>
+				</li>
+			{% endif %}
+		</ul>
+		<div class="tab-content">
+			<div id="tab_all" class="tab-pane fade{% if active_tab == "all" %} in active{% endif %}">
+				{% include 'klb/teams_table.html' with teams=teams_all full_list=1 %}
+			</div>
+			<div id="tab_medium" class="tab-pane fade{% if active_tab == "medium" %} in active{% endif %}">
+				{% include 'klb/teams_table.html' with teams=teams_medium %}
+			</div>
+			<div id="tab_small" class="tab-pane fade{% if active_tab == "small" %} in active{% endif %}">
+				{% include 'klb/teams_table.html' with teams=teams_small %}
+			</div>
+			{% if year >= 2019 %}
+				<div id="tab_secondary" class="tab-pane fade{% if active_tab == "secondary" %} in active{% endif %}">
+					{% include 'klb/teams_table.html' with teams=teams_secondary %}
+				</div>
+			{% endif %}
+		</div>
+		<p class="text-center">
+			Всего больших команд: {{ large_teams_count }},
+			средних: {{ medium_teams_count }},
+			малых: {{ small_teams_count }}.
+		</p>
+		<br/><br/>
+		<h4>Индивидуальные участники</h4>
+		{% include 'klb/participants_table.html' with participants=individual_participants %}
+	</div>
+	<div class="col-md-7 col-sm-6">
+		<h4>Зачёты по возрастным группам и другим показателям</h4>
+		<table class="table table-condensed table-hover">
+			{% for row in stats %}
+				{% if not forloop.first %}
+					<tr><td colspan="10">&nbsp;</td></tr>
+				{% endif %}
+				<tr><td colspan="10" class="info text-center">
+					<a href="{{ row.category.get_absolute_url }}"><strong>{{ row.category.get_stat_type_display }}</strong></a>
+					<span class="pull-right">
+						Участников с положительным результатом: {{ row.category.n_participants_started }}
+					</span>
+				</tr></td>
+				<tr><th></th><th>Имя</th><th class="text-center">Год&nbsp;рожд.</th><th>Команда</th>
+					<th>Стартов</th><th class="text-right" colspan="5">Результат</th>
+				</tr>
+				{% for participant_stat in row.stats %}
+				{% with participant=participant_stat.klb_participant category=participant_stat.get_match_category %}{% with person=participant.klb_person %}
+					<tr{% if person.gender == 1 %} class="success"{% endif %}>
+						<td>{{ participant_stat.place }}</td>
+						<td>
+							<a href="{{ person.get_absolute_url }}">{{ person.fname }} {{ person.lname }}</a>
+							({{ person.city.nameWithCountry|safe }})
+						</td>
+						<td class="text-center">{% if person.birthday %}{{ person.birthday.year }}{% endif %}</td>
+						<td>{% if participant.team %}
+								<a href="{{ participant.team.get_absolute_url }}">{{ participant.team.name }}</a>
+							{% endif %}
+						</td>
+						<td class="text-center">{{ participant.n_starts }}</td>
+						<td class="text-right" colspan="5"><strong>{{ participant_stat|safe }}</strong></td>
+					</tr>
+				{% endwith %}{% endwith %}{% endfor %}
+			{% endfor %}
+			<tr><td colspan="10">&nbsp;</td></tr>
+			<tr><td colspan="10" class="text-center">
+				{% include 'misc/adsense_bottom.html' %}
+			</td></tr>
+			{% for row in groups %}
+				<tr><td colspan="10">&nbsp;</td></tr>
+				<tr><td colspan="10" class="info text-center">
+					<a href="{{ row.group.get_absolute_url }}"><strong>{{ row.group.name }}</strong></a>
+					<span class="pull-right">
+						Всего участников: {{ row.group.n_participants }}, стартовало: {{ row.group.n_participants_started }}
+					</span>
+				</tr></td>
+				<tr><th></th><th>Имя</th><th class="text-center">Год&nbsp;рожд.</th><th>Команда</th>
+					<th>Стартов</th><th class="text-center">Очки</th><th>+</th><th colspan="3">Бонусы</th>
+				</tr>
+				{% for participant in row.participants %}{% with person=participant.klb_person %}
+					<tr{% if person.gender == 1 %} class="success"{% endif %}>
+						<td>{{ forloop.counter }}</td>
+						<td><a href="{{ person.get_absolute_url }}">{{ person.fname }} {{ person.lname }}</a>
+							({{ person.city.nameWithCountry|safe }})
+						</td>
+						<td class="text-center">{% if person.birthday %}{{ person.birthday.year }}{% endif %}</td>
+						<td>{% if participant.team %}
+								<a href="{{ participant.team.get_absolute_url }}">{{ participant.team.name }}</a>
+							{% endif %}
+						</td>
+						<td class="text-center">{{ participant.n_starts }}</td>
+						<td class="text-right">{{ participant.clean_sum|floatformat:3 }}</td>
+						<td>+</td>
+						<td class="text-right">{{ participant.bonus_sum|floatformat:3 }}</td>
+						<td>=</td>
+						<td class="text-right"><strong>{{ participant.score_sum|floatformat:3 }}</strong></td>
+					</tr>
+				{% endwith %}{% endfor %}
+			{% endfor %}
+		</table>
+	</div>
+</div>
+{% endblock %}

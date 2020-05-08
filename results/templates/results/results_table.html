@@ -1,0 +1,181 @@
+{% load results_extras %}
+{% load staticfiles %}
+{% load starrating %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+	.dataTables_filter {display: none;}
+</style>
+<div class="row"><div class="col-md-12">
+	{% if n_results_total %}
+		<h4>{% if show_full_page_link %}
+					Последние {{ N_RESULTS_ON_USER_PAGE_DEFAULT }} результатов
+					&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ person.get_absolute_url_full }}">показать все {{ n_results_total }} результат{{ n_results_total|plural_ending_1 }}</a>
+			{% else %}
+				Все результаты
+			{% endif %}
+			{% if is_user_homepage and n_results_total %}
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url 'results:find_results' %}">поискать ещё результаты</a>
+			{% endif %}
+		</h4>
+		<form id="frmSearch" action="" method="GET" class="form-inline">
+			{% csrf_token %}
+			{% for field in resultFilterForm %}
+				{% include 'results/form_field.html' with field=field no_title=1 %}&nbsp;&nbsp;
+			{% endfor %}
+			<button type="submit" class="btn btn-success" name="btnFilter">Применить фильтр</button>
+		</form>
+		<table id="table_for_sort" class="table table-condensed">
+			<thead><tr class="info">
+				<th>№</th><th>Дата</th>
+				<th>Забег</th><th>Город</th>
+				<th>Дистанция</th><th>Результат</th><th>Место<br/><nobr>(среди М/Ж)</nobr></th>
+				<th>Группа<br/><nobr>(место в ней)</nobr></th>
+				{% if person.private_data_hidden %}
+					{% if is_admin %}
+						<th class="for-admin">Имя</th>
+					{% endif %}
+				{% else %}
+					<th>Имя</th>
+				{% endif %}
+				{% if user_page and is_user_homepage %}
+					<th class="no-sort"></th>
+					<th class="no-sort">Отсоединить?</th>
+				{% endif %}
+				{% rating_in_results_table_header %}
+				<th>Возраст, клуб, город</th>
+				{% if is_admin %}
+					{% if not runner_page %}
+						<th class="for-admin">runner</th>
+					{% endif %}
+					{% if not user_page %}
+						<th class="for-admin">user</th>
+						{% comment %}<th class="for-admin no-sort">runner from KLB</th>{% endcomment %}
+					{% endif %}
+					<th class="no-sort"></th>
+				{% endif %}
+			</tr></thead>
+			<tbody>
+			{% for result in results %}
+				<tr>
+					<td><a name="result{{ result.id }}">{{ forloop.counter }}</a></td>
+					<td data-order="{{ result.race.event.start_date.isoformat }}">
+						<a href="{{ result.race.get_absolute_url }}">
+							{{ result.race.event.dateFull|safe }}
+						</a>
+					</td>
+					<td>
+						{% if result.klb_result %}
+							<a href="{{ klb_person.get_absolute_url }}">
+								<span class="label label-primary pull-right small-label">КЛБМатч</span>
+							</a>
+						{% elif result.id in klb_pending_result_ids %}
+							<a href="{{ klb_person.get_absolute_url }}">
+								<span class="label label-primary pull-right small-label">КЛБМатч: на модерации</span>
+							</a>
+						{% endif %}
+						<a href="{% url 'results:race_details' race_id=result.race.id %}">{{ result.race.event|safe }}</a>
+					</td>
+					<td>{% include 'results/event_cities_with_links.html' with event=result.race.event %}
+						{% comment %}
+							{{ result.race.event.strCityCountry|safe }}
+						{% endcomment %}
+					</td>
+					<td data-order="{{ result.race.distance.length }}" class="nobr">{{ result.race.distance }}
+						{% if result.race.distance_real %}
+							<br/>
+							(факт.: {{ result.race.distance_real }})
+						{% endif %}
+					</td>
+					<td data-order="{{ result.result }}"{% if result.id in best_result_ids %} class="best-result"{% endif %}>
+						{% if result.result_on_strava %}
+							<span class="pull-right">
+								<a href="{{ result.result_on_strava }}" target="_blank">
+									<img src="{% static 'images/strava_60x60.png' %}" width="15" height="15" alt="Ссылка на пробежку в Strava"/>
+								</a>
+							</span>
+						{% endif %}
+						{% if result.id in results_with_splits %}
+							<a href="{{ result.get_absolute_url }}">{{ result }}</a>
+						{% else %}
+							{{ result }}
+						{% endif %}
+						{% if result.id in best_result_ids %}
+							<br/>(рекорд)
+						{% endif %}
+						{% if result.do_not_count_in_stat %}
+							<br/>(не&nbsp;уч. в&nbsp;стат.)
+						{% endif %}
+					</td>
+					{% if result.source %}
+						<td data-order="999999"></td>
+						<td data-order="999999"></td>
+						<td data-order="999999"></td>
+					{% else %}
+						{% if result.place %}
+							<td data-order="{{ result.place }}">&nbsp;{{ result.get_place|safe }}
+								{% if result.place_gender %}
+									<br/>
+									({{ result.get_gender_place|safe }})
+								{% endif %}
+							</td>
+						{% else %}
+							<td data-order="999999"></td>
+						{% endif %}
+						<td>{% include 'tools/result_category_name_and_place.html' %}</td>
+						{% if person.private_data_hidden %}
+							{% if is_admin %}
+								<td class="for-admin">{{ result.strName }}</td>
+							{% endif %}
+						{% else %}
+							<td>{{ result.strName }}</td>
+						{% endif %}
+					{% endif %}
+					{% if user_page and is_user_homepage %}
+						<td><a href="#" class="add_review_page" data-event="{{ result.race.event.id }}">
+							<button type="button" class="btn btn-warning btn-xs">Добавить отчёт<br/>или фотоальбом</button></a>
+						</td>
+						<td class="text-center">
+							<input type="checkbox" name="unclaim_{{ result.id }}" class="chkbox" form="frmUnclaim"/>
+						</td>
+					{% endif %}
+					{% rating_in_results_table_data result %}
+					<td>
+						{% include 'tools/result_birthday_and_age.html' %}
+						{% if result.club_name %}<br/>{{ result.club_name }}{% endif %}
+						{% if result.city_name %}<br/>{{ result.city_name }}{% endif %}
+					</td>
+					{% if is_admin %}
+						{% if not runner_page %}
+							<td class="for-admin">
+								{% if result.runner_id %}{{ result.runner_id }}{% endif %}
+							</td>
+						{% endif %}
+						{% if not user_page %}
+							<td class="for-admin">{% if result.user_id %}
+									{{ result.user_id }}
+								{% endif %}
+							</td>
+							{% comment %}
+								<td class="for-admin">
+									{% if result.klb_result %}{% with klb_runner=result.klb_result.klb_person.runner %}
+								 		{% if klb_runner.id != runner.id %}
+											<a href="{{ runner.get_absolute_url }}">{{ runner.name }}</a>
+											<br/>
+											{{ klb_runner.strBirthday|safe }}
+										{% endif %}
+									{% endwith %}{% endif %}
+								</td>
+							{% endcomment %}
+						{% endif %}
+						<td class="text-center">
+							<a href="{{ result.get_editor_url }}">
+								<button type="button" class="btn btn-xs btn-primary">Ред</button></a>
+						</td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</tbody></table>
+	{% else %}
+		Пока нет ни одного результата.
+	{% endif %}
+</div></div>

@@ -1,0 +1,169 @@
+{% extends 'report_russia/generator/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+{% endblock %}
+{% block main_part %}
+	<div class="row"><div class="col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<div class="row">
+			<div class="col-md-5 col-sm-6">
+				<h4 class="text-center">Регионы с максимальным числом забегов</h4>
+				<table class="table table-condensed table-hover">
+					<tr class="info">
+						<th></th><th>Регион</th><th class="text-right">Население<br/>(тыс. чел.)</th>
+						<th class="text-right nobr">Всего забегов</th><th class="text-right">Рост<br/>за год</th>
+					</tr>
+					{% for item in regions_by_events %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+							<td>
+								<a href="{% url 'results:races' region_id=item.region.id %}">{{ item.region.name_full }}</a>
+							</td>
+							<td class="text-right">{{ item.population }}</td>
+							<td class="text-right">{{ item.n_events }}</td>
+							<td class="text-right">
+								{% include 'tools/percent_with_sign.html' with new=item.n_events old=item.n_events_old %}
+							</td>
+						</tr>
+					{% endfor %}
+					{% if not show_all %}
+						<tr><td class="text-center" colspan="4">
+							<a href="{% url 'results:russia_report' year=year tab=tab show_all=1 %}">Данные по всем регионам</a>
+						</td></tr>
+					{% endif %}
+				</table>
+			</div>
+			<div class="col-md-5 col-md-offset-2 col-sm-6">
+				<h4 class="text-center">Регионы с максимальным числом забегов на жителя</h4>
+				<table class="table table-condensed table-hover">
+					<tr class="info">
+						<th></th><th>Регион</th><th class="text-right">Население<br/>(тыс. чел.)</th>
+						<th class="text-right nobr">Забегов<br/>на миллион жителей</th><th class="text-right">Рост<br/>за год</th>
+					</tr>
+					{% for item in regions_by_events_per_population %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+							<td>
+								<a href="{% url 'results:races' region_id=item.region.id %}">{{ item.region.name_full }}</a>
+							</td>
+							<td class="text-right">{{ item.population }}</td>
+							<td class="text-right">
+								{{ item.n_events_per_population|floatformat:1 }}
+							</td>
+							<td class="text-right">
+								{% include 'tools/percent_with_sign.html' with new=item.n_events_per_population old=item.n_events_per_population_old %}
+							</td>
+						</tr>
+					{% endfor %}
+					{% if not show_all %}
+						<tr><td class="text-center" colspan="4">
+							<a href="{% url 'results:russia_report' year=year tab=tab show_all=1 %}">Данные по всем регионам</a>
+						</td></tr>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+	</div></div>
+	<div class="row"><div class="col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<p>Тут огромно влияние паркранов: в Московской и Тульской областях статистика сильно улучшилась в первую очередь благодаря им.
+		Но Калининградская и Вологодская области сильно выросли и вошли в десятку исключительно за счет традиционных забегов!</p>
+	</div></div>
+	<br/><br/>
+	<div class="row"><div class="col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<div class="row">
+			<div class="col-md-5 col-sm-6">
+				<h4 class="text-center">Регионы с максимальной<br/>посещаемостью забегов</h4>
+				<table class="table table-condensed table-hover">
+					<tr class="info">
+						<th></th><th>Регион</th><th class="text-right">Население<br/>(тыс. чел.)</th>
+						<th class="text-center" colspan="3">Финишировало на всех забегах:</th>
+						<th class="text-right">Рост<br/>за год</th>
+					</tr>
+					<tr class="info">
+						<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th><th></th>
+					</tr>
+					{% for item in regions_by_finishers %}{% if item.n_finishers %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+							<td>
+								<a href="{% url 'results:races' region_id=item.region.id %}">{{ item.region.name_full }}</a>
+							</td>
+							<td class="text-right">{{ item.population }}</td>
+							<td colspan="2" style="min-width:200px;">
+								<div class="progress">
+									<div class="progress-bar text-left" style="width: {{ item.fraction }}%">
+										<span class="text-left">{{ item.n_finishers_men }}</span>
+									</div>
+									<div class="progress-bar progress-bar-danger text-right" style="width: {{ 100|subtract:item.fraction }}%">
+										<span class="text-right">{{ item.n_finishers|subtract:item.n_finishers_men }}</span>
+									</div>
+								</div>
+							</td>
+							<td class="text-right">
+								{{ item.n_finishers }}
+							</td>
+							<td class="text-right">
+								{% include 'tools/percent_with_sign.html' with new=item.n_finishers old=item.n_finishers_old %}
+							</td>
+						</tr>
+					{% endif %}{% endfor %}
+					{% if not show_all %}
+						<tr><td class="text-center" colspan="6">
+							<a href="{% url 'results:russia_report' year=year tab=tab show_all=1 %}">Данные по всем регионам</a>
+						</td></tr>
+					{% endif %}
+				</table>
+			</div>
+			<div class="col-md-5 col-md-offset-2 col-sm-6">
+				<h4 class="text-center">Регионы с максимальной<br/>посещаемостью забегов на жителя</h4>
+				<table class="table table-condensed table-hover">
+					<tr class="info">
+						<th></th><th>Регион</th><th class="text-right">Население<br/>(тыс. чел.)</th>
+						<th class="text-center" colspan="3">Финишировало на тысячу жителей:</th>
+						<th class="text-right">Рост<br/>за год</th>
+					</tr>
+					<tr class="info">
+						<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+					</tr>
+					{% for item in regions_by_finishers_per_population %}{% if item.n_finishers %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+							<td>
+								<a href="{% url 'results:races' region_id=item.region.id %}">{{ item.region.name_full }}</a>
+							</td>
+							<td class="text-right">{{ item.population }}</td>
+							<td colspan="2" style="min-width:200px;">
+								<div class="progress">
+									<div class="progress-bar text-left" style="width: {{ item.fraction }}%">
+										<span class="text-left">{{ item.n_finishers_men_per_population|floatformat:1 }}</span>
+									</div>
+									<div class="progress-bar progress-bar-danger text-right" style="width: {{ 100|subtract:item.fraction }}%">
+										<span class="text-right">{{ item.n_finishers_women_per_population|floatformat:1 }}</span>
+									</div>
+								</div>
+							</td>
+							<td class="text-right">
+								{{ item.n_finishers_per_population|floatformat:1 }}
+							</td>
+							<td class="text-right">
+								{% include 'tools/percent_with_sign.html' with new=item.n_finishers_per_population old=item.n_finishers_per_population_old %}
+							</td>
+						</tr>
+					{% endif %}{% endfor %}
+					{% if not show_all %}
+						<tr><td class="text-center" colspan="6">
+							<a href="{% url 'results:russia_report' year=year tab=tab show_all=1 %}">Данные по всем регионам</a>
+						</td></tr>
+					{% endif %}
+				</table>
+			</div>
+		</div>
+	</div></div>
+	<div class="row"><div class="col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<p>Ярославская область, хоть и растёт чуть медленнее двух столиц, остаётся недосягаемым лидером.</p>
+		<p>Приятно видеть, что по числу участников растут вообще все бегающие регионы. Первые, где число участников уменьшилось, —
+		опустившиеся в район сороковых мест Калужская и Тюменская области. Догоняйте!</p>
+		<p>И впечатляет рывок Пермского края, в первую очередь за счёт нового марафона, сразу ставшего заметным событием на Урале.
+		Что-то подобное может сделать совершенно любой регион; будем ждать новых ярких забегов!</p>
+	</div></div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'results/base.html' %}
+{% block main %}
+
+<h3>Вообще все дистанции из ProbegYear, а также внизу – именования дистанций</h3>
+
+<p/>
+Не учитываются записи, начинающиеся с "вверх" – это горный бег, с которым надо что-то придумать.
+<p/>
+Префиксы {{ prefixes_to_cut }} и окончания {{ suffixes_to_cut }} обрезаны.
+<p/>
+Некоторые дистанции записаны в разных местах разными способами, например, 5 км и 5000 м.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>Дистанция</th><th>Частота</th>
+	</tr>
+	{% for key, val in mylist.items %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ key }}</td>
+			<td>{{ val }}</td>
+	{% endfor %}
+</table>
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>Дистанция</th><th>Частота</th>
+	</tr>
+	{% for key, val in endings.items %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ key }}</td>
+			<td>{{ val }}</td>
+	{% endfor %}
+</table>
+{% endblock %}

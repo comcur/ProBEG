@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Открытие регистрации на забег Смоленский полумарафон 2020 (31&nbsp;декабря 2020). Шаг 2 – Портал для любителей
+		бега «ПроБЕГ»</title>
+	<link rel="shortcut icon" type="image/png" href="https://probeg.org/dj_static/images/man-square2.png">
+	<link rel="apple-touch-icon" href="https://probeg.org/dj_static/images/apple-touch-icon.png" />
+	<link rel="stylesheet" href="https://probeg.org/dj_static/css/bootstrap.min.css?2" />
+	<link rel="stylesheet" href="https://probeg.org/dj_static/css/results.css?19" />
+	<link rel="stylesheet" href="css/kurov.css" />
+	<link rel="stylesheet" href="https://probeg.org/dj_static/css/likely.css?3" />
+	<link rel="stylesheet" href="https://probeg.org/dj_static/css/atc-style-blue.css?2" />
+	<link rel="stylesheet" href="https://probeg.org/dj_static/datatables/datatables.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://probeg.org/dj_static/js/jquery.js"></script>
+	<script src="https://probeg.org/dj_static/js/results.js?26"></script>
+	<script src="https://probeg.org/dj_static/js/likely.js?2"></script>
+	<script src="https://probeg.org/dj_static/js/atc.min.js?2"></script>
+	<script src="https://probeg.org/dj_static/datatables/datatables.min.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]><script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script><script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+</head>
+
+<body>
+	<div class="modal fade" id="modalSendLetter" tabindex="-1" role="dialog"></div>
+	<div class="container-fluid">
+		<nav class="navbar navbar-default" style="background-color: #dff0d8;">
+			<div class="container-fluid">
+				<div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+						data-target="#navbar_menu" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span
+							class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a
+						class="navbar-brand" href="/">ПроБЕГ</a></div>
+				<div id="navbar_menu" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="/">Новости</a></li>
+						<li><a href="/home/">Мои результаты</a></li>
+						<li><a href="/races/">Календарь забегов</a></li>
+						<li><a href="/runners/">Участники забегов</a></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+								aria-haspopup="true" aria-expanded="false">КЛБМатч<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/klb/2020/invitation/">КЛБМатч–2020: Приглашение</a></li>
+								<li><a href="/klb/application/2020/">Индивидуальная заявка</a></li>
+								<li><a href="/klb/2020/">Текущее положение</a></li>
+								<li><a href="/klb/events_not_in_match/2020/">Забеги, не учитывающиеся в КЛБМатче</a></li>
+								<li><a href="/klb/reports/">Слепки</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/klb/2019/">КЛБМатч–2019: итоговое положение</a></li>
+								<li><a href="/klb/2018/">КЛБМатч–2018: итоговое положение</a></li>
+								<li><a href="/klb/2017/">КЛБМатч–2017: итоговое положение</a></li>
+								<li><a href="/klb/2016/">КЛБМатч–2016: итоговое положение</a></li>
+								<li><a href="/klb/calculator/">Расчёт очков</a></li>
+							</ul>
+						</li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+								aria-haspopup="true" aria-expanded="false">Ещё<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/add_new_event/">Добавить новый забег в календарь</a></li>
+								<li><a href="/organizers/">Организаторы</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/clubs/">Клубы любителей бега</a></li>
+								<li><a href="/clubs/about/">Новые возможности для клубов</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/rating/">Рейтинг забегов</a></li>
+								<li><a href="/results/">Все результаты</a></li>
+								<li><a href="/news/">Все новости</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/age_group_records">Рекорды России в возрастных группах</a></li>
+								<li><a href="/age_group_records/BY">Рекорды Беларуси в возрастных группах</a></li>
+								<li><a href="/parkrun/stat">Статистика по паркранам России</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/russia_report/2019/">Отчёты: Бег в России — 2019</a></li>
+								<li><a href="/russia_report/2018/">Бег в России — 2018</a></li>
+								<li><a href="/russia_report/2017/">Бег в России — 2017</a></li>
+								<li><a href="/russia_report/2016/">Бег в России — 2016</a></li>
+								<li><a href="/belarus_report/2019/">Бег в Беларуси — 2019</a></li>
+								<li><a href="/belarus_report/2018/">Бег в Беларуси — 2018</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/measurement/">Сертификация трасс</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/sport_classes/">Разрядные нормативы в беге</a></li>
+								<li><a href="/protocol/">Стандарт протокола</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/about/">О сайте</a></li>
+								<li><a href="/about_new_site/">Новые возможности сайта</a></li>
+								<li><a href="/how_to_help/">Как вы можете помочь сайту</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/contacts/">Контактная информация</a></li>
+								<li><a href="#" id="send_to_info_page">Написать нам письмо</a></li>
+								<li><a href="/social_links/">Мы в соцсетях</a></li>
+							</ul>
+						</li>
+						<li><a href="https://probeg.org/medal/">Изготовление медалей</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+								aria-haspopup="true" aria-expanded="false">Администратору<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/editor/memo_admin/">Памятка администратору</a></li>
+								<li><a href="/editor/memo_editor/">Памятка редактору</a></li>
+								<li><a href="/editor/memo_templates/">Шаблоны для писем</a></li>
+								<li><a href="/editor/memo_spelling/">Рекомендации по текстам</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/editor/cities/">Города</a></li>
+								<li><a href="/editor/city/create/">Добавить город</a></li>
+								<li><a href="/editor/regions/">Регионы</a></li>
+								<li><a href="/editor/distances/">Дистанции</a></li>
+								<li><a href="/editor/distance/create/">Добавить дистанцию</a></li>
+								<li><a href="/editor/series/">Серии пробегов</a></li>
+								<li><a href="/editor/series/create/">Добавить серию пробегов</a></li>
+								<li><a href="/editor/news/create/">Добавить новость</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/editor/action_history/">Действия для одобрения</a></li>
+								<li><a href="/editor/klb_status/">Статус КЛБМатча и протоколы для загрузки</a></li>
+								<li><a href="/editor/events_in_klb/">Все забеги, учтённые в КЛБМатче</a></li>
+								<li><a href="/editor/admin_work_stat/">Кто сколько чего сделал</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/editor/users/">Пользователи сайта</a></li>
+								<li><a href="/editor/social_pages/">Страницы в соцсетях</a></li>
+								<li><a href="/editor/runner_names/">Имена бегунов</a></li>
+								<li><a href="/editor/popular_names_in_free_results/">Популярные имена в результатах</a></li>
+								<li><a href="/editor/all_payments/">Платежи через сайт</a></li>
+								<li><a href="/editor/util/">Разные мелкие штуки</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/admin/">Администрирование Django</a></li>
+								<li><a href="#" class="send_from_info_page">Отправить письмо</a></li>
+							</ul>
+						</li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+								aria-haspopup="true" aria-expanded="false">Евгений Куров<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/home/">Моя страница</a></li>
+								<li><a href="/find_results/">Поискать результаты</a></li>
+								<li><a href="/strava_links/">Проставить ссылки на Страву</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/details/">Личные данные</a></li>
+								<li><a href="/my_payments">Все ваши платежи</a></li>
+								<li><a href="/password_change/">Сменить пароль</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="/logout/">Выход</a></li>
+							</ul>
+						</li>
+					</ul>
+					<form class="navbar-form navbar-right" role="search" method="GET" action="/editor/search_by_id/">
+						<div class="form-group"><input type="text" class="form-control" placeholder="id объекта"
+								name="id_for_search"></div><button type="submit" class="btn btn-default">Искать</button>
+					</form>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+			<!--/.container-fluid -->
+		</nav>
+		<div class="row">
+			<div class="col-md-12">
+				<form id="frmRegistration" method="POST" action="" class="form-horizontal"><input type='hidden'
+						name='csrfmiddlewaretoken' value='Jt4Bkf2sy9f8E1SuFRhecVkdY9Yj8VqBZIErekfpRxzPzffGJ68gQZyn6ENleffR' />
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								Открытие регистрации на забег <a class="underlined" href="/event/33215/">Смоленский полумарафон
+									2020</a>. Шаг 2
+							</h3>
+						</div>
+						<div class="panel-body">
+							<p>2,9% от суммы оплаты забирает себе аггрегатор платежей; ещё 3% — комиссия ПроБЕГа. Таким
+								образом, вы получите 94,1% с каждого платежа.</p><br />
+							<h4>Стоимость регистрации</h4>
+							<p>В первой строке укажите, до какой даты действуют цены в данном столбце. Ненужные столбцы
+								оставьте пустыми.
+								Последний столбец обязательно заполните.</p>
+							<p>Для дистанций, регистрация на которые бесплатная, просто поставьте 0 в последний столбец и всё.
+							</p>
+							<p>Специальные цены для детей и пенсионеров можно не указывать. Если укажете, они будут действовать
+								до закрытия регистрации. Если вам нужна более тонкая настройка, <a href="#"
+									id="send_to_info_page">напишите нам</a>.</p>
+							<p>Вы сможете в любой момент изменить введённые сейчас суммы и даты, <i>а также количество
+									изменений стоимости регистрации</i>.</p>
+							<table class="table table-condensed">
+								<tr class="text-center info">
+									<th>Дистанция</th>
+									<th colspan="5" class="text-center">До какого дня включительно действует цена</th>
+								</tr>
+								<tr class="text-center">
+									<td></td>
+									<td><input name="price_date_1" type="date" /></td>
+									<td><input name="price_date_2" type="date" /></td>
+									<td><input name="price_date_3" type="date" /></td>
+									<td><input name="price_date_4" type="date" /></td>
+									<td>Цена до окончания регистрации<br />(29.12.2020)</td>
+								</tr>
+								<tr class="warning">
+									<th colspan="6" class="text-center">Введите стоимость регистрации для дистанции [выбранная
+										дистанция]
+									</th>
+								</tr>
+								<tr class="text-center">
+									<td rowspan="5" style="vertical-align: middle">10 км</td>
+									<td><input name="price_race_64075_date_1" type="number" /></td>
+									<td><input name="price_race_64075_date_2" type="number" /></td>
+									<td><input name="price_race_64075_date_3" type="number" /></td>
+									<td><input name="price_race_64075_date_4" type="number" /></td>
+									<td><input name="price_race_64075_finish" type="number" class="price_finish" /></td>
+								</tr>
+								<tr class="warning-2">
+									<th colspan="6" class="text-center-small">Специальные цены для отдельных категорий
+										участников
+									</th>
+								</tr>
+								<tr>
+									<td colspan="4" class="text-right">Специальная цена для мужчин
+										<input name="race_64075_senior_male_age" type="number" style="width:4em;" value="60" />
+										лет и старше
+									</td>
+									<td class="text-center"><input name="price_race_64075_senior_male" type="number" /></td>
+								</tr>
+								<tr>
+									<td colspan="4" class="text-right">Специальная цена для женщин
+										<input name="race_64075_senior_female_age" type="number" style="width:4em;" value="55" />
+										лет и старше
+									</td>
+									<td class="text-center"><input name="price_race_64075_senior_female" type="number" /></td>
+								</tr>
+								<tr>
+									<td colspan="4" class="text-right">Специальная цена для детей &nbsp;
+										<input name="race_64075_young_age" type="number" style="width:4em;" /> лет и младше
+									</td>
+									<td class="text-center"><input name="price_race_64075_young" type="number" /></td>
+								</tr>
+								<tr class="warning">
+									<th colspan="6" class="text-center">Введите стоимость регистрации для дистанции [выбранная
+										дистанция]
+									</th>
+								</tr>
+								<tr class="text-center">
+									<td>5 км</td>
+									<td><input name="price_race_64076_date_1" type="number" /></td>
+									<td><input name="price_race_64076_date_2" type="number" /></td>
+									<td><input name="price_race_64076_date_3" type="number" /></td>
+									<td><input name="price_race_64076_date_4" type="number" /></td>
+									<td><input name="price_race_64076_finish" type="number" class="price_finish" /></td>
+								</tr>
+								<tr>
+									<td colspan="5" class="text-right">Специальная цена для мужчин
+										<input name="race_64076_senior_male_age" type="number" style="width:8em;" value="60" />
+										лет и старше
+									</td>
+									<td class="text-center"><input name="price_race_64076_senior_male" type="number" /></td>
+								</tr>
+								<tr>
+									<td colspan="5" class="text-right">Специальная цена для женщин
+										<input name="race_64076_senior_female_age" type="number" style="width:8em;" value="55" />
+										лет и старше
+									</td>
+									<td class="text-center"><input name="price_race_64076_senior_female" type="number" /></td>
+								</tr>
+								<tr>
+									<td colspan="5" class="text-right">Специальная цена для детей
+										<input name="race_64076_young_age" type="number" style="width:8em;" /> лет и младше
+									</td>
+									<td class="text-center"><input name="price_race_64076_young" type="number" /></td>
+								</tr>
+								<tr class="warning">
+									<td colspan="6">&nbsp;</td>
+								</tr>
+							</table>
+							<h4>Футболки</h4>
+							<div class="checkbox"><label><input type="radio" name="tshirts" value="1" />
+									Сразу добавить вопрос о размере футболки. Футболки достанутся всем участникам бесплатно
+								</label></div>
+							<div class="checkbox"><label><input type="radio" name="tshirts" value="2" />
+									Сразу добавить вопрос о размере футболки. Футболка стоит
+									<input name="tshirt_price" type="number" /> рублей, можно её не заказывать
+								</label></div>
+							<div class="checkbox"><label><input type="radio" name="tshirts" value="3" checked />
+									Не задавать вопрос о размере футболки
+								</label></div>
+							<p class="text-center"><input type="submit" name="frmRegistration_submit" id="btnSubmit"
+									value="Сохранить" class="btn btn-success" disabled /></p>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script language="javascript">
+			n_races = 2;
+			$(".price_finish").change(function () {
+				$("#btnSubmit").prop("disabled", $('.price_finish').filter(function () {
+					return this.value.length > 0
+				}).length < n_races);
+			});
+		</script>
+	</div>
+	<footer class="footer visible-md-block visible-lg-block">
+		<div class="col-md-12 text-center">
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Flat ad for page bottom --><ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px"
+				data-ad-client="ca-pub-9724286909860700" data-ad-slot="3521492278"></ins>
+			<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+		</div>
+		<div class="col-md-9">
+			&nbsp;
+			© 2002–2018
+			<a href="/contacts/">ПроБЕГ</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="https://vk.com/probeg_org"><img src="https://probeg.org/dj_static/images/vk_small_square.png"
+					alt="Наша страница на vk.com" /></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="https://www.facebook.com/probegorg"><img src="https://probeg.org/dj_static/images/fb_small_square.png"
+					alt="Наша страница на Facebook" /></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="/social_links/">Ещё</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="likely">
+				<div class="twitter">Твитнуть</div>
+				<div class="facebook">Поделиться</div>
+				<div class="vkontakte">Поделиться</div>
+				<div class="telegram">Отправить</div>
+			</div>
+		</div>
+		<div class="col-md-3 text-right">
+			Старая версия сайта: <a href="https://probeg.org">probeg.org</a></div>
+	</footer>
+	<footer class="footer visible-sm-block visible-xs-block">
+		<div class="col-md-12 text-center">
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Mobile footer --><ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px"
+				data-ad-client="ca-pub-9724286909860700" data-ad-slot="9469537076"></ins>
+			<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+		</div>
+		<div class="col-md-9"><a href="https://vk.com/probeg_org"><img
+					src="https://probeg.org/dj_static/images/vk_small_square.png" alt="Наша страница на vk.com" /></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="https://facebook.com/probegorg"><img src="https://probeg.org/dj_static/images/fb_small_square.png"
+					alt="Наша страница на Facebook" /></a><br /><br />
+			<div class="likely">
+				<div class="twitter">Твитнуть</div>
+				<div class="facebook">Поделиться</div>
+				<div class="vkontakte">Поделиться</div>
+				<div class="telegram">Отправить</div>
+			</div>
+		</div>
+	</footer><!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="https://probeg.org/dj_static/js/bootstrap.min.js"></script><!-- Yandex.Metrika counter -->
+	<script type="text/javascript">
+		(function (d, w, c) {
+			(w[c] = w[c] || []).push(function () {
+				try {
+					w.yaCounter38500270 = new Ya.Metrika2({
+						id: 38500270,
+						clickmap: true,
+						trackLinks: true,
+						accurateTrackBounce: true,
+						webvisor: true
+					});
+				} catch (e) { }
+			});
+
+			var n = d.getElementsByTagName("script")[0],
+				s = d.createElement("script"),
+				f = function () { n.parentNode.insertBefore(s, n); };
+			s.type = "text/javascript";
+			s.async = true;
+			s.src = "https://mc.yandex.ru/metrika/tag.js";
+
+			if (w.opera == "[object Opera]") {
+				d.addEventListener("DOMContentLoaded", f, false);
+			} else { f(); }
+		})(document, window, "yandex_metrika_callbacks2");
+	</script><noscript>
+		<div><img src="https://mc.yandex.ru/watch/38500270" style="position:absolute; left:-9999px;" alt="" /></div>
+	</noscript><!-- /Yandex.Metrika counter -->
+	<script>
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date(); a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+		ga('create', 'UA-81201557-1', 'auto');
+		ga('send', 'pageview');
+	</script><!-- Rating Mail.ru counter -->
+	<script type="text/javascript">
+		var _tmr = window._tmr || (window._tmr = []);
+		_tmr.push({ id: "559716", type: "pageView", start: (new Date()).getTime() });
+		(function (d, w, id) {
+			if (d.getElementById(id)) return;
+			var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
+			ts.src = "https://top-fwz1.mail.ru/js/code.js";
+			var f = function () { var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s); };
+			if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
+		})(document, window, "topmailru-code");
+	</script><noscript>
+		<div><img src="https://top-fwz1.mail.ru/counter?id=559716;js=na" style="border:0;position:absolute;left:-9999px;"
+				alt="Top.Mail.Ru" /></div>
+	</noscript><!-- //Rating Mail.ru counter -->
+</body>
+
+</html>

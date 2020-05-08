@@ -1,0 +1,8 @@
+{% load results_extras %}
+{% if team_next or team_prev %}{% spaceless %}
+	({% if team_next %}отстаёт от команды <a href="{{ team_next.get_absolute_url }}">{{ team_next.name }}</a>
+		на {{ team_next.score|subtract:team.score|floatformat:3 }}
+		очков{% if team_prev %}, {% endif %}
+	{% endif %}{% if team_prev %}опережает команду <a href="{{ team_next.get_absolute_url }}">{{ team_prev.name }}</a>
+		на {{ team.score|subtract:team_prev.score|floatformat:3 }} очков{% endif %})
+{% endspaceless %}{% endif %}

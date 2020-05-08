@@ -1,0 +1,68 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+		<h3>{{ page_title }}</h3>
+		<br/><br/>
+		<br/><br/>
+		<table class="table table-condensed table-hover table-striped">
+			<tr class="info">
+				<th class="text-center">Время создания</th>
+				<th class="text-right">ID</th>
+				<th>Заказчик</th>
+				<th class="text-center">Число медалей</th>
+				<th class="text-center">Способ оплаты</th>
+				<th class="text-center">Гравируем имя?</th>
+				<th>Комментарий</th>
+				<th class="text-right">Поступило</th>
+				<th class="text-right">Получено</th>
+				<th class="text-right">Комиссия</th>
+				<th class="text-center">Оплачен?</th>
+				<th class="text-center">Время оплаты</th>
+			</tr>
+			{% for medal_order in medal_orders %}{% with payment=medal_order.payment %}
+				<tr>
+					<td class="text-center nobr">{{ medal_order.created_time|date:'SHORT_DATETIME_FORMAT' }}</td>
+					<td class="text-right"><a href="{{ payment.get_absolute_url }}">{{ payment.id }}</a></td>
+					<td class="nobr">
+						{% if medal_order.created_by %}
+							{% include 'editor/user_name_with_link.html' with person=medal_order.created_by %}
+							{% if medal_order.to_show_name %}
+								<br/>Имя в заказе: {{ medal_order.fname }} {{ medal_order.lname }}
+							{% endif %}
+						{% else %}
+							{{ medal_order.fname }} {{ medal_order.lname }}
+						{% endif %}
+					</td>
+					<td class="text-center nobr">{{ medal_order.n_medals }}</td>
+					<td class="text-center nobr">{{ medal_order.get_delivery_method_short }}</td>
+					<td class="text-center">{% include 'tools/span_yes_no.html' with value=medal_order.with_plate %}</td>
+					<td>
+						{{ medal_order.comment }}
+						{% if medal_order.email %}
+							<br/>E-mail: {{ medal_order.email }}
+						{% endif %}
+						{% if medal_order.phone_number %}
+							<br/>Телефон: {{ medal_order.phone_number }}
+						{% endif %}
+						{% if medal_order.delivery_method == 2 %}
+							<br/>Почтовый адрес: {{ medal_order.zipcode }} {{ medal_order.address }}
+						{% endif %}
+					</td>
+					<td class="text-right nobr">{{ payment.amount }} ₽</td>
+					<td class="text-right nobr">{{ payment.withdraw_amount }} ₽</td>
+					<td class="text-right nobr">{{ payment.get_fee_percent }}{% if payment.is_paid and payment.amount %} %{% endif %}</td>
+					<td class="text-center">
+						{% if payment.is_dummy %}
+							<span class="label label-primary small-label">фиктивный</span>
+						{% else %}
+							{% include 'tools/span_yes_no.html' with value=payment.is_paid %}
+						{% endif %}
+					</td>
+					<td class="text-center nobr">{{ payment.response.added_time|date:'SHORT_DATETIME_FORMAT'|default:'' }}</td>
+				</tr>
+			{% endwith %}{% endfor %}
+		</table>
+		<p><a href="{% url 'results:medal_payment' %}">Страница приёма платежей за медали</a></p>
+</div></div>
+{% endblock %}

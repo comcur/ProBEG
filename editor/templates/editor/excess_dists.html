@@ -1,0 +1,19 @@
+{% extends 'results/base.html' %}
+{% block main %}
+
+<h3>Какие дистанции встречаются в ProbegDist, но отсутствуют в ProbegYear?</h3>
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>Серия</th><th>Забег</th><th>Дистанция</th><th>length</th><th>ProbegYear.Dists</th>
+	</tr>
+	{% for record in mylist %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+		{% for item in record %}
+			<td>{{ item }}</td>
+		{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+{% endblock %}

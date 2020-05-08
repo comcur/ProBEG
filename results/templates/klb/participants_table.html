@@ -1,0 +1,103 @@
+{% load results_extras %}
+<table class="table table-condensed table-hover">
+	<tr class="info"><th>№</th><th>Участник</th>
+		{% if year >= 2019 and is_admin and not team %}
+			<th class="text-center">Опл</th>
+		{% endif %}
+		<th class="text-center">Год рожд.</th>
+		<th class="text-center">Стартов</th>
+		{% if team %}
+			<th class="text-right">
+				<abbr title="Жирным выделены {{ n_runners_for_team_clean_score }} лучших спортивных результатов участников – только они учитываются в очках команды">Очки</abbr>&nbsp;<a
+				class="arrow{% if ordering == 3 %}-active{% endif %}" href="{% url 'results:klb_team_details' team_id=team.id ordering=3 %}"
+				>▼</a>
+			</th>
+			<th>+</th>
+			<th colspan="2">
+				<abbr title="Бонус каждого участника — сумма лучших {{ n_results_for_bonus_score }} бонусных очков за его старты. Бонус команды — сумма бонусов всех её участников">Бонусы</abbr>&nbsp;<a
+				class="arrow{% if ordering == 2 %}-active{% endif %}" href="{% url 'results:klb_team_details' team_id=team.id ordering=2 %}"
+				>▼</a>
+			</th>
+			<th class="text-right">Σ&nbsp;<a
+				class="arrow{% if ordering == 0 %}-active{% endif %}" href="{% url 'results:klb_team_details' team_id=team.id ordering=0 %}">▼</a>
+			</th>
+		{% else %}
+			<th class="text-right">Очки</th>
+			<th>+</th>
+			<th colspan="3">
+				<abbr title="Бонус каждого участника — сумма лучших {{ n_results_for_bonus_score }} бонусных очков за его старты">Бонусы</abbr>
+			</th>
+		{% endif %}
+	</tr>
+	{% if team %}
+		<tr class="info">
+			<td></td>
+			<td colspan="{% if year >= 2019 and is_admin and not team %}4{% else %}3{% endif %}"><strong>Всего</strong></td>
+			<td class="text-right">{{ team.get_clean_score|floatformat:3 }}</td>
+			<td>+</td>
+			<td class="text-right min-width">{{ team.bonus_score|floatformat:3 }}</td>
+			<td>=</td>
+			<td class="text-right min-width"><strong>{{ team.score|floatformat:3 }}</strong></td>
+		</tr>
+	{% endif %}
+	{% for participant in participants %}{% with person=participant.klb_person profile=participant.klb_person.runner.user.user_profile %}
+		<tr{% if person.gender == 1 %} class="success"{% endif %}>
+			<td>{{ forloop.counter }}</td>
+			<td><span class="pull-right">
+					{% if profile.is_public %}
+							<a href="{{ profile.get_absolute_url }}"><span class="glyphicon glyphicon-user small-label" aria-hidden="true"></span></a>&nbsp;
+					{% endif %}
+					<a href="{{ person.get_absolute_url }}"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+				</span>
+				{% if show_hash_links and participant.n_starts > 0 %}
+					<a href="#person{{ person.id }}" class="dash-underlined">{{ person.lname }} {{ person.fname }}</a>
+				{% else %}
+					{{ person.lname }} {{ person.fname }}
+				{% endif %}
+			</td>
+			{% if year >= 2019 and is_admin and not team %}
+				<td class="text-center">
+					{% if participant.paid_status == 0 %}
+						<span class="label label-danger small-label">нет</span>
+					{% elif participant.paid_status == 1 %}
+						<span class="label label-warning small-label">
+							<a href="{{ participant.payment.get_absolute_url }}">беспл</a>
+						</span>
+					{% else %}
+						<span class="label label-success small-label">
+							<a href="{{ participant.payment.get_absolute_url }}">опл</a>
+						</span>
+					{% endif %}
+				</td>
+			{% endif %}
+			<td class="text-center">{% if person.birthday %}{{ person.birthday.year }}{% endif %}</td>
+			<td class="text-center">{{ participant.n_starts }}</td>
+			{% if participant.n_starts %}
+				<td class="text-right">
+					{% if participant.is_in_best %}
+						<strong>{{ participant.clean_sum|floatformat:3 }}</strong>
+					{% else %}
+						{{ participant.clean_sum|floatformat:3 }}
+					{% endif %}
+				</td>
+				<td>+</td>
+				<td class="text-right min-width"><strong>{{ participant.bonus_sum|floatformat:3 }}</strong></td>
+				<td>=</td>
+				<td class="text-right min-width">
+					{% if participant.is_in_best %}
+						<strong>{{ participant.score_sum|floatformat:3 }}</strong>
+					{% else %}
+						{{ participant.score_sum|floatformat:3 }}
+					{% endif %}
+				</td>
+			{% elif not team and participant.id in cur_participant_ids %}
+				<td colspan="5">
+					<a href="{% url 'results:klb_remove_from_match' year=year %}">
+						<button type="button" class="btn btn-xs btn-danger">Отзаявиться из КЛБМатча–{{ year }}</button></a>
+				</td>
+			{% else %}
+				<td colspan="5"></td>
+			{% endif %}
+		</tr>
+	{% endwith %}{% endfor %}
+</table>

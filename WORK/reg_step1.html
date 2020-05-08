@@ -1,0 +1,72 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+<div class="row"> <!-- Header -->
+	<div class="col-md-6">
+		<h3><a href="{{ event.get_absolute_url }}">{{ event|safe }}</a>,
+			{{ event.dateFull|safe }}
+		</h3>
+	</div>
+	<div class="col-md-6 text-right">
+		{% include 'results/event_edit_buttons.html' %}
+	</div>
+</div>
+{% include 'results/event_details_row.html' with race_page=1 %}
+<hr/>
+<div class="row"><div class="col-md-4 col-md-offset-4 col-sm-12 col-sm-offset-0">
+	<div class="row"><div class="col-md-12 text-center">
+		<h3>Регистрация на забег. Шаг 1 из 3</h3>
+	</div></div>
+
+	<br/><br/>
+	<form id="frmRegistrantRace" method="POST" action="">
+		{% csrf_token %}
+		{% for error in frmRegistrantRace.non_field_errors %}
+			<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+		{% endfor %}
+
+		<div class="row">
+			<div class="col-md-6 text-right">
+				{{ frmRegistrantRace.registrant.label }}
+			</div>
+			<div class="col-md-6">
+				{% if field.errors %}
+					{% for error in field.errors %}
+						<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+					{% endfor %}
+				{% endif %}
+				{% for radio in frmRegistrantRace.registrant %}
+					<div class="myradio">
+						{{ radio }}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<br/><br/>
+		<div class="row">
+			<div class="col-md-6 text-right">
+				{{ frmRegistrantRace.race.label }}
+			</div>
+			<div class="col-md-6">
+				{% if field.errors %}
+					{% for error in field.errors %}
+						<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+					{% endfor %}
+				{% endif %}
+				{% for radio in frmRegistrantRace.race %}
+					<div class="myradio">
+						{{ radio }}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<br/><br/>
+		<div class="row">
+			<div class="col-md-6 col-md-offset-6">
+				<input type="submit" name="frmRegistrantRace_submit" value="Дальше" class="btn btn-success" />
+			</div>
+		</div>
+	</form>
+</div></div>
+{% endblock %}

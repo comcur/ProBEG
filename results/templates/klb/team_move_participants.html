@@ -1,0 +1,65 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+
+{% include 'klb/team_header.html' %}
+<div class="row"> <!-- Header -->
+	{% include 'tools/klb_team_table_detailed.html' %}
+	<div class="col-md-7">
+		<h4>Перемещение в команду {{ team.name }} участников других команд клуба</h4>
+		<p>Для добавления или удаления фрагмента галочек нажмите на первую галочку фрагмента, а затем с зажатой клавишей Shift — на последнюю.</p>
+		<p>Вы можете сколько угодно перемещать участников между командами вашего клуба до 31 мая {{ team.year }} г. включительно.
+			Все их очки при этом сохраняются.
+		</p>
+		<p>Максимальное число участников в команде — {{ team_limit }};
+			в зачёте средних команд — {{ medium_team_limit }};
+			малых команд — {{ small_team_limit }}.
+		</p>
+		<form id="frmAddOldParticipants" action="" method="POST">
+			{% csrf_token %}
+			<table class="table table-condensed table-hover">
+				<tr><th>Переместить?</th><th>Участник</th><th>Дата<br/>рождения</th><th>Нынешняя<br/>команда</th>
+					<th class="text-center">Стартов</th>
+					<th class="text-right">Очки</th>
+					<th>+</th>
+					<th colspan="3">
+						<abbr title="Бонус каждого участника — сумма лучших {{ n_results_for_bonus_score }} бонусных очков за его старты">Бонусы</abbr>
+					</th>
+				</tr>
+				{% for participant in other_teams_participants %}{% with person=participant.klb_person %}
+					<tr{% if person.gender == 1 %} class="success"{% endif %}>
+						<td><input type="checkbox" name="move_{{ participant.id }}" class="chkbox"/></td>
+						<td>{{ person.fname }} {{ person.lname }}
+							<a href="{{ person.get_absolute_url }}" target="_new"><span
+								class="glyphicon glyphicon-new-window pull-right" aria-hidden="true"></span></a>
+						</td>
+						<td>{{ person.birthday|date:'d.m.Y' }}</td>
+						<td><a href="{{ participant.team.get_absolute_url }}">{{ participant.team.name }}</a></td>
+						<td class="text-center">{{ participant.n_starts }}</td>
+						{% if participant.n_starts %}
+							<td class="text-right">
+								{% if participant.is_in_best %}
+									<strong>{{ participant.clean_sum|floatformat:3 }}</strong>
+								{% else %}
+									{{ participant.clean_sum|floatformat:3 }}
+								{% endif %}
+							</td>
+							<td>+</td>
+							<td class="text-right min-width">{{ participant.bonus_sum|floatformat:3 }}</td>
+							<td>=</td>
+							<td class="text-right min-width"><strong>{{ participant.score_sum|floatformat:3 }}</strong></td>
+						{% else %}
+							<td colspan="5"></td>
+						{% endif %}
+					</tr>
+				{% endwith %}{% endfor %}
+			</table>
+			<input type="submit" name="frmMoveParticipants_submit" value="Добавить отмеченных участников в команду {{ team.name }}"
+				class="btn btn-success"/>
+			<span class="pull-right">
+				<a href="{{ team.get_absolute_url }}">Вернуться на страницу команды</a>
+			</span>
+		</form>
+	</div>
+</div>
+{% endblock %}

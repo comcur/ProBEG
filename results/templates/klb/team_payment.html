@@ -1,0 +1,135 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+	<h3><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч–{{ year }}</a>,
+		{% if team %}
+			команда <a href="{{ team.get_absolute_url }}">{{ team.name }}</a>:
+		{% else %}
+			клуб <a href="{{ club.get_absolute_url }}">{{ club.name }}</a>:
+		{% endif %}
+		оплата участия
+	</h3>
+	{% if n_paid_participants %}
+		<br/>
+		{% if team %}
+			<p>Ниже не показаны {{ n_paid_participants }} член{{ n_paid_participants|ending:1 }} команды, участие которых уже оплачено.
+			Их список Вы можете увидеть на <a href="{{ team.get_absolute_url }}">странице команды</a>.</p>
+		{% else %}
+			<p>Ниже — список всех членов команд клуба, участие которых ещё не оплачено.</p>
+		{% endif %}
+	{% endif %}
+
+	{% if unfinished_payments %}
+		<br/><br/>
+		<p><strong>Уже были созданы следующие попытки оплатить участие в матче членов клуба.</strong> Вы можете снова попробовать выполнить любой из этих платежей или удалить любой из этих платежей. Пока эти попытки не оплачены и не удалены, вы не можете заново оплатить участие затронутых участников КЛБМатча.</p>
+		<table class="table table-condensed table-hover">
+			<tr class="info">
+				<th class="text-right min-width">ID</th>
+				<th>Кто создал платёж</th>
+				<th class="text-center">Время создания</th>
+				<th class="text-center">Число участников матча</th>
+				<th class="text-right">Сумма</th>
+				<th class="min-width"></th>
+				<th class="min-width"></th>
+			</tr>
+			{% for payment in unfinished_payments %}
+				<tr class="vcenter">
+					<td class="text-right min-width">{{ payment.id }}</td>
+					<td>{% include 'editor/user_name_with_link.html' with person=payment.user %}</td>
+					<td class="text-center">{{ payment.added_time|date:'d E Y, H:i' }}</td>
+					<td class="text-center">{{ payment.klb_participant_set.count }}</td>
+					<td class="text-right">{{ payment.amount }} ₽</td>
+					<td class="min-width"><a href="{{ payment.get_pay_url }}"><button type="button" class="btn btn-sm btn-success">Оплатить</button></a></td>
+					<td class="min-width">
+						<form action="{{ payment.get_delete_url }}" method="POST">
+							{% csrf_token %}
+							<input type="submit" name="btnDeletePayment" value="Удалить" class="btn btn-sm btn-danger"/>
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
+
+	{% if only_part_of_participants %}
+		<br/>
+		<p>К сожалению, размер одного платежа пока ограничен 10 тысячами рублей, так что мы разбили всех членов команды на две части. После оплаты этого списка просто повторите оплату — и сайт предложит заплатить за остальных.</p>
+	{% endif %}
+
+	{% if n_participants %}
+		<br/><br/>
+		<p>Стоимость участия в матче — {{ price }} рублей с человека.
+			Пенсионеры (мужчины, которым на конец этого года будет не меньше {{ SENIOR_AGE_MALE }} лет, и женщины, которым будет не меньше {{ SENIOR_AGE_FEMALE }} лет)
+			и инвалиды могут при желании участвовать в матче бесплатно. Если у кого-то из таких участников ниже нет опции участвовать бесплатно,
+			напишите нам на <a href="mailto:info@probeg.org">info@probeg.org</a> или <a href="#" id="send_to_info_page">прямо отсюда</a>.
+		</p>
+		<form action="{% if team %}{% url 'results:klb_make_team_payment' team_id=team.id %}{% else %}{% url 'results:klb_make_club_payment' club_id=club.id %}{% endif %}" method="POST">
+			{% csrf_token %}
+			<table class="table table-condensed table-hover">
+				<tr class="info">
+					<th class="text-right min-width">№</th>
+					<th>Имя</th>
+					{% if not team %}
+						<th>Команда</th>
+					{% endif %}
+					<th class="text-center">Год рождения</th>
+					<th>Сумма</th>
+				</tr>
+				{% for participant in participants %}{% with person=participant.klb_person %}
+					<tr{% if person.gender == 1 %} class="success"{% endif %}>
+						<td class="text-right min-width">{{ forloop.counter }}</td>
+						<td><a href="{{ person.get_absolute_url }}" target="_blank">{{ person.fname }} {{ person.lname }}</a></td>
+						{% if not team %}
+							<td><a href="{{ participant.team.get_absolute_url }}" target="_blank">{{ participant.team.name }}</a></td>
+						{% endif %}
+						<td class="text-center">{{ person.birthday.year }}</td>
+						<td>
+							{% if person.disability_group or participant.is_senior %}
+								<span class="pull-right">
+									{% if participant.is_senior %}
+										(пенсионер)
+									{% elif person.disability_group %}
+										({{ person.get_disability_group_display }} группа инвалидности)
+									{% endif %}
+								</span>
+								<input type="radio" class="radio_amount" name="amount_{{ participant.id }}" id="amount_{{ participant.id }}_full" value="{{ price }}"  style="margin-top: 0px;" checked/>
+								<label for="amount_{{ participant.id }}_full" style="font-weight: 100; margin-bottom: 0px;">&nbsp;&nbsp;{{ price }} ₽</label>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="radio" class="radio_amount" name="amount_{{ participant.id }}" id="amount_{{ participant.id }}_free" value="0"  style="margin-top: 0px;"/>
+								<label for="amount_{{ participant.id }}_free" style="font-weight: 100; margin-bottom: 0px;">&nbsp;&nbsp;0 ₽</label>
+							{% else %}
+								<input type="hidden" class="hidden_amount" name="amount_{{ participant.id }}" value="{{ price }}"/>{{ price }} ₽
+							{% endif %}
+						</td>
+					</tr>
+				{% endwith %}{% endfor %}
+				<tr class="warning">
+					<td></td>
+					<td colspan="{% if team %}2{% else %}3{% endif %}">Итого за {{ n_participants }} участник{{ n_participants|ending:16 }}:</td>
+					<td><span id="span_total_amount">{{ initial_total }}</span> ₽
+						<input type="hidden" id="total_amount" name="total_amount" value="{{ initial_total }}"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="{% if team %}3{% else %}4{% endif %}"></td>
+					<td><input type="submit" name="btnPayForTeam" value="Оплатить участие" class="btn btn-success"/></td>
+				</tr>
+			</table>
+		</form>
+<script language="javascript">
+	$(".radio_amount").click(function() {
+		var sum = 0;
+		$(".hidden_amount").each(function() {
+			sum += parseInt($(this).val());
+		})
+		$(".radio_amount:checked").each(function() {
+			sum += parseInt($(this).val());
+		})
+		$("#total_amount").val(sum);
+		$("#span_total_amount").text(sum);
+	});
+</script>
+	{% endif %}
+</div></div>
+{% endblock %}

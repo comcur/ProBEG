@@ -1,0 +1,57 @@
+{% load results_extras %}{{ start_tags|safe }} {% if user_name %}{{ user_name }}, добрый день!{% else %}Добрый день!{% endif %}
+
+Вкратце — что произошло у нас за последние месяцы:
+
+1. Мы разработали новый раздел сайта: лучшие результаты российских бегунов в возрастных группах. Подробная новость об этом: https://base.probeg.org/news/5177/ , сама таблица рекордов для восьми основных дистанций (от 100 метров до марафона) и для всех возрастных групп (от 35+ до 85+): https://base.probeg.org/age_group_records . Посмотрите, возможно, вы знаете ветеранов в своём клубе или регионе, которые бегают быстрее? Тогда обязательно напишите нам!
+
+2. Заканчивается КЛБМатч–2019. Борьба в этом году заметно плотнее прошлого: от первой до третьей команды только 36 очков, за декабрь всё может поменяться! https://base.probeg.org/klb/2019/
+И за третье место среди маленьких команд (до 18 человек) между Меркурием и Эларой-55 борьба в самом разгаре, меньше трёх очков разницы.
+
+Это уже десятый КЛБМатч; по такому случаю мы разработали и предлагаем желающим приобрести памятную медаль участника матча: https://base.probeg.org/news/5198/ . Стоимость медали — 300 рублей плюс доставка. Принимаем заказы только до 1 декабря, вручать медаль будем на регистрации или в день марафона «Дорога жизни», а тем, кого там не будет, вышлем медали по почте.
+
+Регистрация в КЛБМатч–2020 откроется в декабре; про это мы напишем отдельно.
+
+3. Наша база преодолела важный для нас рубеж — число результатов в ней превысило три миллиона! И почти 130 тысяч привязано к зарегистрировавшимся у нас пользователям. Чуть больше цифр: https://base.probeg.org/results_binding/ . Спасибо всем вам, кто добавляет в базу свои результаты, а также предстоящие и уже прошедшие забеги! Поддерживать столь полный календарь мы можем только вместе с вами.
+
+Над новыми возможностями сайта мы тоже активно работаем. Будем держать вас в курсе. О том, как вы можете нам помочь, можно посмотреть на странице https://base.probeg.org/how_to_help/ .
+
+Спортивной вам зимы!
+
+{% if n_unclaimed_results %}
+Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }}, похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}. Проверьте: не Ваш{{ n_unclaimed_results|plural_ending_12 }} ли? {{ url_start }}{% url 'results:find_results' %}
+{% endif %}{% if participant %}{% with overall_group=participant.get_overall_group gender_group=participant.get_gender_group age_group=participant.age_group %}
+Ваше положение в КЛБМатче:
+
+Выступлений: {{ participant.n_starts }}.
+Набранные очки: {{ participant.score_sum }} (в том числе бонусы: {{ participant.bonus_sum }}).
+	{% if participant.place %}
+Место в общем зачёте ({{ url_start }}{{ overall_group.get_absolute_url }}): {{ participant.place }} из {{ overall_group.n_participants }}.
+	{% endif %}{% if participant.place_gender %}
+Место среди {% if participant.klb_person.gender == 2 %}мужчин{% else %}женщин{% endif %} ({{ url_start }}{{ gender_group.get_absolute_url }}): {{ participant.place_gender }} из {{ gender_group.n_participants }}.
+	{% endif %}{% if participant.place_group %}
+Место в группе {{ age_group.name }} ({{ url_start }}{{ age_group.get_absolute_url }}): {{ participant.place_group }} из {{ age_group.n_participants }}.
+	{% endif %}{% endwith %}{% endif %}{% if team %}
+
+Команда «{{ team.name }}» ({{ url_start }}{{ team.get_absolute_url }}):
+	{% if team.place %}
+Место в общем зачёте ({{ url_start }}{% url 'results:klb_match_summary' %}): {{ team.place }} из {{ teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_team team_prev=team.get_prev_team %}
+	{% endif %}{% if team.place_medium_teams %}
+Место в зачёте средних команд ({{ url_start }}{% url 'results:klb_match_summary' tab='medium' %}): {{ team.place_medium_teams }} из {{ medium_teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_medium_team team_prev=team.get_prev_medium_team %}
+	{% elif team.place_small_teams %}
+Место в зачёте маленьких команд ({{ url_start }}{% url 'results:klb_match_summary' tab='small' %}): {{ team.place_small_teams }} из {{ small_teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_small_team team_prev=team.get_prev_small_team %}
+	{% endif %}{% endif %}
+{% if user_city %}
+Поищите предстоящие забеги:
+
+В городе {{ user_city }} — {{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}
+	{% if user_city.region.active %}
+В регионе {{ user_city.region }} — {{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}
+	{% endif %}
+В стране {{ user_city.region.country }} — {{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}
+{% endif %}
+Хороших Вам зимних стартов и тренировок. И ждём тепла!
+Управление рассылками: {{ url_start }}{% url 'results:my_details' %}
+
+--
+Команда сайта «ПроБЕГ»
+http://base.probeg.org{{ finish_tags|safe }}

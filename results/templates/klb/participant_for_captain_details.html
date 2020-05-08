@@ -1,0 +1,52 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+{% include 'klb/team_header.html' %}
+<br/>
+<div class="row"> <!-- Header -->
+	<div class="col-md-5">
+		<h4>Состав команды</h4>
+		{% include 'klb/participants_table.html' with show_hash_links=1 %}
+	</div>
+	<div class="col-md-7">
+		<h4>Изменение контактных данных участника {{ person.fname }} {{ person.lname }}</h4>
+		<p>Достаточно указать что-то одно из адреса электронной почты и телефона.</p>
+		<p>Телефон, пожалуйста, указывайте так, чтобы можно было позвонить на него из любой точки России.
+		Так что российские номера должны состоять из 10 цифр и начинаться на 8 или +7; иностранные должны начинаться на + и код страны.
+		Можно вводить телефоны вместе со скобками, пробелами и тире.</p>
+		<form id="frmEditContactInfo" action="" method="POST" class="form-horizontal">
+			{% csrf_token %}
+			{% for error in form.non_field_errors %}
+				<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+			{% endfor %}
+			{% for field in form %}
+				<div class="form-group">
+					{{ field|label_with_classes:"col-sm-4 control-label" }}
+					<div class="col-sm-8">
+						{{ field }}
+						{% if field.errors %}
+							{% for error in field.errors %}
+								<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+			<input type="checkbox" name="is_responsible" id="chkIsResponsible"/>
+			Я&nbsp;или&nbsp;руководитель клуба получили согласие этого человека на&nbsp;хранение администрацией КЛБМатча указанных
+			{% if person.gender == 2 %}
+				его
+			{% else %}
+				её
+			{% endif %}
+			электронного адреса и(или)&nbsp;телефона
+			<br/><br/>
+			<input type="submit" name="frmParticipant_submit" value="Сохранить изменения" class="btn btn-success" id="btnSubmit" disabled/>
+			<span class="pull-right">
+				<a href="{{ team.get_absolute_url }}">Вернуться на страницу команды</a>
+			</span>
+		</form>
+	</div>
+</div>
+<br/><br/>
+{% endblock %}

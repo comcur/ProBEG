@@ -1,0 +1,77 @@
+{% extends 'letters/base.html' %}
+{% load results_extras %}
+{% block page_title %}ПроБЕГ: Новости за январь-февраль 2019{% endblock %}
+{% block page_header %}ПроБЕГ: Новости за январь-февраль 2019{% endblock %}
+{% block main %}
+	<tr>
+		<td style="font-size: 16px; padding: 0 0 15px;">
+			{% if user_name %}
+				{{ user_name }}, добрый день!
+			{% else %}
+				Добрый день!
+			{% endif %}
+		</td>
+	</tr>
+	<tr><td>
+		<p>Мы очень давно не писали рассылок. Так что перечислим побольше последних изменений — вдруг Вы чего не заметили?</p>
+		<p>1. Подведены итоги КЛБМатча-2018: есть <a href="{{ url_start }}{% url 'results:klb_match_summary' year=2018 %}">итоговая таблица</a>, подробный <a href="{{ url_start }}/event/24743/#news4971">рассказ о победителях и призёрах</a>, а также впервые — <a href="{{ url_start }}{% url 'results:klb_winners_by_regions' year=2018 %}">сводная таблица с лидерами по всем регионам России, Беларуси, Украины.</a> А на Вашей странице участника матча (чтобы попасть на неё, кликните по любой синей бирочке «КЛБМатч» на <a href="{{ url_start }}{% url 'results:home' %}">Вашей странице с результатами</a>) можно скачать красивый диплом участника с подробными результатами.</p>
+		<p>2. Открыта <a href="{{ url_start }}{% url 'results:about_match' year=2019 %}">регистрация в КЛБМатч—2019</a>. Похоже, десятый матч станет самым массовым — уже зарегистрировались 2785 человек. Присоединяйтесь вместе со своей командой или в индивиальном зачёте, если ещё не!</p>
+		<p>3. Теперь Вы можете к каждому своему результату добавить ссылку на пробежку в Strava; например, чтобы через год проще было посмотреть на трек и высотный профиль забега (редакторы этим уже пользуются — оказалось правда удобно). Плюс, если ваш профиль открыт, ссылку смогут увидеть и все посетители; так что, если побольше людей проставят ссылки у себя, мы все сможем больше заранее узнать о новом для себя забеге. Проставить ссылки своим забегам можно <a href="{{ url_start }}{% url 'results:my_strava_links' %}">здесь</a>.</p>
+		<p>4. Мы полностью переделали главную страницу каждой серии забега, например, <a href="{{ url_start }}{% url 'results:series_details' series_id=122 %}">этой</a>. Там теперь есть данные о следующем и предыдущем забеге и рекорды серии на всех дистанциях. А ещё добавилась вкладка с отчетами и фотографиями со всех забегов серии, что тоже поможет узнать побольше об интересном мероприятии или вспомнить ещё раз о запомнившемся старте. И добавляйте туда свои впечатления, чтобы не потерялись!</p>
+		<p>5. Также на странице каждого отдельного забега (<a href="{{ url_start }}{% url 'results:event_details' event_id=19130 %}">вот, например</a>) справа сверху появился виджет с комментариями ВКонтакте. Писать там вопросы организаторам смысла нет; но можно оставить свои впечатления или задать вопрос собирающимся участвовать.</p>
+		<p>6. Мы сделали гораздо компактнее <a href="{{ url_start }}{% url 'results:races' %}">главную страницу календаря забегов</a>. А ещё в календаре теперь отдельно помечаются трейловые забеги, за финиш на которых вы можете получить <a href="https://itra.run/page/269/FAQ_scores_and_Performance_index.html">баллы ITRA</a> (они понадобятся, если захотите попасть на серьёзные заграничные ультра-трейлы). Таких стартов в России пока немного; ближайшие — <a href="{{ url_start }}{% url 'results:series_details' series_id=3185 %}">Ice Valdaice</a> 23 февраля и <a href="{{ url_start }}{% url 'results:series_details' series_id=4053 %}">Nikola-Lenivets Winter Wild Trail</a> 3 марта. Надеемся, потихоньку станет больше!</p>
+		<p>7. И ещё для участников КЛБМатча: теперь на каждой странице забега вроде <a href="{{ url_start }}{% url 'results:race_details' race_id=24370 %}">этой</a>, если хоть один результат зачтён в матче, есть вкладка с результатами в матче со всех дистанций забега. Можно посмотреть, кто из участников набрал больше всего очков, или какой клуб был самым активным.</p>
+	</td></tr>
+	{% if n_unclaimed_results %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Результаты, похожие на Ваши
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }},
+			похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}.
+			Проверьте: <a href="{{ url_start }}{% url 'results:find_results' %}" style="color: #337ab7; text-decoration: none;">не
+			Ваш{{ n_unclaimed_results|plural_ending_12 }} ли?</a>
+		</td></tr>
+	{% endif %}
+	{% if participant %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br /><br />
+			Ваше положение в КЛБМатче
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_person_places.html' with is_admin=0 link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if team %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Команда <a href="{{ url_start }}{{ team.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">{{ team.name }}</a>
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_team_places.html' with link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if user_city %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Поищите предстоящие забеги
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<p><a href="{{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В городе {{ user_city }}</a></p>
+			{% if user_city.region.active %}
+				<p><a href="{{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}"
+					style="color: #337ab7; text-decoration: none;">В регионе {{ user_city.region }}</a></p>
+			{% endif %}
+			<p><a href="{{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В стране {{ user_city.region.country }}</a></p>
+		</td></tr>
+	{% endif %}
+	<tr>
+		<td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<br />
+			Хороших Вам зимних стартов и тренировок. И ждём тепла!
+		</td>
+	</tr>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'results/base.html' %}
+{% block main %}
+
+<h3>Дистанции, только что добавленные в ProbegDist</h3>
+
+Были обработаны все неотменённые забеги, про которые есть информация в ProbegYear.Dists, но нет ни одной записи в ProbegDist.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>№</th><th>ID забега</th><th>ID серии</th><th>Название забега</th><th>Дата</th>
+		<th>ProbegYear.Dists</th><th>Добавлены дистанции</th>
+	</tr>
+	{% for record in mylist %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+		{% for item in record %}
+		{% if forloop.counter == 1 %}
+			<td><a href="{% url 'results:series_details' series_id=item %}">{{ item }}</a></td>
+		{% elif forloop.counter == 4 %}
+			<td>{{ item|date:"d.m.Y" }}</td>
+		{% else %}
+			<td>{{ item|safe }}</td>
+		{% endif %}
+		{% endfor %}
+		</tr>
+	{% endfor %}
+</table>
+
+{% if races_added %}
+Всего добавлено {{ races_added }} новых стартов.
+{% endif %}
+
+{% endblock %}

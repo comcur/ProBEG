@@ -1,0 +1,74 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="row">
+	<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+		<h3>{{ page_title }}</h3>
+		<br/><br/>
+    <p><strong>Дорогие друзья!</strong></p>
+	<p>Подходит к концу юбилейный, десятый КЛБМатч–2019. В честь круглой даты мы разработали праздничную эксклюзивную памятную медаль
+    и предлагаем всем желающим участникам матча, не ставшими призёрами, включить ее в свою коллекцию.</p>
+    <p/>Не зря же вы боролись целый год!</p>
+    <p>Мы приносим свои извинения за задержку с награждением КЛБМатча–2018, но заверяем, что все награды найдут своих обладателей. Награждение по итогам юбилейного КЛБМатча–19 мы, как и в прежние годы, проведем на марафоне «Дорога жизни — 2020», в том числе, если не успеем что-то отправить по 2018 году, также готовы передать там. Когда и где именно это произойдет, мы сообщим дополнительно, после того, как согласуем этот вопрос с оргкомитетом марафона.</p>
+    Всем, кто не приедет в конце января 2020 года в Санкт-Петербург, мы вышлем медали по почте.</p>
+    <p>Стоимость одной медали вместе с шильдой с указанием вашего имени и клуба — {{ MEDAL_PRICE }} рублей. Размеры медали — 70×63 мм, толщина — 3 мм.</p>
+    <p>В случае, если вы не сможете забрать свою медаль на марафоне «Дорога жизни», мы вышлем вам её по почте, но в этом случае отправку вы должны будете оплатить согласно квитанции Почты России. Цена доставки не превысит:
+			<ul>
+				<li>по России: 1 медаль — 120 рублей, 2-10 медалей — 60 рублей за штуку, больше — 40 рублей за штуку;</li>
+				<li>в Украину, Беларусь, Казахстан: 1 медаль — 350 рублей, 2-10 медалей — 200 рублей за штуку, 11-20 медалей — 125 рублей за штуку.</li>
+			</ul>
+		</p>
+		<p>Саму медаль нужно оплатить сразу. Ссылку для оплаты доставки мы пришлём вам, когда отправим посылку и будет ясна точная цена, чтобы вы не платили лишнее.</p>
+		<p>Не выданные на марафоне «Дорога жизни» награды победителям и призерам КЛБМатча–2019 мы также вышлем по почте, но за наш счет.</p>
+    <p><strong>Заказы принимаются до 01 декабря</strong> включительно.</p>
+    <p class="text-center">
+		<img src="{% static 'images/klb/2019/klb_medal_2019_wo_plate.jpg' %}" border="0" style="max-width:100%">
+		<img src="{% static 'images/klb/2019/klb_medal_2019_with_plate.jpg' %}" border="0" style="max-width:100%">
+	</p>
+    {% if not user_is_authenticated %}
+			<p><strong>Рекомендуем вам сначала <a href="{% url 'probeg_auth:login' %}" target="_blank">зарегистрироваться</a></strong>
+			или <a href="{% url 'probeg_auth:login' %}" target="_blank">зайти через любую соцсеть</a>, после чего обновить эту страницу —
+			тогда все ваши платежи сохранятся вместе.</p>
+		{% endif %}
+
+
+		{% if form.non_field_errors %}
+			{% for error in form.non_field_errors %}
+				<div class="alert alert-danger" role="alert">{{ error }}</div>
+			{% endfor %}
+		{% endif %}
+		<form method="POST" action="" class="form-horizontal">
+			{% csrf_token %}
+			{% for field in form %}
+				{% include 'tools/form_field_horizontal.html' with leftcol=5 %}
+			{% endfor %}
+			<div class="form-group">
+				<div class="col-sm-5 text-right">
+					<strong>Сумма к оплате сейчас (всё, кроме цены доставки):</strong>
+				</div>
+				<div class="col-sm-7">
+					<span id="span_total_amount">{{ initial_total }}</span> ₽
+				</div>
+			</div>
+			<div class="col-sm-offset-5 col-sm-7">
+				<div class="checkbox">
+					<input type="submit" name="btnPayment" value="Перейти на сайт платёжной системы" class="btn btn-success"/>
+				</div>
+			</div>
+			<div class="col-sm-offset-5 col-sm-7">
+				<br/>
+				<a href="#" id="send_to_info_page" data-advert="2">Задать нам вопрос</a>
+			</div>
+		</form>
+	</div>
+</div>
+<script language="javascript">
+	function recalc() {
+		var n_medals = parseInt($("#id_n_medals").val());
+		var sum = {{ MEDAL_PRICE }} * n_medals;
+		$("#span_total_amount").text(sum);
+	}
+	$("#id_n_medals").change(recalc);
+	recalc();
+</script>
+{% endblock %}

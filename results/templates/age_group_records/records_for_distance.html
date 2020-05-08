@@ -1,0 +1,107 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+	<h3><a href="{% url 'results:age_group_records' country_id=country.id %}">{{ page_title_first }}</a>{{ page_title_second }}</h3>
+</div></div>
+<br/>
+<div class="row"><div class="col-md-12">
+	<form action="" method="POST" name="frmAgeGroupRecordsForDistance" class="form-inline">
+		{% csrf_token %}
+		{% for field in form %}
+			{% include 'results/form_field.html' with field=field %}&nbsp;&nbsp;
+		{% endfor %}
+		<button type="submit" class="btn btn-success" name="btnFilter">Перейти</button>
+	</form>
+</div></div>
+<br/><br/>
+<div class="row"><div class="col-md-12">
+	{% if records_by_age_group %}
+		<table class="table table-hover vcenter">
+			<tr class="info">
+				<th></th>
+				<th colspan="4">Мужчины</th>
+				<th colspan="4">Женщины</th>
+			</tr>
+			<tr class="info">
+				<th>Группа</th>
+				<th></th>
+				<th class="text-center">Возраст<br/>на день забега</th>
+				<th class="text-center">Результат</th>
+				<th>Забег</th>
+				<th></th>
+				<th class="text-center">Возраст<br/>на день забега</th>
+				<th class="text-center">Результат</th>
+				<th>Забег</th>
+			</tr>
+			{% for age_group, data in records_by_age_group.items %}{% with female_record=data.1 male_record=data.2 %}
+				<tr>
+					<td>{{ age_group }}</td>
+					{% if male_record %}{% with record_result=male_record %}
+						<td>{% include 'age_group_records/record_result_runner_name_and_city.html' %}</td>
+						<td class="nobr text-center">
+							{{ record_result.age_on_event_date|default_if_none:'' }}
+							{% if record_result.age_on_event_date %}
+								{{ record_result.age_on_event_date|ending:11 }}
+							{% endif %}
+						</td>
+						<td class="text-center">
+							{% if record_result.result %}
+								<a href="{{ record_result.result.race.get_absolute_url }}">{{ record_result }}</a>
+							{% else %}
+								<span>{{ record_result }}</span>
+							{% endif %}
+						</td>
+						<td>
+							{% if record_result.race %}
+								<a href="{{ record_result.race.get_absolute_url }}">{{ record_result.race.event.name }}</a>
+							{% else %}
+								?
+							{% endif %}
+							<br/>
+							{% if record_result.is_date_known %}
+								{{ record_result.date }}
+							{% elif record_result.date %}
+								{{ record_result.date.year }} г.
+							{% endif %}
+						</td>
+					{% endwith %}{% else %}
+						<td colspan="4"></td>
+					{% endif %}
+					{% if female_record %}{% with record_result=female_record %}
+						<td class="nobr success">{% include 'age_group_records/record_result_runner_name_and_city.html' %}</td>
+						<td class="nobr text-center success">
+							{{ record_result.age_on_event_date|default_if_none:'' }}
+							{% if record_result.age_on_event_date %}
+								{{ record_result.age_on_event_date|ending:11 }}
+							{% endif %}
+						</td>
+						<td class="text-center success">
+							{% if record_result.result %}
+								<a href="{{ record_result.result.race.get_absolute_url }}">{{ record_result }}</a>
+							{% else %}
+								<span>{{ record_result }}</span>
+							{% endif %}
+						</td>
+						<td class="success">
+							{% if record_result.race %}
+								<a href="{{ record_result.race.get_absolute_url }}">{{ record_result.race.event.name }}</a>
+								<br/>
+								{% if record_result.is_date_known %}
+									{{ record_result.date }}
+								{% else %}
+									{{ record_result.date.year }} г.
+								{% endif %}
+							{% endif %}
+						</td>
+					{% endwith %}{% else %}
+						<td class="success" colspan="4"></td>
+					{% endif %}
+				</tr>
+			{% endwith %}{% endfor %}
+		</table>
+	{% else %}
+		<p>Пока информации, к сожалению, нет.</p>
+	{% endif %}
+</div></div>
+{% endblock %}

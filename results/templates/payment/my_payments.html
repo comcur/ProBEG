@@ -1,0 +1,42 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="row">
+	<div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<h3>{{ page_title }}</h3>
+		<table class="table table-condensed table-hover table-striped">
+			<tr class="info">
+				<th class="text-center">Время создания</th>
+				<th class="text-center">ID</th>
+				<th>Описание</th>
+				<th class="text-right">Сумма</th>
+				<th class="text-center">Оплачен?</th>
+				<th class="text-center">Время оплаты</th>
+			</tr>
+			{% for payment in payments %}
+				<tr>
+					<td class="text-center nobr">{{ payment.added_time|date:'d E Y, H:i' }}</td>
+					<td class="text-center">{{ payment.id }}</td>
+					<td>{% if not payment.is_active %}
+							<span class="pull-right"><span class="label label-danger small-label">не активен</span></span>
+						{% endif %}
+						{{ payment.description }}
+					</td>
+					<td class="text-right">{{ payment.amount }} ₽</td>
+					<td class="text-center">
+						{% if payment.is_paid %}
+							Да
+						{% elif payment.is_just_created %}
+							Ждём подтверждения
+						{% else %}
+							Нет<br/>
+							<a href="{{ payment.get_pay_url }}">Оплатить</a>
+						{% endif %}
+					</td>
+					<td class="text-center nobr">{{ payment.response.added_time|date:'d E Y, H:i'|default:'' }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
+{% endblock %}

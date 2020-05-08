@@ -1,0 +1,46 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+
+<div class="row"><div class="col-md-8 col-md-offset-2">
+	<h3>{{ page_title }}</h3>
+	<h4>Заменить везде в названиях серий и забегов</h4>
+	<form action="{% url 'editor:replace_in_event_names' %}" method="POST" class="form-inline">
+		{% csrf_token %}
+		Подстроку (с учётом регистра)
+		<input name="replace_what" id="id_replace_what" class="form-control" value="{{ replace_what }}" />
+		на подстроку
+		<input name="replace_to" id="id_replace_to" class="form-control" value="{{ replace_to }}" />
+		&nbsp;&nbsp;
+		<input type="submit" class="btn btn-primary" name="btnCheck" value="Посмотреть, что будет" />
+		&nbsp;&nbsp;
+		<input type="submit" class="btn btn-danger" name="btnReplace" value="Заменить" />
+	</form>
+	<br/><br/><br/>
+	<a href="{% url 'editor:klb_team_leaders_emails' %}">Адреса всех имеющих права на клубы, участвующие в КЛБМатче</a>
+	<br/><br/><br/>
+	<a href="{% url 'editor:restart' %}">Перезапустить Django</a>
+	<br/><br/><br/>
+	<a href="{% url 'starrating:editor_rating_details' %}">Вообще все оценки забегам</a>
+	<br/><br/><br/>
+	<h4>Скрипт для загрузки результатов с Athlinks</h4>
+	<p>Ни в коем случае не распространяйте эти файлы — скорее всего, если кто-то ещё будет активно использовать этот способ загрузки, его скоро прикроют.</p>
+	<p>Обязательно проверяйте, разумно ли выглядят лучшие результаты и правильно ли распознаны DNF и DSQ. Скрипт пока мало оттестирован.</p>
+	<ol>
+		<li>Идёте на <a href="https://www.anaconda.com/distribution/">https://www.anaconda.com/distribution/</a>, скачиваете себе Python 3.7, можно 32-битную версию, а если точно знаете, что у вас 64-битная виндоус, то можно и её.</li>
+		<li>Устанавливаете (там заодно куча библиотек, которые нам не пригодятся; если не хотите столько места занимать, поищите, как "голый" питон </li>поставить себе на диск; но это может потом лишних сложностей добавить, поскольку пара библиотек всё же нужна)
+		<li>Скачиваете файл <a href="{% static 'scripts/ath-v1.py' %}">ath-v1.py</a>.</li>
+		<li>Кладёте скрипт в папку, скажем, <code>c:\scripts</code></li>
+		<li>В меню Пуск находите Anaconda, жмете по пункту Anaconda Prompt или что-то в этом духе</li>
+		<li>Набираете <code>cd c:\scripts</code> , энтер</li>
+		<li>Набираете <code>python ath-v1.py https://www.athlinks.com/event/200468/results/Event/852444/Course/1575836/Results 2019-04-21-ekomarathon.xlsx</code></li>
+		(то есть "python", имя скрипта, потом адрес страницы с результатами на athlinks, потом имя экселевского файла, куда сохранять)
+		<li>Жмете энтер, ждёте. Всё!</li>
+		<li>Не знаю, когда нас забанят, но пока работает.</li>
+	</ol>
+	<br/><br/><br/>
+	<h4>Скрипт для загрузки результатов с RussiaRunning</h4>
+	<p>Всё очень похоже, только файл скрипта — <a href="{% static 'scripts/rr-v1.py' %}">rr-v1.py</a>. Вводите что-то вроде <code>python rr-v1.py https://russiarunning.com/event/SpringHalfMarathonOmsk2019/results/21%20km</code>, и готово. Имя целевого файла вводить не нужно; скрипт сам создаст файл XLSX с логичным именем.</p>
+	<p>Посмотрим, какой из подходов с именами файлов удобней, и можно будет сделать работу скриптов единообразной.</p>
+</div></div>
+{% endblock %}

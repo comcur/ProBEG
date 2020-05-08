@@ -1,0 +1,33 @@
+<table class="table table-condensed table-hover">
+	<tr class="info"><th></th><th>Команда</th><th colspan="2">Участников<br/>(в т.ч. стартовали)</th>
+		<th class="text-right">Очки</th><th>+</th><th colspan="3">Бонусы</th>
+	</tr>
+	{% for team in teams %}
+		<tr 
+			{% if team.place_secondary_teams %}
+				class="secondary"
+			{% elif team.place_medium_teams %}
+				class="warning"
+			{% elif team.place_small_teams %}
+				class="danger"
+			{% endif %}
+		>
+			<td>{{ forloop.counter }}</td>
+			<td>{% if year >= 2019 and team.id in teams_not_paid_ids %}
+					<span class="pull-right"><span class="label label-danger small-label">не опл</span></span>
+				{% endif %}
+				<a href="{{ team.get_absolute_url }}">{{ team.name }}</a>
+				{% if team.club.city %}
+					({{ team.club.strCity|safe }})
+				{% endif %}
+			</td>
+			<td class="text-right">{{ team.n_members }}</td>
+			<td class="text-right min-width">({{ team.n_members_started }})</td>
+			<td class="text-right">{{ team.get_clean_score|floatformat:3 }}</td>
+			<td>+</td>
+			<td class="text-right">{{ team.bonus_score|floatformat:3 }}</td>
+			<td>=</td>
+			<td class="text-right"><strong>{{ team.score|floatformat:3 }}</strong></td>
+		</tr>
+	{% endfor %}
+</table>

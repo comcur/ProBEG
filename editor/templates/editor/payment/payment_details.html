@@ -1,0 +1,161 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-8 col-md-offset-2">
+	<table class="table table-borderless">
+		<tr>
+			<td class="text-right"><h3>{{ page_title }}</h3></td>
+			<td class="text-left">
+				<h3><small><a href="{% url 'editor:all_payments' %}">Все платежи</a></small></h3>
+			</td>
+		</tr>
+		<tr>
+			<td class="text-right">Идентификатор</td>
+			<td class="text-left">
+				{{ payment.transaction_id }}
+			</td>
+		</tr>
+		{% if payment.is_test_mode %}
+			<tr>
+				<td class="text-right">Проведён в тестовом режиме?</td>
+				<td class="text-left">Да</td>
+			</tr>
+		{% endif %}
+		{% if payment.is_dummy %}
+			<tr>
+				<td class="text-right">Фиктивный?</td>
+				<td class="text-left">Да
+					{% if not participants %}
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<form action="{% url 'editor:payment_delete' payment_id=payment.id %}" method="POST" class="form-inline">
+							{% csrf_token %}
+							<input type="submit" name="btnDeletePayment" value="Удалить платёж" class="btn btn-xs btn-danger"/>
+						</form>
+					{% endif %}
+				</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td class="text-right">Оплачен?</td>
+			<td class="text-left">{{ payment.is_paid|yesno:'Да,Нет' }}</td>
+		</tr>
+		<tr>
+			<td class="text-right">Описание</td>
+			<td class="text-left">{{ payment.description }}</td>
+		</tr>
+		<tr>
+			<td class="text-right">Заплатили</td>
+			<td class="text-left">
+				{{ payment.amount }}
+				{% if participants %}
+					(сумма платежей по участникам из списка ниже: {{ participants_amount_sum }})
+				{% endif %}
+			</td>
+		</tr>
+		<tr>
+			<td class="text-right">Дошло до нас</td>
+			<td class="text-left">{{ payment.withdraw_amount }}</td>
+		</tr>
+		<tr>
+			<td class="text-right">Процент комиссии</td>
+			<td class="text-left">{{ payment.get_fee_percent }} %</td>
+		</tr>
+		{% if payment.user %}
+			<tr>
+				<td class="text-right">Пользователь, создавший платёж</td>
+				<td class="text-left">{% include 'editor/user_name_with_link.html' with person=payment.user %}</td>
+			</tr>
+		{% endif %}
+		<tr>
+			<td class="text-right">Время создания платежа</td>
+			<td class="text-left">{{ payment.added_time }}</td>
+		</tr>
+		<tr>
+			<td class="text-right">Время получения подтверждения перевода</td>
+			<td class="text-left">{{ payment.payment_time|default_if_none:'' }}</td>
+		</tr>
+		<tr>
+			<td class="text-right">Добавить к платежу участника матча</td>
+			<td class="text-left">
+				<form action="{% url 'editor:payment_add_participant' payment_id=payment.id %}" method="POST">
+					{% csrf_token %}
+					<p>
+						<select class="participants-list" name="select_participant" style="width: 50%"></select>
+						<br/>(В выпадающем списке — только участники, которые пока записаны как не оплатившие участие.)
+					</p>
+					<p>
+						Сумма платежа:
+						<input type="radio" class="radio_amount" name="amount" id="amount_full" value="{{ price }}"  style="margin-top: 0px;" checked/>
+						<label for="amount_full" style="font-weight: 100; margin-bottom: 0px;">&nbsp;&nbsp;{{ price }} ₽</label>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" class="radio_amount" name="amount" id="amount_free" value="0"  style="margin-top: 0px;"/>
+						<label for="amount_free" style="font-weight: 100; margin-bottom: 0px;">&nbsp;&nbsp;0 ₽</label>
+					</p>
+					<p>
+						<input type="submit" name="btnAddParticipant" value="Добавить отметку, что участие этого человека оплачено этим платежом" class="btn btn-sm btn-success"/>
+					</p>
+				</form>
+			</td>
+		</tr>
+		{% if participants %}
+			<tr>
+				<td class="text-right">
+					Участники, за которых оплачено участие в КЛБМатче
+					(всего: {{ participants|length }})
+				</td>
+				<td class="text-left">
+					<table class="table table-condensed table-borderless table-striped" width="100%">
+						{% for participant in participants %}
+							<tr>
+								<td class="text-right">
+									{% if participant.paid_status == 1 %}0{% else %}{{ price }}{% endif %} ₽
+								</td>
+								<td>
+									<a href="{{ participant.klb_person.get_absolute_url }}">{{ participant.klb_person.fname }} {{ participant.klb_person.lname }}</a>
+								</td>
+								<td>{% if participant.team %}
+										<a href="{{ participant.team.get_absolute_url }}">{{ participant.team.name }}</a>
+									{% endif %}
+								</td>
+								<td>{% if not participant.is_paid_through_site or not payment.is_paid %}
+										<form action="{% url 'editor:payment_delete_participant' payment_id=payment.id participant_id=participant.id %}" method="POST">
+											{% csrf_token %}
+											<input type="submit" name="btnDeleteParticipant" value="Удалить из этого платежа" class="btn btn-xs btn-danger"/>
+										</form>
+									{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+					</table>
+				</td>
+			</tr>
+		{% endif %}
+	</table>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+	<script type="text/javascript">
+$(".participants-list").select2({
+	placeholder: "Введите первые буквы фамилии",
+	width: 'element',
+	allowClear: true,
+	ajax: {
+		url: "/editor/klb/unpaid_participants/list",
+		dataType: 'json',
+		delay: 250,
+		data: function (params) {
+			return {
+				query: params.term
+			};
+		},
+		processResults: function (data) {
+			return {
+				results: data
+			};
+		},
+		cache: true
+	},
+});
+	</script>
+</div></div>
+{% endblock %}

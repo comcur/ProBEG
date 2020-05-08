@@ -1,0 +1,58 @@
+<tr{% if aggregate_row %} class="info"{% endif %}>
+	{% if aggregate_row %}
+		<td></td>
+		<td class="text-left"><strong>Всего</strong></td>
+	{% else %}
+		<td class="text-right min-width">{{ forloop.counter }}</td>
+		<td class="text-left">
+			{% if region %}
+				<a href="{% url 'results:klb_age_group_details' year=year region_id=region.id %}">{{ region.name_full }}</a>
+			{% elif country %}
+				<a href="{% url 'results:klb_age_group_details' year=year country_id=country.id %}">{{ country.name }}</a>
+			{% elif district %}
+				{{ district.name }}
+			{% endif %}
+		</td>
+	{% endif %}
+	<td class="text-center">{{ data.n_participants }}</td>
+	{% if data.n_participants %}
+		{% include 'tools/progress_bar_ratio.html' with all=data.n_participants men=data.n_participants_male %}
+	{% else %}
+		<td colspan="2"></td>
+	{% endif %}
+	<td class="text-center">
+		{% if data.n_participants_prev_year %}
+			{% include 'tools/percent_with_sign.html' with new=data.n_participants old=data.n_participants_prev_year %}
+		{% endif %}
+	</td>
+	{% if data.best_male %}{% with participant=data.best_male %}{% with person=participant.klb_person runner=participant.klb_person.runner %}
+		<td>{% include 'tools/runner_or_user_name_with_link.html' %}</td>
+		<td class="text-center">{% if person.birthday %}{{ person.birthday.year }}{% endif %}</td>
+		<td class="text-center">{{ participant.n_starts }}</td>
+		<td class="text-right"><strong>{{ participant.clean_sum|floatformat:3 }}</strong></td>
+		<td>+</td>
+		<td class="text-right min-width"><strong>{{ participant.bonus_sum|floatformat:3 }}</strong></td>
+		<td>=</td>
+		<td class="text-right min-width"><strong>{{ participant.score_sum|floatformat:3 }}</strong></td>
+	{% endwith %}{% endwith %}{% else %}
+		<td colspan="8"></td>
+	{% endif %}
+	{% if data.best_female %}{% with participant=data.best_female %}{% with person=participant.klb_person profile=participant.klb_person.runner.user.user_profile %}
+		<td class="success">{% if profile.is_public %}
+				<span class="pull-right">
+					<a href="{{ profile.get_absolute_url }}"><span class="glyphicon glyphicon-user small-label" aria-hidden="true"></span></a>
+				</span>
+			{% endif %}
+			<a href="{{ participant.klb_person.get_absolute_url }}">{{ person.fname }} {{ person.lname }}</a>
+		</td>
+		<td class="text-center success">{% if person.birthday %}{{ person.birthday.year }}{% endif %}</td>
+		<td class="text-center success">{{ participant.n_starts }}</td>
+		<td class="text-right success"><strong>{{ participant.clean_sum|floatformat:3 }}</strong></td>
+		<td class="success">+</td>
+		<td class="text-right min-width success"><strong>{{ participant.bonus_sum|floatformat:3 }}</strong></td>
+		<td class="success">=</td>
+		<td class="text-right min-width success"><strong>{{ participant.score_sum|floatformat:3 }}</strong></td>
+	{% endwith %}{% endwith %}{% else %}
+		<td colspan="8" class="success"></td>
+	{% endif %}
+</tr>

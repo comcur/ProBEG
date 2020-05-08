@@ -1,0 +1,69 @@
+<div class="row"><div class="col-md-12">
+	{% if is_admin or is_editor and team.year >= CUR_KLB_YEAR %}
+		<div class="btn-group pull-right">
+			<button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Действия с командой <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				{% if team.year >= CUR_KLB_YEAR %}
+					{% if can_add_participants %}
+						<li><a href="{{ team.get_add_new_participant_url }}">Добавить участника{% if has_participants_to_delete %} или удалить имеющихся{% endif %}</a></li>
+					{% elif has_participants_to_delete %}
+						<li><a href="{{ team.get_add_new_participant_url }}">Удалить участников</a></li>
+					{% endif %}
+					{% if has_old_participants_to_add and can_add_participants %}
+						<li><a href="{{ team.get_add_old_participants_url }}">Добавить участников из прошлогодних команд и членов клуба</a></li>
+					{% endif %}
+					{% if can_move_participants %}
+						<li><a href="{{ team.get_move_participants_url }}">Переместить участников из других команд клуба</a></li>
+					{% endif %}
+					{% if can_be_deleted %}
+						<li role="separator" class="divider"></li>
+						<li><a href="{{ team.get_delete_url }}">Удалить команду</a></li>
+					{% endif %}
+					{% if is_admin %}
+						<li role="separator" class="divider"></li>
+					{% endif %}
+				{% endif %}
+				{% if is_admin %}
+					<li><a href="{{ team.get_history_url }}">История изменений</a></li>
+					{% if team.year >= CUR_KLB_YEAR %}
+						<li><a href="{{ team.get_refresh_stat_url }}">Обновить статистику команды</a></li>
+					{% endif %}
+				{% endif %}
+			</ul>
+		</div>
+	{% endif %}
+	<h3><a href="{% url 'results:klb_match_summary' year=team.year %}">КЛБМатч–{{ team.year }}</a>: команда
+		{% if show_link_to_team_page %}
+			<a href="{{ team.get_absolute_url }}">«{{ team.name }}»</a>
+		{% else %}
+			«{{ team.name }}»
+		{% endif %}
+	</h3>
+</div></div>
+<div class="row"> <!-- Places, links -->
+	<div class="col-md-8">
+		<p>Клуб: <a href="{{ team.club.get_absolute_url }}">{{ team.club.name }}</a>
+			{% if team.club.city %}
+				({{ team.club.strCity|safe }})
+			{% endif %}
+		</p>
+		{% if team.score > 0 %}
+			{% include 'tools/klb_team_places.html' %}
+		{% endif %}
+	</div>
+	<div class="col-md-4 text-right">
+		{% if is_admin or is_editor %}
+			<p><a href="{{ team.get_did_not_run_url }}">Участники команды без результатов с планировавшихся забегов</a></p>
+			<p><a href="{{ team.get_contact_info_url }}">Личные данные участников{% if team.year >= CUR_KLB_YEAR %} и данные об оплате{% endif %}</a></p>
+		{% endif %}
+		{% if team.is_in_active_year %}
+			<p><a href="{{ team.get_score_changes_url }}">Последние изменения очков</a></p>
+			<p><a href="{{ team.get_results_for_moderation_url }}">Результаты, ждущие проверки</a></p>
+		{% endif %}
+		{% if 2010 < team.year and team.year < 2018 %}
+			<p><a href="{{ team.get_old_url }}">Старая страница результатов в КЛБМатч</a></p>
+		{% endif %}
+	</div>
+</div>

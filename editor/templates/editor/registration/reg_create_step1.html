@@ -1,0 +1,81 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+{% with leftcol=6 %}
+<div class="row"><div class="col-md-6 col-md-offset-3 col-sm-12 col-sm-offset-0">
+<form id="frmRegistration" method="POST" action="" class="form-horizontal">
+{% csrf_token %}
+{% include 'results/panel_header_before_title.html' %}
+	Открытие регистрации на забег <a class="underlined" href="{{ event.get_absolute_url }}">{{ event.name|safe }}</a>. Шаг 1
+{% include 'results/panel_header_after_title.html' %}
+	
+	<p>При регистрации на любой забег участники обязательно заполняют следующие поля:
+		<br/>
+		имя, фамилия, пол, страна, регион (для России,&nbsp;Беларуси и&nbsp;Украины), населённый пункт, дата рождения,
+		адрес электронной почты, телефон, имя и&nbsp;номер телефона знакомого на&nbsp;экстренный случай, клуб&nbsp;(необязательно).
+	</p>
+	<p>Старт забега: {{ event.start_date|date:'d E Y' }}
+		{% if event.start_time %}
+			в {{ event.start_time }} (по местному времени).
+		{% endif %}
+	</p>
+	<p>Все времена ниже указывайте по московскому времени.</p>
+	<h4>Основные параметры регистрации</h4>
+
+	{% for error in frmRegistration.non_field_errors %}
+		<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+	{% endfor %}
+
+	{% for field in frmRegistration.visible_fields %}
+		{% include 'tools/form_field_horizontal.html' %}
+	{% endfor %}
+
+	<br/>
+	<h4>На какие дистанции открываем регистрацию</h4>
+
+	{{ formset.management_form }}
+	{% for form in formset %}
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		{% for field in form.visible_fields %}
+			{% include 'tools/form_field_horizontal.html' %}
+		{% endfor %}
+	{% endfor %}
+
+	<br/>
+	<h4>Параметры для регистраций на отдельные дистанции</h4>
+
+	<p>После создания регистрации вы сможете настроить эти параметры для каждой отдельной дистанции.</p>
+
+	{% for error in frmSampleRace.non_field_errors %}
+		<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+	{% endfor %}
+
+	{% for field in frmSampleRace.visible_fields %}
+		{% include 'tools/form_field_horizontal.html' %}
+	{% endfor %}
+
+	{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+
+	<div class="form-group">
+		<div class="col-sm-offset-{{ leftcol }} col-sm-{{ 12|subtract:leftcol }}">
+			<input type="submit" name="frmRegistration_submit" value="Создать" class="btn btn-success" />
+		</div>
+	</div>
+{% include 'results/panel_footer.html' %}
+</form>
+</div></div>
+<script type="text/javascript">
+$("input#id_transfer_cost").prop("disabled", true);
+$("input#id_transfer_finish_date").prop("disabled", true);
+$('input#id_can_be_transferred').change(function () {
+	$("input#id_transfer_cost").prop("disabled", !this.checked);
+	$("input#id_transfer_finish_date").prop("disabled", !this.checked);
+});
+</script>
+{% endwith %}
+{% endblock %}

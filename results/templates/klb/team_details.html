@@ -1,0 +1,90 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+{% include 'klb/team_header.html' %}
+<div class="row"><div class="col-md-12 text-center">
+	{% include 'misc/adsense_bottom.html' %}
+	<br/><br/>
+</div></div>
+<div class="row"> <!-- Header -->
+	<div class="col-md-5">
+		<h4>Состав команды</h4>
+		{% if n_unpaid_participants %}
+			<div class="alert alert-warning" role="alert">
+				<p>Пока не оплачено участие у {{ n_unpaid_participants }} член{{ n_unpaid_participants|ending:16 }} команды.
+				Пожалуйста, заплатите не позже {{ last_day_to_pay|date_rus }}.</p>
+				<p><strong><a href="{{ team.get_payment_url }}" class="underlined">Оплатить участие в матче</a></strong></p>
+				<p><strong><a href="{{ team.get_contact_info_url }}" class="underlined">Чьё участие не оплачено?</a></strong></p>
+				{% if n_unpaid_from_all_club_teams > n_unpaid_participants %}
+					<p><strong>NEW! <a href="{{ team.club.get_payment_url }}" class="underlined">Оплатить участие за все команды клуба</a></strong>
+						(всего {{ n_unpaid_from_all_club_teams }} человек{{ n_unpaid_from_all_club_teams|ending:9 }})
+					</p>
+				{% endif %}
+			</div>
+		{% endif %}
+
+		{% include 'klb/participants_table.html' with show_hash_links=1 year=team.year %}
+		{% if is_admin %}
+			{% if team.year >= 2018 and team.year >= CUR_KLB_YEAR %}
+				<p class="for-admin">Пенсионеров в команде: {{ n_seniors }}</p>
+			{% endif %}
+			{% if first_participant_date %}
+				<p class="for-admin">Дата заявки первого человека: {{ first_participant_date }}</p>
+			{% endif %}
+			{% if is_admin or is_editor %}{% with editors=team.club.editors.all %}
+				{% if editors %}
+					<br/><br/>
+					<h4 class="for-admin">Могут добавлять клубу результаты</h4>
+					{% for person in editors %}
+						<p class="for-admin">{% include 'editor/user_name_with_link.html' %}</p>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}{% endif %}
+			<br/><br/>
+			<h4 class="for-admin">Изменить название команды</h4>
+			<form id="frmChangeTeamName" action="{{ team.get_change_name_url }}" method="POST" class="form-inline">
+				{% csrf_token %}
+				Новое название:
+				<input type="text" name="teamName" value="{{ team.name }}" maxlength="100"/>
+				<input type="submit" name="changeName_submit" value="Изменить" class="btn btn-success"/>
+			</form>
+		{% elif is_editor and team.year >= CUR_KLB_YEAR %}
+			<p>Чтобы изменить название команды, <a href="#" id="send_to_info_page">напишите нам</a>.</p>
+		{% endif %}
+	</div>
+	<div class="col-md-7">
+		{% if klb_results %}
+			{% if show_all_results %}
+				<h4>Все выступления в зачёт КЛБМатча
+					&nbsp;&nbsp;&nbsp;
+					<a href="{{ team.get_absolute_url }}">Только лучшие выступления</a>
+				</h4>
+			{% else %}
+				<h4>Лучшие выступления в зачёт КЛБМатча
+					&nbsp;&nbsp;&nbsp;
+					<a href="{{ team.get_details_full_url }}">Все выступления</a>
+				</h4>
+			{% endif %}
+			<table class="table table-condensed table-hover">
+				{% include 'klb/result_header.html' %}
+				{% regroup klb_results by participant as participants %}
+				{% for participant in participants %}{% with person=participant.grouper.klb_person %}
+					<tr class="info">
+						<th colspan="5" class="text-center">
+							<a href="{{ person.get_absolute_url }}" name="person{{ person.id }}">
+								{{ person.fname }} {{ person.lname }}</a>
+							({{ person.birthday.year }} г. р.)
+						</th>
+						<th>Всего</th>
+						<td class="text-right">{{ participant.grouper.clean_sum|floatformat:3 }}</td>
+						<td class="text-right">{{ participant.grouper.bonus_sum|floatformat:3 }}</td>
+					</tr>
+					{% for elem in participant.list %}{% with klb_result=elem.klb_result event=elem.klb_result.race.event %}
+						{% include 'klb/result_row.html' %}
+					{% endwith %}{% endfor %}
+				{% endwith %}{% endfor %}
+			</table>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

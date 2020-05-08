@@ -1,0 +1,157 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-10">
+	<div class="row"> <!-- Header -->
+		<div class="col-md-6">
+			<h3>{% if runner.private_data_hidden %}
+					{% if is_admin %}
+						{{ runner.fname }} {{ runner.midname }} {{ runner.lname }} <small class="for-admin">(имя видно только админам)</small>
+					{% else %}
+						(имя участника забегов скрыто)
+					{% endif %}
+				{% else %}
+					{{ runner.fname }} {{ runner.midname }} {{ runner.lname }}
+				{% endif %}
+				{% if is_admin %}
+					<span class="pull-right">
+						&nbsp;
+						<a href="{{ runner.get_find_results_url }}">
+							<button type="button" class="btn btn-xs btn-primary">Искать результаты</button></a>
+						&nbsp;
+						<a href="{{ runner.get_editor_url }}">
+							<button type="button" class="btn btn-xs btn-primary">Редактировать</button></a>
+						&nbsp;
+						<a href="{{ runner.get_history_url }}">
+							<button type="button" class="btn btn-xs btn-primary">История</button></a>
+						{% if not runner.klb_person %}
+							&nbsp;
+							<a href="{{ runner.get_person_create_url }}">
+								<button type="button" class="btn btn-xs btn-primary">Создать участника КЛБМатча</button></a>
+						{% endif %}
+					</span>
+				{% endif %}
+			</h3>
+			{% if runner.city %}
+				{% if runner.private_data_hidden %}
+					{% if is_admin %}
+						<p class="for-admin"><a href="{{ runner.city.get_races_url }}">{{ runner.city.nameWithCountry|safe }}</a></p>
+					{% endif %}
+				{% else %}
+					<p><a href="{{ runner.city.get_races_url }}">{{ runner.city.nameWithCountry|safe }}</a></p>
+				{% endif %}
+			{% endif %}
+			{% if runner.url_wiki %}
+				<p><a href="{{ runner.url_wiki }}">Статья о человеке</a></p>
+			{% endif %}
+			{% if runner.club_name %}
+				<p>Клуб: {{ runner.club_name }}</p>
+			{% endif %}
+			{% if runner.birthday_known and is_admin %}
+				<p class="for-admin">Дата рождения: {{ runner.birthday|date:"j E Y" }}</p>
+			{% elif runner.birthday and not runner.private_data_hidden %}
+				<p>Год рождения: {{ runner.birthday|date:"Y" }}</p>
+			{% endif %}
+			{% if runner.deathday %}
+				<p>Дата смерти: {{ runner.deathday|date:"j E Y" }}</p>
+			{% endif %}
+			{% if is_admin %}
+				<p class="for-admin">
+					<a href="{% url 'results:runners' lname=runner.lname fname=runner.fname %}" class="for-admin">Все бегуны с такими именем и фамилией</a>
+					{% include 'tools/user_email_for_admin.html' with user=runner.user %}
+					{% if runner.comment_private %}
+						<br/>
+						Комментарий для администраторов: {{ runner.comment_private }}
+					{% endif %}
+				</p>
+			{% endif %}
+
+			{% if klb_person %}
+				{% if runner.private_data_hidden %}
+					{% if is_admin %}
+						<h4 class="for-admin"><a href="{{ klb_person.get_absolute_url }}">Страница участника КЛБМатчей</a></h4>
+					{% endif %}
+				{% else %}
+					<br/><br/>
+					<h4><a href="{{ klb_person.get_absolute_url }}">Страница участника КЛБМатчей</a></h4>
+					<p>Участий в матчах: {{ klb_person.klb_participant_set.count }}
+					{% if n_klb_results %}
+						<br/>Результатов в зачёт матчей: {{ n_klb_results }}
+					{% endif %}
+					</p>
+				{% endif %}
+			{% endif %}
+
+			{% if runner.n_parkrun_results %}
+				<p>Участник паркранов:
+					<a href="{{ runner.get_parkrun_url }}" target="_new">{{ runner.n_parkrun_results }} результат{{ runner.n_parkrun_results|ending:1 }} в России</a></p>
+			{% endif %}
+
+			{% comment %}{% if runner.ak_person %}{% with person=runner.ak_person %}
+				<br/>
+				<h4>В базе <a href="http://probeg.org/rez.php">АК55</a>:
+					{{ person.fname }} {{ person.midname }} {{ person.lname }}
+				</h4>
+				{% if person.name %}
+					Имя целиком: {{ person.name }}
+				{% endif %}
+				{% if person.name_alternative %}
+					<br/>Альтернативное имя: {{ person.name_alternative }}
+				{% endif %}
+				{% if person.club_raw %}
+					<br/>Клуб: {{ person.club_raw }}
+				{% endif %}
+				{% if runner.birthday_raw %}
+					<br/>Дата рождения: {{ runner.birthday_raw|date:"j E Y" }}
+				{% elif runner.birthyear_raw %}
+					<br/>Год рождения: {{ runner.birthyear_raw|date:"Y" }}
+				{% endif %}
+				{% if person.city %}
+					<br/>Город: {{ person.city }}
+				{% elif runner.city_raw %}
+					<br/>Год, регион, страна: {{ person.city_raw }}, {{ person.region_raw }}, {{ person.country_raw }}
+				{% endif %}
+				<br/>Участий из базы АК: {{ n_ak_results }}
+				{% if person.user %}
+					<br/>Из них приписаны к пользователю: {{ n_ak_results_for_user }}
+				{% endif %}
+			{% endwith %}{% endif %}{% endcomment %}
+
+			{% with user=runner.user profile=runner.user.user_profile %}{% if runner.user and profile.is_public or runner.user and is_admin %}
+				<br/><br/>
+				<h4 {% if not profile.is_public %} class="for-admin"{% endif %}>Пользователь сайта:
+					<a href="{{ runner.get_user_url }}">{{ user.first_name }} {{ profile.midname }} {{ user.last_name }}</a>
+				</h4>
+				{% if is_admin %}
+					<span class="for-admin">
+						Профиль: {% if profile.is_public %}публичный{% else %}закрытый{% endif %}
+						{% if profile.nickname %}
+							<br/>Ник: {{ profile.nickname }}
+						{% endif %}
+						{% if profile.birthday %}
+							<br/>Дата рождения: {{ profile.birthday|date:"j E Y" }}
+						{% endif %}
+						{% if profile.city %}
+							<br/>Город: {{ profile.city }}
+						{% endif %}
+						{% if profile.comment %}
+							<br/>Комментарий: {{ profile.comment }}
+						{% endif %}
+					</span>
+				{% endif %}
+			{% endif %}{% endwith %}
+		</div>
+		<div class="col-md-6">
+			{% include 'results/distances_stat.html' with person=runner %}
+
+			{% include 'tools/user_clubs_list.html' %}
+		</div>
+	</div>
+	<p></p>
+	{% include 'results/results_table.html' with runner_page=1 person=runner %}
+</div>
+	<div class="col-md-2 text-right">
+		{% include 'misc/adsense_high.html' %}
+	</div>
+</div>
+{% endblock %}

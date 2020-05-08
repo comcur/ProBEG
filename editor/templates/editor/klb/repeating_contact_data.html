@@ -1,0 +1,79 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% block main %}
+
+<h3><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч–{{ year }}</a>:
+	повторяющиеся личные данные
+</h3>
+<br/>
+
+<h4>Адреса электронной почты</h4>
+{% if same_emails %}
+	<table class="table table-condensed table-hover">
+		<tr class="info">
+			<th class="text-right">№</th>
+			<th>E-mail</th>
+			<th>Участник</th>
+			<th>Команда</th>
+			<th>Кто заявил</th>
+			<th class="text-right">Когда заявил</th>
+			<th>Телефон</th>
+		</tr>
+		{% for email, participants in same_emails %}
+			{% for participant in participants %}
+				<tr>
+					{% if forloop.first %}
+						<td class="text-right">{{ forloop.parentloop.counter }}</td>
+						<td>{{ email }}</td>
+					{% else %}
+						<td></td>
+						<td></td>
+					{% endif %}
+					<td><a href="{{ participant.klb_person.get_absolute_url }}">{{ participant.klb_person }}</a></td>
+					<td><a href="{{ participant.team.get_absolute_url }}">{{ participant.team.name }}</a></td>
+					<td>{% include 'editor/user_name_with_link.html' with person=participant.added_by %}</td>
+					<td>{{ participant.date_registered }}</td>
+					<td>{{ participant.phone_number }}</td>
+				</tr>
+			{% endfor %}
+		{% endfor %}
+	</table>
+{% else %}
+	<p>Таких нет. Ура!</p>
+{% endif %}
+
+<h4>Телефоны</h4>
+{% if same_phones %}
+	<table class="table table-condensed table-hover">
+		<tr class="info">
+			<th class="text-right">№</th>
+			<th>Телефон</th>
+			<th>Участник</th>
+			<th>Команда</th>
+			<th>Кто заявил</th>
+			<th class="text-right">Когда заявил</th>
+			<th>E-mail</th>
+		</tr>
+		{% for phone_number, participants in same_phones %}
+			{% for participant in participants %}
+				<tr>
+					{% if forloop.first %}
+						<td class="text-right">{{ forloop.parentloop.counter }}</td>
+						<td>{{ phone_number }}</td>
+					{% else %}
+						<td></td>
+						<td></td>
+					{% endif %}
+					<td><a href="{{ participant.klb_person.get_absolute_url }}">{{ participant.klb_person }}</a></td>
+					<td><a href="{{ participant.team.get_absolute_url }}">{{ participant.team.name }}</a></td>
+					<td>{% include 'editor/user_name_with_link.html' with person=participant.added_by %}</td>
+					<td>{{ participant.date_registered }}</td>
+					<td>{{ participant.email }}</td>
+				</tr>
+			{% endfor %}
+		{% endfor %}
+	</table>
+{% else %}
+	<p>Таких нет. Ура!</p>
+{% endif %}
+{% endblock %}

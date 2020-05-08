@@ -1,0 +1,11 @@
+{% load results_extras %}
+{% if participant_next or participant_prev %}
+{% with person_next=participant_next.klb_person person_prev=participant_prev.klb_person %}
+	({% if person_next %}отстаёт от участника
+	<a href="{{ person_next.get_absolute_url }}">{{ person_next.fname }} {{ person_next.lname }}</a>
+		на {{ participant_next.score_sum|subtract:p.score_sum|floatformat:3 }}
+		очков{% if person_prev %}, {% endif %}
+	{% endif %}{% if person_prev %}опережает участника
+	<a href="{{ person_prev.get_absolute_url }}">{{ person_prev.fname }} {{ person_prev.lname }}</a>
+		на {{ p.score_sum|subtract:participant_prev.score_sum|floatformat:3 }} очков{% endif %})
+{% endwith %}{% endif %}

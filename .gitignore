@@ -1,0 +1,14 @@
+*.pyc
+parkrun/private_settings.py
+results-load-log.txt
+social-log.txt
+test2.py
+test.py
+uwsgi.ini
+vassals/
+results/migrations/
+starrating/migrations/
+results/templates/generated/
+logs/
+cache/
+*~

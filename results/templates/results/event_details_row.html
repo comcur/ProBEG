@@ -1,0 +1,165 @@
+{% load results_extras %}
+{% load starrating %}
+<div class="row"> <!-- Event details row -->
+	<div class="col-md-10"> <!-- Main part -->
+		<div class="row">
+			<div class="col-md-5"> <!-- Left column -->
+				{% if not series_page %}
+					<p>Серия забегов:
+						<a href="{{ series.get_absolute_url }}">{{ series.name|safe }}</a>
+					</p>
+				{% endif %}
+				{% if event.invisible %}
+					<p class="for-admin"><strong>Забег виден только администраторам!</strong></p>
+				{% endif %}
+				{% if event.cancelled %}
+					<p><strong>Забег {{ event.dateFull|safe }} отменён!</strong></p>
+				{% else %}
+					{% if event_page or race_page or city_needed %}
+						<p>{% include 'results/event_cities_with_links.html' %}</p>
+					{% endif %}
+					<p>{{ event.dateWithTime|safe }}</p>
+					{% if event.surface_type %}
+						<p>Тип забега: {{ event.get_surface_type_display }}</p>
+					{% elif series.surface_type and not series_page %}
+						<p>Тип забега: {{ series.get_surface_type_display }}</p>
+					{% endif %}
+					{% if races and not race_page %}
+						<p>
+							{% if series_page or races.count > 1 %}Дистанции:{% else %}Дистанция:{% endif %}
+							{% include 'results/distances_comma.html' %}
+						</p>
+					{% endif %}
+				{% endif %}
+				{% if not series_page and user.is_authenticated and event.has_races_wo_results and not race_page %}
+					<p><button type="button" class="btn btn-warning btnAddResult" data-event="{{ event.id }}">
+						Добавить свой результат
+					</button></p>
+				{% endif %}
+			</div> <!-- Left column -->
+			<div class="col-md-{% if event.get_url_logo %}4{% else %}7{% endif %}"> <!-- Middle column -->
+				{% show_overall_rating event True %}
+				{% if race_page == 1 %}
+					{% if race.sr_overall.exists %}
+						<p>Оценки, поставленные участниками на дистанции {{ race.get_precise_name }}:</p>
+						{% show_overall_rating race True %}
+					{% endif %}
+				{% endif %}
+				{% if not series_page %}
+					{% include 'tools/series_editors_list.html' %}
+				{% endif %}
+				{% if event.start_place %}
+					<p>Место старта: {{ event.start_place|safe }}</p>
+				{% elif series.start_place and not series_page %}
+					<p>Место старта: {{ series.start_place|safe }}</p>
+				{% endif %}
+				{% if event.email or event.contacts %}
+					<p>Контакты организаторов:
+					{% if event.email %}
+						{% if event.email_correct %}
+							<a href="mailto:{{ event.email }}">{{ event.email }}</a>
+							{% if is_admin %}
+								&nbsp;&nbsp;&nbsp;<a class="send_from_info_page" href="#"
+									data-event="{{ event.id }}"><button type="button" class="btn btn-primary btn-xs">Написать</button></a>
+							{% endif %}
+						{% else %}
+							{{ event.email }}
+						{% endif %}
+						<br/>
+					{% endif %}
+					{{ event.contacts }}</p>
+				{% endif %}
+				{% if event.comment %}
+					<p>Комментарий: {{ event.comment|safe }}</p>
+				{% endif %}
+				{% if not series_page and event.is_in_klb_but_added_late %}
+					<p>В зачёт КЛБМатча не идёт — добавлен в календарь меньше, чем за 30 дней до события.</p>
+				{% endif %}
+				{% if is_admin or is_editor %}
+					{% if event.comment_private %}
+						<p class="for-admin">Комментарий для администраторов: {{ event.comment_private|safe }}</p>
+					{% endif %}
+					{% if event.source %}
+						<p class="for-admin">Источник информации: {{ event.source|safe }}</p>
+					{% endif %}
+					{% if event.show_date_added %}
+						<p class="for-admin">Внесён в календарь {{ event.date_added_to_calendar|date:"j E Y" }}</p>
+					{% endif %}
+				{% endif %}
+				<p>Заметили ошибку или неточность? Пожалуйста, <a href="#" id="send_to_info_page" data-event="{{ event.id }}">нажмите сюда</a>.</p>
+			</div> <!-- Middle column -->
+			{% if not series_page and event.get_url_logo %}
+				<div class="col-md-3">
+					<a href="#" class="showLogo" data-event="{{ event.id }}">
+						<img src="{{ event.get_url_logo|add_prefix }}" align="right" style="max-height: 200px; max-width: 100%;"/>
+					</a>
+				</div>
+			{% endif %}
+		</div>
+		<br/><br/>
+		<div class="row"> <!-- Second row -->
+			<div class="col-md-5"> <!-- Left column -->
+				{% if event.is_in_future %}
+					{% if series_page %}
+						{% with calendar_count=event.calendar_set.count %}{% if calendar_count %}
+							Планиру{{ calendar_count|plural_ending_10 }}т участвовать
+							<a href="{{ event.get_absolute_url }}">
+								{{ calendar_count }}
+								человек{{ calendar_count|plural_ending_9 }}
+							</a>
+						{% endif %}{% endwith %}
+					{% elif event_page %}
+						{% if user.is_authenticated %}
+							{% if calendar %}
+								<p><strong>Планирую участвовать
+									{% if calendar.race and n_races > 1 %}
+										на дистанции {{ calendar.race.distance }}
+									{% endif %}
+								</strong>
+								<br/>
+								<a href="{{ event.get_remove_from_calendar_url }}">
+									<button type="button" class="btn btn-warning">Больше не планирую</button></a>
+								</p>
+							{% else %}
+								<form action='{{ event.get_add_to_calendar_url }}' method="GET">
+									<input type="submit" value="Планирую участвовать!" class="btn btn-warning"/>
+									{% if n_races > 1 %}
+										на дистанции
+										<select name="race_id">
+											<option value="">пока не знаю</option>
+											{% for race in event.race_set.all %}
+												<option value="{{ race.id }}">{{ race.distance }}</option>
+											{% endfor %}
+										</select>
+									{% endif %}
+								</form>
+							{% endif %}
+						{% endif %}
+						<br/>{% include 'results/addtocalendar.html' %}
+						<br/><br/>
+					{% endif %}
+				{% endif %}
+				{% if event_page %}
+					{% include 'tools/planning_to_participate.html' %}
+				{% endif %}
+			</div>
+			<div class="col-md-7"> <!-- Center column -->
+				{% if event.announcement %}
+					<h4>Дополнительная информация</h4>
+					<p>{{ event.announcement|safe }}</p>
+				{% endif %}
+			</div>
+		</div> <!-- Second row -->
+	</div><!-- Main part -->
+	<div class="col-md-2 text-right"> <!-- Right column -->
+		{% include 'results/event_links.html' %}
+		{% if is_admin and event.registration %}
+			<p class="for-admin"><a href="{{ event.registration.get_editor_url }}">Регистрация</a></p>
+		{% elif 0 and is_admin and not event.registration and event.is_in_future %}
+			<p class="for-admin"><a href="{{ event.get_create_reg_step1_url }}">Открыть регистрацию</a></p>
+		{% endif %}
+		{% if is_admin and event.registration.is_open_now %}
+			<p class="for-admin"><a href="{{ event.get_reg_url }}">Зарегистрироваться</a></p>
+		{% endif %}
+	</div> <!-- Right column -->
+</div> <!-- First row -->

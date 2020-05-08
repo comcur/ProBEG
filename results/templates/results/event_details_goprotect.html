@@ -1,0 +1,74 @@
+{% extends 'results/base.html' %}
+{% block main %}
+<div class="row"> <!-- Header -->
+	<div class="col-md-6">
+		<h3>{{ event|safe }}, {{ event.dateFull|safe }}</h3>
+	</div>
+	<div class="col-md-6 text-right">
+		{% include 'results/event_edit_buttons.html' %}
+	</div>
+</div>
+{% include 'results/event_details_row.html' with event_page=1 %}
+<hr/>
+<div class="row">
+	<div class="col-md-8">
+	{% if news_set %}
+		<h3 class="text-center">
+			Новости
+		</h3>
+		{% for news in news_set %}
+			{% include 'results/news_row.html' with district=1 %}
+		{% endfor %}
+	{% else %}
+		<p>Пока у этого забега нет ни одной новости.</p>
+	{% endif %}
+	</div>
+	<div class="col-md-4">
+		{% if not event.is_in_future %}
+			<div class="row">
+				<div class="col-md-6">
+					<h3>Отчёты</h3>
+					{% for review in reviews %}
+						<p><a href="{{ review.get_main_url }}">{{ review.title }}</a></p>
+					{% empty %}
+						<p>Пока нет ни одного отчёта об этом забеге.</p>
+					{% endfor %}
+					{% if is_authenticated %}
+						<p><a href="#" class="add_review_page" data-event="{{ event.id }}">
+							<button type="button" class="btn btn-warning">Добавить отчёт</button></a>
+						</p>
+					{% endif %}
+				</div>
+				<div class="col-md-6">
+					<h3>Фотографии</h3>
+					{% for photo in photos %}
+						<p><a href="{{ photo.get_main_url }}">{{ photo.title }}</a></p>
+					{% empty %}
+						<p>Пока нет ни одной ссылки на фотографии этого забега.</p>
+					{% endfor %}
+					{% if is_authenticated %}
+						<p><a href="#" class="add_review_page" data-event="{{ event.id }}" data-photo="1">
+							<button type="button" class="btn btn-warning">Добавить ссылку</button></a>
+						</p>
+					{% endif %}
+				</div>
+			</div>
+		{% endif %}
+		<br/><br/>
+		<div class="row"><div class="col-md-12 text-right">
+			<!--GoProtect Widget Code Starts-->
+			<script type='text/javascript'>
+				wType = "iframe"
+				wWidth = "260px";
+				wHeight = "480px";
+				wPartnerId="probeg";
+				wColor1 = "2C5";
+				wIURL ="https://www.goprotect.ru/widget";
+			</script>
+			<div id="GoProtectWidget"></div>
+			<script type="text/JavaScript" src="https://www.goprotect.ru/widget/js/loader.js"></script>
+			<!--GoProtect Widget Code Ends-->
+		</div></div>
+	</div>
+</div>
+{% endblock %}

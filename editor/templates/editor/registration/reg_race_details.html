@@ -1,0 +1,63 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+
+<div class="row">
+	<div class="col-xl-6 col-xl-offset-3 col-lg-10 col-lg-offset-1 col-md-12">
+		{% include 'results/panel_header_before_title.html' %}
+			Стоимость регистрации на дистанцию <a class="underlined" href="{{ race.get_absolute_url }}">{{ race }}</a>
+			забега <a class="underlined" href="{{ event.get_absolute_url }}">{{ event|safe }}</a>
+		{% include 'results/panel_header_after_title.html' %}
+			<p>Можно создать несколько цен с одинаковой датой окончания действия и с разными названиями «тарифов»; в таком случае
+			пользователю предложат на выбор все варианты с минимальной, но ещё не прошедшей датой.</p>
+			<p>Нельзя создать две цены с одинаковыми датами, одинаковыми названиями и пересекающимися множествами допустимых возрастов.</p>
+			<p>Хотите сделать, скажем, льготное участие для школьников и бесплатное для пенсионеров? Создаёте три цены с одинаковыми датами:
+				100 рублей для возрастов до 17 лет, 300 рублей для от 18 до 59 лет, 0 рублей для от 60 лет.
+			</p>
+			<p>Обязательно должна быть хотя бы одна цена с пустой датой (т.е. действующая до закрытия регистрации) для каждого возраста.</p>
+			<form id="frmRace" method="POST" action="{{ race.get_reg_editor_url }}" class="form-inline">
+				{{ frmRace.management_form }}{% csrf_token %}
+				{% for error in frmRace.non_form_errors %}
+					<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+				{% endfor %}
+				<table class="table table-condensed">
+					<tr class="text-center">
+						<th>До какой даты действует</th>
+						<th>Название тарифа<br/>(у основной цены оставьте пустым)</th>
+						<th>Цена (руб.)</th>
+						<th>Мин.<br/>возраст</th>
+						<th>Макс.<br/>возраст</th>
+						<th>Удалить?</th>
+					</tr>
+					{% for form in frmRace %}{% with no_title=1 %}
+						<tr class="text-center">
+							<td>{{ form.id }}
+								{% for hidden in form.hidden_fields %}
+									{{ hidden }}
+								{% endfor %}
+								{% include 'results/form_field.html' with field=form.finish_date %}</td>
+								{% for error in form.non_field_errors %}
+									<h4><span class="label label-danger">{{ error|escape }}</span></h4>
+								{% endfor %}
+							<td>{% include 'results/form_field.html' with field=form.name %}</td>
+							<td>{% include 'results/form_field.html' with field=form.cost %}</td>
+							<td>{% include 'results/form_field.html' with field=form.min_age %}</td>
+							<td>{% include 'results/form_field.html' with field=form.max_age %}</td>
+							<td>{% if form.instance.id %}
+									{% include 'results/form_field.html' with field=form.DELETE %}
+								{% endif %}
+							</td>
+						</tr>
+					{% endwith %}{% endfor %}
+				</table>
+				<span class="pull-right">
+					<a onclick="window.close();"><button type="button" class="btn btn-primary">Закрыть вкладку</button></a>
+				</span>
+				<input type="submit" name="frmRace_submit" value="Обновить стоимости" class="btn btn-success"/>
+			</form>
+		{% include 'results/panel_footer.html' %}
+	</div>
+</div>
+
+{% endblock %}

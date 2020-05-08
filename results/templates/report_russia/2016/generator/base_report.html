@@ -1,0 +1,33 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block main %}
+<div class="row">
+	<div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<h3 class="text-center">{{ page_title }} <small> по данным сайта «ПроБЕГ»</small></h3>
+		<br/>
+		<h3 class="text-center">{{ cur_tab_name }}</h3>
+		{% block first_part %}{% endblock %}
+	</div>
+	<div class="col-md-3 col-sm-4">
+		{% include 'results/panel_header.html' with title='Содержание' style='default' %}
+			{% for tab_name in tab_names %}
+				{% if forloop.counter0 == tab %}
+					<p><strong>{{ tab_name }}</strong></p>
+				{% else %}
+					<p><a href="{% url 'results:russia_report' year=year tab=forloop.counter0 %}">{{ tab_name }}</a></p>
+				{% endif %}
+			{% endfor %}
+		{% include 'results/panel_footer.html' %}
+	</div>
+</div>
+{% block main_part %}{% endblock %}
+{% if next_tab_name %}
+	<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<div class="well well-sm">
+			Следующий раздел: <a href="{% url 'results:russia_report' year=year tab=tab|add:1 %}">{{ next_tab_name }}</a>
+		</div>
+	</div></div>
+{% endif %}
+
+{% endblock %}

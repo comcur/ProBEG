@@ -1,0 +1,42 @@
+{% spaceless %}
+{% if clubs|length == 1 %}
+	<p>Состоит в клубе <a href="{{ clubs.0.get_absolute_url }}"><strong>{{ clubs.0.name }}</strong></a></p>
+{% elif clubs %}
+	<p>Состоит в клубах
+		{% for club in clubs %}
+			<a href="{{ club.get_absolute_url }}"><strong>{{ club.name }}</strong></a>{% if not forloop.last %}, {% endif %}
+		{% endfor %}
+	</p>
+{% endif %}
+
+{% if clubs_to_add %}
+	<p>
+	{% for club in clubs_to_add %}
+		<a href="{% url 'editor:club_add_runner' club_id=club.id runner_id=runner.id %}">
+				<button type="button" class="btn btn-xs btn-primary">Добавить в клуб «{{ club.name }}»</button></a>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+	{% endfor %}
+	</p>
+{% endif %}
+
+{% for member, can_edit in clubs_was_member_before %}
+	<p>Входил{% if member.runner.gender == 1 %}а{% endif %} в клуб <a href="{{ member.club.get_absolute_url }}"><strong>{{ member.club.name }}</strong></a>
+		до {{ member.date_removed|date:"d.m.Y" }}.
+		{% if can_edit %}
+			&nbsp;&nbsp;
+			<a href="{{ member.get_editor_url }}"><button type="button" class="btn btn-xs btn-primary">Изменить даты</button></a>
+		{% endif %}
+	</p>
+{% endfor %}
+
+{% if runner and is_admin %}
+	<br/><br/>
+	<h4 class="for-admin">
+		Другие имена
+		&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ runner.get_editor_url }}"><button type="button" class="btn btn-xs btn-primary">Редактировать</button></a>
+	</h4>
+	{% for extra_name in runner.extra_name_set.all %}
+		<p>{{ extra_name.lname }} {{ extra_name.fname }} {{ extra_name.midname }}</p>
+	{% endfor %}
+{% endif %}
+{% endspaceless %}

@@ -1,0 +1,82 @@
+{% extends 'results/base.html' %}
+{% block main %}
+
+<h4>Забеги, которые нужно провести в КЛБМатч</h4>
+
+Тут – 10 самых старых дистанций, по которым загружены результаты, но проверка в КЛБМатч не проведена или устарела,
+и нет ошибок с результатами (см. <a href="{% url 'editor:klb_status' %}">статус КЛБМатча</a>).
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>Дата</th><th>Название</th><th>Дистанция</th><th></th>
+	</tr>
+	{% for race in races_for_klb %}
+		<tr>
+			<td class="text-center">
+				<a href="{{ race.event.get_absolute_url }}">{{ race.event.date|safe }}</a>
+			</td>
+			<td>
+				<a href="{{ race.event.get_absolute_url }}">{{ race.event|safe }}</a>
+			</td>
+			<td>
+				<a href="{{ race.get_absolute_url }}">{{ race.distance }}</a>
+			</td>
+			<td>
+				<a href="{{ race.get_klb_editor_url }}">
+					<button type="button" class="btn btn-sm btn-primary">Обработать</button></a>
+			</td>
+		</tr>
+	{% endfor %}
+</table>
+
+<h4>{{ page_title }}</h4>
+
+Здесь – самые свежие 50 пробегов, которые прошли не меньше недели назад,
+у которых есть протоколы .XLS или .XLSX и есть дистанции без результатов.
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>Дата</th><th>Название</th><th>Дистанции</th><th>Нажмите для обработки</th>
+	</tr>
+	{% for event in events %}
+		<tr>
+			<td class="text-center">
+				<a href="{{ event.get_absolute_url }}">{{ event.date|safe }}</a>
+			</td>
+			<td>
+				<a href="{{ event.series.get_absolute_url }}">{{ event|safe }}</a>
+			</td>
+			<td>
+				{% include 'results/distances_comma.html' with races=event.race_set.all %}
+			</td>
+			<td>
+				{% for protocol in event.document_set.all %}
+					<a href="{% url 'editor:protocol_details' event_id=event.id protocol_id=protocol.id %}">
+						{{ protocol }}
+					</a>
+					{% if not forloop.last %}
+						<br/>
+					{% endif %}
+				{% endfor %}
+			</td>
+		</tr>
+	{% endfor %}
+</table>
+
+А тут – 20 дистанций в России, Украине, Беларуси с самым большим числом участников, у которых у нас нет результатов.
+(Но протоколов тоже может не быть. Надо их достать!)
+
+<table class="table table-condensed table-hover">
+	<tr>
+		<th>Дата</th><th>Название</th><th>Дистанция</th><th>Число участников</th>
+	</tr>
+	{% for race in large_races %}
+		<tr>
+			<td class="text-center"><a href="{{ race.event.get_absolute_url }}">{{ race.event.date|safe }}</a></td>
+			<td><a href="{{ race.event.series.get_absolute_url }}">{{ race.event|safe }}</a></td>
+			<td>{{ race.distance }}</td>
+			<td>{{ race.n_participants }}</td>
+		</tr>
+	{% endfor %}
+</table>
+{% endblock %}

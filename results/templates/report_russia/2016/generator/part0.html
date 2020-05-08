@@ -1,0 +1,125 @@
+{% extends 'report_russia/generator/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+	<br/>
+	<p class="lead">
+		В&nbsp;России в&nbsp;{{ year }}&nbsp;году прошли по&nbsp;крайней мере
+		{{ n_events_total }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_events_total old=n_events_total_old %})&nbsp;беговых мероприятия.
+		В&nbsp;их&nbsp;рамках любители бега стартовали
+		на&nbsp;{{ n_races_total }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_races_total old=n_races_total_old %})&nbsp;дистанци{{ n_races_total|plural_ending_14 }}.</p>
+	<p>???&nbsp;забегов (???% от&nbsp;всех) прошли в&nbsp;Москве; ещё ??? (???%)&nbsp;— в&nbsp;Санкт-Петербурге.
+	Третье место&nbsp;— у&nbsp;Свердловской области???.
+	</p>
+	<p>{{ n_events_parkrun }}&nbsp;забегов ({{ n_events_parkrun_percent }}%)&nbsp;— это забеги <a href="http://www.parkrun.ru">parkrun</a>,
+	проходящие еженедельно
+	в&nbsp;{{ n_parkrun_cities }}&nbsp;(<strong><span class="text-success">+{{ n_parkrun_cities|subtract:n_parkrun_cities_old }}</span></strong>)&nbsp;городах.
+	</p>
+	<br/>
+{% endblock %}
+{% block main_part %}
+<div class="row">
+	<div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+		<h4 class="text-center">Крупнейшие забеги</h4>
+		<table class="table table-condensed table-hover">
+			<tr class="info">
+				<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th><th class="text-center">Дистанции</th>
+				<th class="text-center" colspan="2">Финишировало:</th><th></th><th class="text-right">Рост</th>
+			</tr>
+			<tr class="info">
+				<th colspan="4"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				<th class="text-right">с {{ year|subtract:1 }} г.</th>
+			</tr>
+			{% for item in largest_events %}{% with event=item.event %}
+				<tr>
+					<td>{{ forloop.counter }}</td>
+					<td>
+						<a href="{{ event.get_absolute_url }}">{{ event.name }}</a>
+						<br/>({{ event.strCityCountry|safe }})
+					</td>
+					<td class="text-right nobr">
+						{{ event.start_date|date:'j E' }}
+					</td>
+					<td class="text-center">
+						{% for race in event.race_set.all %}
+							{% if not forloop.first %}<br/>{% endif %}
+							<a href="{{ race.get_absolute_url }}">{{ race.distance|safe }}</a>
+							{% if race.precise_name %}({{ race.precise_name }}){% endif %}
+						{% endfor %}
+					</td>
+					<td colspan="2" style="min-width:200px;">
+						<div class="progress">
+							<div class="progress-bar text-left" style="width: {{ item.percent_men }}%">
+								<span class="text-left">{{ event.np_men }}</span>
+							</div>
+							<div class="progress-bar progress-bar-danger text-right" style="width: {{ item.percent_women }}%">
+								<span class="text-right">{{ event.np|subtract:event.np_men }}</span>
+							</div>
+						</div>
+					</td>
+					<td class="text-right">
+						{{ event.np }}
+					</td>
+					<td class="text-right">
+						{% if item.n_participants_old %}
+							{% include 'tools/percent_with_sign.html' with new=event.np old=item.n_participants_old %}
+						{% endif %}
+					</td>
+				</tr>
+			{% endwith %}{% endfor %}
+		</table>
+		<p>Московский марафон укрепил позиции и&nbsp;перешагнул рубеж в&nbsp;20&nbsp;тысяч финишировавших. Московский полумарафон вырос вдвое и&nbsp;обогнал петербуржские «Белые ночи». Главные казанский и&nbsp;ярославский забеги обогнали августовский полумарафон в&nbsp;Москве, сменивший название на&nbsp;«Лужники». Пермский марафон вырос в&nbsp;12&nbsp;раз и&nbsp;ворвался в&nbsp;десятку!</p>
+
+		<p class="lead">Лучшие результаты на&nbsp;российских марафонах показали Дмитрий Сафронов (2:13:32)
+			на <a href="{% url 'results:race_details' race_id=24731 %}">Пермском марафоне</a>
+			и Сардана Трофимова (2:30:29) на <a href="{% url 'results:race_details' race_id=26090 %}">Московском марафоне</a>.</p>
+		<p>Лучшие результаты на&nbsp;российских полумарафонах показали Ринас Ахмадеев (1:03:25)
+			на&nbsp;<a href="{% url 'results:race_details' race_id=23971 %}">Ярославском полумарафоне «Золотое кольцо»</a>
+			и&nbsp;Елена Седова (1:12:18) на&nbsp;<a href="{% url 'results:race_details' race_id=21863 %}">Новосибирском полумарафоне памяти Александра Раевича</a>. При этом Ринасу принадлежит и второй результат в сезоне у мужчин!</p>
+		<div class="well well-sm">
+			Подробнее о&nbsp;крупнейших забегах и лучших результатах на основных дистанциях —
+			в <a href="{% url 'results:russia_report' year=year tab=1 %}">Части 1</a>.
+		</div>
+		<br/>
+		<p class="lead">Всего на&nbsp;всех забегах финишировало не&nbsp;меньше 266&nbsp;тысяч человек;
+			36%&nbsp;— в Москве, 11%&nbsp;— в&nbsp;Санкт-Петербурге.
+			Больше трети из&nbsp;них (34%)&nbsp;— женщины.
+		</p>
+		<p>Всего хотя&nbsp;бы в&nbsp;одном забеге поучаствовали по&nbsp;крайней мере ???&nbsp;человек.
+		</p>
+		<br/>
+		<p class="lead">
+			Больше всего финишёров на&nbsp;забегах на&nbsp;жителя региона в&nbsp;2016&nbsp;году было в&nbsp;Ярославской области&nbsp;— 
+			11&nbsp;на&nbsp;тысячу жителей, почти в&nbsp;полтора раза больше, чем в&nbsp;Москве.</p>
+		<div class="well well-sm">
+			Cтатистика забегов и участников по регионам —
+			в <a href="{% url 'results:russia_report' year=year tab=2 %}">Части 2</a>.
+		</div>
+		<br/>
+		<p class="lead">Самая активная возрастная группа у&nbsp;мужчин&nbsp;— 30-34&nbsp;года; у женщин&nbsp;— 25-29&nbsp;лет.
+			Даже марафон 25-29-летние девушки бегают чаще, чем&nbsp;30-34-летние.</p>
+		<p>И&nbsp;у&nbsp;мужчин, и&nbsp;у&nbsp;женщин число 25-29-летних участников забегов более чем вдвое больше, чем&nbsp;20-24-летних. Все независимо от&nbsp;пола одновременно забывают ужасы школьной физкультуры?
+		</p>
+		<br/>
+		<img src="{% static 'images/articles/russia_2016/distances.png' %}" alt="Популярные дистанции"
+			align="center" style="max-width:100%;"/>
+		<br/><br/>
+		<div class="well well-sm">
+			Распределение участников по возрастам —
+			в <a href="{% url 'results:russia_report' year=year tab=3 %}">Части 3</a>.
+		</div>
+		<br/>
+		<p class="lead">
+			Половина всех финишировавших на&nbsp;марафонах мужчин выбежала из&nbsp;4&nbsp;часов 3&nbsp;минут;
+			половина женщин&nbsp;— из&nbsp;4&nbsp;часов 30&nbsp;минут.
+			<br/>На полумарафонах половина мужчин выбежала из&nbsp;1&nbsp;часа 48&nbsp;минут; половина женщин&nbsp;— из&nbsp;2&nbsp;часов 6&nbsp;минут.
+		</p>
+		<p>Для 10&nbsp;км этот&nbsp;показатель — медианное время&nbsp;— составил 51&nbsp;минуту у&nbsp;мужчин и 61&nbsp;минуту у&nbsp;женщин;
+			на 5&nbsp;километрах — соответственно 24&nbsp;минуты и 30&nbsp;минут.</p>
+		<div class="well well-sm">
+			Распределение результатов на основных дистанциях —
+			в <a href="{% url 'results:russia_report' year=year tab=4 %}">Части 4</a>.
+		</div>
+	</div>
+</div>
+{% endblock %}

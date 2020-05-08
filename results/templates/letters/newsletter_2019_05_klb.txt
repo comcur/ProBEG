@@ -1,0 +1,67 @@
+{% load results_extras %}{{ start_tags|safe }} Уважаемые участники КЛБМатча–2018,
+
+<p>Это — одноразовое письмо по итогам матча (лучше поздно, чем никогда).</p>
+
+Матч-2018 собрал максимальное число участников с тех пор, как участие в матче стало платным, да и до абсолютного рекорда 2015 (2608 человек) не хватило лишь четырёх участников, а число команд — 104 — стало рекордным за все девять лет. Мы благодарны всем участникам матча, и надеемся, матч 2019 года станет ещё более массовым, а борьба за места во всех зачётах — более серьёзной благодаря изменению формулы (см. краткие правила нового матча {{ url_start }}{% url 'results:about_match' year=2019 %} .
+
+Пусть у вас будут вместе несколько ссылок о матче:
+
+1. Итоговые результаты матча: {{ url_start }}{% url 'results:klb_match_summary' year=2018 %} . Если нажмёте на название своей команды, откроется список участников со вкладами каждого в результат команды.
+
+2. Подробная новость с итогами матча в командном и личном зачёте: {{ url_start }}/event/24743/#news4971
+
+3. Впервые мы подвели подробные итоги матча по регионам России, Украины, Беларуси, а также федеральным округам России: {{ url_start }}{% url 'results:klb_winners_by_regions' year=2018 %}
+
+Кроме того, в ближайшие две недели мы принимаем заказы на памятные медали участникам матча.
+
+Напомним, что мы в любом случае вышлем заслуженные медали:
+
+— всем участникам команды-победителя в абсолютном зачёте (Парсек);
+
+— 15 участникам, принёсшим больше всего очков, каждой из остальных команд-призёров в каждом из трёх зачётов (Урал-100, Аматар, Элара, Рязань, Ока, АБУ – URA, Энергия, Time4run) — у этих 15 человек на странице команды итоговые очки выделены жирным шрифтом;
+
+— занявшим 2 и 3 места в каждой из 26 возрастных групп (полный список призёров — на странице {{ url_start }}{% url 'results:klb_match_summary' year=2018 %} ; победители в каждой группе получат кубки, а не медали).
+
+(Мы приносим извинения, что это заняло так много времени; мы планируем рассылать все призы не позже начала июля. Мы работаем над тем, чтобы награждение по итогам матча–2019 прошло гораздо раньше.)
+
+Если вы не попали в это множество, то можете заказать памятную медаль участника (или заказать сразу несколько медалей на членов своего клуба); все подробности и форма для заказа есть на странице {{ url_start }}{% url 'results:medal_payment' %} .
+
+Пишите, если будут любые вопросы. Будем рады видеть вас в числе участников будущих матчей и просто у нас на сайте. И ярких вам и вашим клубам стартов летом!
+
+{% if n_unclaimed_results %}
+Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }}, похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}. Проверьте: не Ваш{{ n_unclaimed_results|plural_ending_12 }} ли? {{ url_start }}{% url 'results:find_results' %}
+{% endif %}{% if participant %}{% with overall_group=participant.get_overall_group gender_group=participant.get_gender_group age_group=participant.age_group %}
+Ваше положение в КЛБМатче:
+
+Выступлений: {{ participant.n_starts }}.
+Набранные очки: {{ participant.score_sum }} (в том числе бонусы: {{ participant.bonus_sum }}).
+	{% if participant.place %}
+Место в общем зачёте ({{ url_start }}{{ overall_group.get_absolute_url }}): {{ participant.place }} из {{ overall_group.n_participants }}.
+	{% endif %}{% if participant.place_gender %}
+Место среди {% if participant.klb_person.gender == 2 %}мужчин{% else %}женщин{% endif %} ({{ url_start }}{{ gender_group.get_absolute_url }}): {{ participant.place_gender }} из {{ gender_group.n_participants }}.
+	{% endif %}{% if participant.place_group %}
+Место в группе {{ age_group.name }} ({{ url_start }}{{ age_group.get_absolute_url }}): {{ participant.place_group }} из {{ age_group.n_participants }}.
+	{% endif %}{% endwith %}{% endif %}{% if team %}
+
+Команда «{{ team.name }}» ({{ url_start }}{{ team.get_absolute_url }}):
+	{% if team.place %}
+Место в общем зачёте ({{ url_start }}{% url 'results:klb_match_summary' %}): {{ team.place }} из {{ teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_team team_prev=team.get_prev_team %}
+	{% endif %}{% if team.place_medium_teams %}
+Место в зачёте средних команд ({{ url_start }}{% url 'results:klb_match_summary' tab='medium' %}): {{ team.place_medium_teams }} из {{ medium_teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_medium_team team_prev=team.get_prev_medium_team %}
+	{% elif team.place_small_teams %}
+Место в зачёте маленьких команд ({{ url_start }}{% url 'results:klb_match_summary' tab='small' %}): {{ team.place_small_teams }} из {{ small_teams_number }} {% include 'tools/klb_teams_next_prev.txt' with team_next=team.get_next_small_team team_prev=team.get_prev_small_team %}
+	{% endif %}{% endif %}
+{% if user_city %}
+Поищите предстоящие забеги:
+
+В городе {{ user_city }} — {{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}
+	{% if user_city.region.active %}
+В регионе {{ user_city.region }} — {{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}
+	{% endif %}
+В стране {{ user_city.region.country }} — {{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}
+{% endif %}{% if user %}
+Управление рассылками: {{ url_start }}{% url 'results:my_details' %}{% endif %}
+
+--
+Команда сайта «ПроБЕГ»
+http://base.probeg.org{{ finish_tags|safe }}

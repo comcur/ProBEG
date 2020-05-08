@@ -1,0 +1,5 @@
+{% extends 'letters/base_with_klb_results.txt' %}{% load staticfiles %}{% block content %}
+Вы заявились в КЛБМатч–{{ participant.match_year }} {{ date_registered }} года, но всё ещё не оплатили участие в матче. По положению КЛБМатча {% static regulations_link %} , оплатить участие нужно сразу после регистрации. Пожалуйста, оплатите участие на странице {{ url_start }}{% url 'results:klb_application_payment' year=participant.match_year %} до {{ registration_deadline }} включительно; иначе Вы будете удалены из матча.
+
+Стоимость участия — {{ participation_price }} рублей. Если Вам в {{ participant.match_year }} году исполняется {{ senior_age }} лет или больше, при оплате Вам предложат выбрать, платить или участвовать в матче бесплатно. Если у Вас есть группа инвалидности, напишите нам (например, ответив на это письмо), и у Вас тоже появится опция участвовать бесплатно.
+{% endblock %}

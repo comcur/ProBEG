@@ -1,0 +1,37 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block main %}
+<div class="row"><div class="col-md-8 col-md-offset-2">
+	<h3><a href="{% url 'results:klb_match_summary' year=year %}">КЛБМатч–{{ year }}</a>: оплата участия</h3>
+	{% if club %}
+		<p>Участие в КЛБМатче достаточно оплатить до конца марта. Капитан может оплатить участие за всех; но, если Вам так удобнее, можете оплатить своё участие сами.</p>
+	{% else %}
+		<p>Отлично, Вы заявлены в КЛБМатч–{{ year }}! Осталось только оплатить участие. В матче будут учтены только результаты, показанные в день оплаты и в последующие дни.</p>
+	{% endif %}
+	{% if can_pay_zero %}
+		<p>Поскольку {{ reason }}, Вы можете выбрать — платить за участие {{ price }} рублей или нет. Выбор никак не повлияет на ваше участие в матче; единственное — чем больше людей оплатят участие, тем качественнее мы сможем обработать результаты этого года.</p>
+		<div class="row">
+			<div class="col-md-6 text-center">
+				<form method="POST" action="{% url 'results:klb_make_individual_payment' year=year %}">
+					{% csrf_token %}
+					<input type="submit" name="btnPayment" value="Заплатить {{ price }} рублей за участие в матче" class="btn btn-success"/>
+				</form>
+			</div>
+			<div class="col-md-6 text-center">
+				<form method="POST" action="{% url 'results:klb_individual_pay_nothing' year=year %}">
+					{% csrf_token %}
+					<input type="submit" name="btnJoinForFree" value="Участвовать бесплатно" class="btn btn-success"/>
+				</form>
+			</div>
+		</div>
+	{% else %}
+		<span class="text-center">
+			<form method="POST" action="{% url 'results:klb_make_individual_payment' year=year %}">
+				{% csrf_token %}
+				<input type="submit" name="btnPayment" value="Заплатить {{ price }} рублей за участие в матче" class="btn btn-success"/>
+			</form>
+		</span>
+	{% endif %}
+</div></div>
+{% endblock %}

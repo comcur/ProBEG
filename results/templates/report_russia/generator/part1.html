@@ -1,0 +1,241 @@
+{% extends 'report_russia/generator/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+	<br/>
+	<h4 class="text-center">Самые популярные дистанции</h4>
+	<div class="row">
+		<div class="col-md-5">
+			<h4 class="text-center">по числу забегов</h4>
+			<table class="table table-condensed table-hover table-striped">
+				<tr class="info">
+					<th class="text-right">Дистанция</th><th class="text-right nobr">Всего забегов</th><th class="text-right nobr">Рост за год</th>
+				</tr>
+				{% for item in top_distances_count %}
+					<tr>
+						<td class="text-right">
+							{{ item.0 }}
+						</td>
+						<td class="text-right">
+							{{ item.1 }}
+							{% if 0 and item.0.length == 5000 %}
+								<br/>
+								(в т.ч. паркранов: {{ n_parkruns }})
+							{% endif %}
+						</td>
+						<td class="text-right">
+							{% if item.2 %}{% include 'tools/percent_with_sign.html' with new=item.1 old=item.2 %}{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+		<div class="col-md-5 col-md-offset-2">
+			<h4 class="text-center">по числу участников</h4>
+			<table class="table table-condensed table-hover table-striped">
+				<tr class="info">
+					<th class="text-right">Дистанция</th><th class="text-right nobr">Всего финишировало</th><th class="text-right nobr">Рост за год</th>
+				</tr>
+				</tr>
+				{% for item in top_distances_finishers %}
+					<tr>
+						<td class="text-right">
+							{{ item.0 }}
+						</td>
+						<td class="text-right">
+							{{ item.1 }}
+						</td>
+						<td class="text-right">
+							{% if item.2 %}{% include 'tools/percent_with_sign.html' with new=item.1 old=item.2 %}{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	<br/>
+{% endblock %}
+{% block main_part %}
+	{% for item in main_distances %}
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h3 class="text-center"><a name="part{{ forloop.counter }}"></a>{{ item.distance.name|capfirst }}. Самые крупные забеги</h3>
+			<table class="table table-condensed table-hover table-striped">
+				<tr class="info">
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+					<th class="text-right">Рост</th>
+				</tr>
+				<tr class="info">
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th>
+					<th class="text-right">Всего</th><th class="text-right">за&nbsp;год</th>
+				</tr>
+				{% for race_item in item.largest_races %}{% with race=race_item.race %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>
+							<a href="{{ race.get_absolute_url }}">{{ race.event.name }}</a>
+							<br/>{{ race.event.strCityCountry|safe }}
+						</td>
+						<td class="text-right nobr">
+							{{ race.event.start_date|date:'j E' }}
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: {{ race_item.men_percent }}%">
+									<span class="text-left">{{ race_item.n_participants_finished_men }}</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: {{ race_item.women_percent }}%">
+									<span class="text-right">{{ race_item.n_participants_finished|subtract:race_item.n_participants_finished_men }}</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							{{ race_item.n_participants_finished }}
+						</td>
+						<td class="text-right">
+							{% if race_item.n_participants_finished_old %}
+								{% include 'tools/percent_with_sign.html' with new=race_item.n_participants_finished old=race_item.n_participants_finished_old %}
+							{% endif %}
+						</td>
+					</tr>
+				{% endwith %}{% endfor %}
+			</table>
+			{% if item.distance.length == 5000 %}
+				<p>Мы не приводим лучшие результаты на дистанции 5 км,
+					поскольку, к сожалению, на очень многих забегах на этих дистанциях трассы измерены неточно.
+					Лучшие результаты по данным из протоколов вы можете найти на странице <a href="{% url 'results:rating' %}">рейтинга забегов</a>.
+				</p>
+			{% endif %}
+		</div></div>
+		{% if item.best_results_men %}
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у мужчин</h4>
+					<table class="table table-condensed table-hover table-striped">
+						<tr class="info">
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						{% for result in item.best_results_men %}{% with event=result.race.event %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								<td>
+									<a href="{{ result.race.get_absolute_url }}">{{ event.name }}</a>
+									<br/>
+									{{ event.strCityCountry|safe }}
+									{% if result.race.distance_real %}
+										&nbsp;(факт. дист.: {{ result.race.distance_real }})
+									{% endif %}
+								</td>
+								<td class="text-right">
+									{{ event.start_date|date:'j.m' }}
+								</td>
+								<td>{% if result.runner %}
+										<a href="{{ result.get_runner_or_user_url }}">
+											{{ result.fname|title }}<br/>{{ result.lname|title }}</a>
+									{% else %}
+										{{ result.fname|title }}<br/>{{ result.lname|title }}
+									{% endif %}
+								</td>
+								<td>
+									{{ result }}
+								</td>
+							</tr>
+						{% endwith %}{% endfor %}
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у женщин</h4>
+					<table class="table table-condensed table-hover table-striped">
+						<tr class="info">
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						{% for result in item.best_results_women %}{% with event=result.race.event %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								<td>
+									<a href="{{ result.race.get_absolute_url }}">{{ event.name }}</a>
+									<br/>
+									{{ event.strCityCountry|safe }}
+									{% if result.race.distance_real %}
+										&nbsp;(факт. дист.: {{ result.race.distance_real }})
+									{% endif %}
+								</td>
+								<td class="text-right">
+									{{ event.start_date|date:'j.m' }}
+								</td>
+								<td>{% if result.runner %}
+										<a href="{{ result.get_runner_or_user_url }}">
+											{{ result.fname|title }}<br/>{{ result.lname|title }}</a>
+									{% else %}
+										{{ result.fname|title }}<br/>{{ result.lname|title }}
+									{% endif %}
+								</td>
+								<td>
+									{{ result }}
+								</td>
+							</tr>
+						{% endwith %}{% endfor %}
+					</table>
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+
+
+	{% for item in main_distances_race_needed %}
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h3 class="text-center"><a name="part{{ forloop.counter|add:10 }}"></a>{{ item.distance }}. Самые крупные забеги</h3>
+			<table class="table table-condensed table-hover table-striped">
+				<tr class="info">
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дистанция</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+					<th class="text-right">Рост</th>
+				</tr>
+				<tr class="info">
+					<th colspan="4"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th>
+					<th class="text-right">Всего</th><th class="text-right">за&nbsp;год</th>
+				</tr>
+				{% for race_item in item.largest_races %}{% with race=race_item.race %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>
+							<a href="{{ race.get_absolute_url }}">{{ race.event.name }}</a>
+							<br/>{{ race.event.strCityCountry|safe }}
+						</td>
+						<td class="text-right nobr">
+							{{ race.distance }}
+							{% if race.distance_real %}
+								<br/>(факт.: {{ race.distance_real }})
+							{% endif %}
+						</td>
+						<td class="text-right nobr">
+							{{ race.event.start_date|date:'j E' }}
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: {{ race_item.men_percent }}%">
+									<span class="text-left">{{ race_item.n_participants_finished_men }}</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: {{ race_item.women_percent }}%">
+									<span class="text-right">{{ race_item.n_participants_finished|subtract:race_item.n_participants_finished_men }}</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							{{ race_item.n_participants_finished }}
+						</td>
+						<td class="text-right">
+							{% if race_item.n_participants_finished_old %}
+								{% include 'tools/percent_with_sign.html' with new=race_item.n_participants_finished old=race_item.n_participants_finished_old %}
+							{% endif %}
+						</td>
+					</tr>
+				{% endwith %}{% endfor %}
+			</table>
+		</div></div>
+	{% endfor %}
+{% endblock %}

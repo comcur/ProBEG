@@ -1,0 +1,51 @@
+{% extends 'results/base.html' %}
+{% block main %}
+
+<div class="row"><div class="col-md-12">
+	<h4>{{ page_title }}</h4>
+	<p>Всего забегов с хотя бы одним учтённым результатом в КЛБМатче: {{ n_events }}</p>
+	<table class="table">
+		<tr>
+			<th>№</th>
+			<th class="text-right">Дата</th>
+			<th>Название</th>
+			<th>Дистанция</th>
+			<th class="text-center">Результаты<br/>загружены?</th>
+			<th class="text-center">Проведена<br/>в КЛБМатч?</th>
+			<th class="text-center">Есть треки<br/>в страве?</th>
+		</tr>
+		{% for race in races_in_klb %}
+			<tr>
+				<td>{{ forloop.counter }}</td>
+				<td class="text-right"><a href="{{ race.event.get_absolute_url }}">{{ race.event.date|safe }}</a></td>
+				<td>
+					<a href="{{ race.event.get_absolute_url }}">{{ race.event.name|safe }}</a>
+					({{ race.event.strCityCountry|safe }})
+				</td>
+				<td><a href="{{ race.get_absolute_url }}">{{ race.distance_with_details|safe }}</a></td>
+				<td class="text-center">
+					{% if race.loaded == 1 %}
+						<span class="label label-success small-label">да</span>
+					{% else %}
+						<span class="label label-danger small-label">нет</span>
+					{% endif %}
+				</td>
+				<td class="text-center">
+					{% if race.was_checked_for_klb %}
+						<span class="label label-success small-label">да</span>
+					{% else %}
+						<span class="label label-danger small-label">нет</span>
+					{% endif %}
+				</td>
+				<td class="text-center">
+					{% if race.gps_track %}
+						<a href="{{ race.gps_track }}" target="_blank">да</a>
+					{% else %}
+						<span class="label label-danger small-label">нет</span>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div></div>
+{% endblock %}

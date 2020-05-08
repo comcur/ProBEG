@@ -1,0 +1,249 @@
+{% load staticfiles %}
+{% load results_extras %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>ПроБЕГ: Ваши новые результаты</title>
+		<style type="text/css">
+body {
+	margin: 0;
+	padding: 0;
+	min-width: 100%!important;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px; line-height: 1.42857143;
+	color: #333;
+	background-color: #fff;
+}
+.content {
+	width: 100%;
+	max-width: 600px;
+}
+body[yahoo] .class {}
+@media only screen and (min-device-width: 601px) {.content {width: 600px !important;} }
+@media only screen and (max-width: 550px), screen and (max-device-width: 550px) {
+	body[yahoo] .buttonwrapper {background-color: transparent!important;}
+	body[yahoo] .button a {padding: 15px 15px 13px!important; display: block!important;}
+}
+.header {
+	padding: 5px 30px 5px 30px;
+	border-color: #e7e7e7;
+	border: 1px solid transparent;
+	background-color: #dff0d8;
+}
+.col425 {
+	width: 425px!important;
+}
+.subhead {font-size: 15px; color: #ffffff; letter-spacing: 10px;}
+.innerpadding {padding: 30px 0px 30px 0px;}
+.borderbottom {border-bottom: 1px solid #f2eeed;}
+.bodycopy {font-size: 16px; line-height: 22px;}
+.footer {padding: 20px 30px 15px 30px; background-color: #dff0d8;}
+table { border-spacing: 0; border-collapse: collapse; }
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+	padding: 8px;
+	line-height: 1.42857143;
+	vertical-align: top;
+	border-top: 1px solid #ddd; }
+.table-borderless tbody tr td, .table-borderless tbody tr th, .table-borderless thead tr th {
+	border: none;
+	vertical-align: top;
+	padding: 2px;
+}
+a {
+	color: #337ab7;
+	text-decoration: none;
+}
+a:focus, a:hover {
+	color: #23527c; text-decoration: underline;
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+	font-family: inherit;
+	font-weight: 500;
+	line-height: 1.1;
+	color: inherit;
+}
+.h3, h3 {
+	font-size: 24px;
+	padding: 0 0 15px 0;
+}
+		</style>
+	</head>
+	<body yahoo>
+		<!--[if (gte mso 9)|(IE)]>
+		<table width="100%" bgcolor="#f6f8f1" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td>
+					<![endif]-->
+					<table class="content" align="center" cellpadding="0" cellspacing="0" border="0">
+						<tr>
+							<td class="header">
+								<table width="70" align="left" border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<td height="70" style="padding: 0 30px 0 0;">
+											<a href="{{ url_start }}">
+												<img src="{% static 'images/qirl-black-square-200.png' %}" width="70" height="70" border="0" alt=""/>
+											</a>
+										</td>
+									</tr>
+								</table>
+								<!--[if (gte mso 9)|(IE)]>
+								<table width="425" align="left" cellpadding="0" cellspacing="0" border="0">
+									<tr>
+										<td>
+										<![endif]-->
+											<table class="col425" align="left" border="0" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 425px;">
+												<tr>
+													<td height="70">
+														<table width="100%" border="0" cellspacing="0" cellpadding="0">
+																<tr>
+																		<td class="h3" style="padding: 1px 0 0 0;">
+																				Ваши новые результаты на&nbsp;ПроБЕГе
+																		</td>
+																</tr>
+														</table>
+													</td>
+												</tr>
+											</table>
+										<!--[if (gte mso 9)|(IE)]>
+										</td>
+									</tr>
+								</table>
+								<![endif]-->
+							</td>
+						</tr>
+						<tr>
+							<td class="innerpadding borderbottom">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<td class="h3">
+											{{ user_name }}, добрый день!
+										</td>
+									</tr>
+									<tr>
+										<td class="bodycopy">
+											{% if claimed_results.exists %}
+												<p>За последнее время Вам были добавлены следующие результаты:</p>
+												<table class="table table-borderless">
+													{% for result in claimed_results %}
+														<tr>
+															<td>{{ result.race.event.date|safe }}</td>
+															<td>
+																<a href="{{ url_start }}{{ result.race.get_absolute_url }}">{{ result.race }}</a>
+															</td>
+															<td>{{ result }}</td>
+														</tr>
+													{% endfor %}
+												</table>
+												{% if n_unclaimed_results %}
+													<p>
+														Кроме того, есть {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }},
+														похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}.
+														Проверьте: <a href="{{ url_start }}{% url 'results:find_results' %}">не Ваш{{ n_unclaimed_results|plural_ending_12 }} ли?</a>
+													</p>
+												{% endif %}
+											{% elif n_unclaimed_results %}
+												<p>
+													Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }},
+													похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}.
+													Проверьте: <a href="{{ url_start }}{% url 'results:find_results' %}">не Ваш{{ n_unclaimed_results|plural_ending_12 }} ли?</a>
+												</p>
+											{% endif %}
+										</td>
+									</tr>
+									{% if participant %}
+										<tr>
+											<td class="h3">
+												<br/>
+												Ваше положение в КЛБМатче
+											</td>
+										</tr>
+										<tr>
+											<td class="bodycopy">
+												{% include 'tools/klb_person_places.html' with is_admin=0 %}
+											</td>
+										</tr>
+									{% endif %}
+									{% if team %}
+										<tr>
+											<td class="h3">
+												<br/>
+												Команда <a href="{{ url_start }}{{ team.get_absolute_url }}">{{ team.name }}</a>
+											</td>
+										</tr>
+										<tr>
+											<td class="bodycopy">
+												{% include 'tools/klb_team_places.html' %}
+											</td>
+										</tr>
+									{% endif %}
+									{% if user_city %}
+										<tr>
+											<td class="h3">
+												<br/>
+												Поищите предстоящие забеги
+											</td>
+										</tr>
+										<tr>
+											<td class="bodycopy">
+												<p><a href="{{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}">В городе {{ user_city }}</a></p>
+												{% if user_city.region.active %}
+													<p><a href="{{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}">В регионе {{ user_city.region }}</a></p>
+												{% endif %}
+												<p><a href="{{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}">В стране {{ user_city.region.country }}</a></p>
+											</td>
+										</tr>
+									{% endif %}
+									<tr>
+										<td class="bodycopy">
+											<br/>
+											Успешных Вам стартов!
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+							<tr>
+								<td class="footer">
+									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td align="center" class="footercopy">
+												&copy; <a href="http://base.probeg.org">ПроБЕГ</a>
+												<br/>
+												<a href="http://base.probeg.org{% url 'results:my_details' %}">Управление рассылками</a>
+											</td>
+										</tr>
+										<tr>
+											<td align="center" style="padding: 20px 0 0 0;">
+												<table border="0" cellspacing="0" cellpadding="0">
+													<tr>
+														<td width="30" style="text-align: center; padding: 0 10px 0 10px;">
+															<a href="https://vk.com/probeg_org">
+																<img src="{% static 'images/vk_small_square.png' %}" width="30" height="30" alt="Наша страница на vk.com" border="0" />
+															</a>
+														</td>
+														<td width="30" style="text-align: center; padding: 0 10px 0 10px;">
+															<a href="https://www.facebook.com/probegorg">
+																<img src="{% static 'images/fb_small_square.png' %}" width="30" height="30" alt="Наша страница на Facebook" border="0" />
+															</a>
+														</td>
+														<td width="30" style="text-align: center; padding: 0 10px 0 10px;">
+															<a href="https://twitter.com/ProbegOrg">
+																<img src="{% static 'images/tw_small_square.png' %}" width="30" height="30" alt="Наша страница в Twitter" border="0" />
+															</a>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+					</table>
+					<!--[if (gte mso 9)|(IE)]>
+				</td>
+			</tr>
+		</table>
+		<![endif]-->
+	</body>
+</html>

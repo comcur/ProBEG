@@ -1,0 +1,90 @@
+{% extends 'letters/base.html' %}
+{% load results_extras %}
+{% block page_title %}ПроБЕГ: Новости за март-2017{% endblock %}
+{% block page_header %}ПроБЕГ: Новости за май-2017{% endblock %}
+{% block main %}
+	<tr>
+		<td style="font-size: 16px; padding: 0 0 15px;">
+			{% if user_name %}
+				{{ user_name }}, добрый день!
+			{% else %}
+				Добрый день!
+			{% endif %}
+		</td>
+	</tr>
+	<tr><td>
+		<p>Рады рассказать о новостях сайта за апрель-май.</p>
+		<p>1. Мы обновили страницу «<a href="{{ url_start }}{% url 'results:rating' %}">Рейтинг забегов</a>» —
+			на ней вы можете узнать, какие забеги стали самыми крупными или быстрыми в России, Украине и Беларуси.
+			<br/>
+			Даже не знаем, что вам будет интереснее — 
+			<a href="http://base.probeg.org/rating/RU/half/2015/n_finishers/">крупнейшие полумарафоны России в 2015 году по числу финишировавших</a>,
+			<a href="http://base.probeg.org/rating/UA/marathon/2016/best_female_result/">лучшие марафоны Украины прошлого года по результату женщины-победителя</a>
+			или <a href="http://base.probeg.org/rating/BY/any/0/n_finishers/">крупнейшие забеги в Беларуси за все годы</a>. Надеемся, эта страница будет удобным
+			источником справочной информации. Туда сразу попадают и все забеги 2017 года, как только мы обрабатываем их результаты.
+		</p>
+		<p>2. С первого апреля 2017 года ВФЛА обновила разрядные нормативы, в том числе и в беге. Многие нормативы на массовые разряды были немного ослаблены.
+			<br/>
+			Мы подготовили <a href="{{ url_start }}{% url 'sport_classes' %}">удобную страницу с ними</a>. Посмотрите, сколько вам осталось до следующей цели!
+		</p>
+		<p>3. На главные страницы — и 
+			<a href="http://probeg.org">старую</a> (в самом низу, и туда же ведёт ссылка сверху левой колонки), и <a href="{{ url_start }}{% url 'results:main_page' %}">новую</a> —
+			мы вывели список последних загруженных протоколов. Можете теперь всегда поинтересоваться, над чем мы сейчас работаем.
+		</p>
+		<p>4. И небольшое упрощение жизни для участников КЛБМатча: теперь, если при поиске своих результатов Вам попадутся результаты, подходящие для текущего матча,
+			мы сразу предложим отправить их на модерацию.
+		</p>
+	</td></tr>
+	{% if n_unclaimed_results %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Результаты, похожие на Ваши
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			Мы нашли {{ n_unclaimed_results }} результат{{ n_unclaimed_results|plural_ending_1 }},
+			похожи{{ n_unclaimed_results|plural_ending_5 }} на Ваш{{ n_unclaimed_results|plural_ending_12 }}.
+			Проверьте: <a href="{{ url_start }}{% url 'results:find_results' %}" style="color: #337ab7; text-decoration: none;">не
+			Ваш{{ n_unclaimed_results|plural_ending_12 }} ли?</a>
+		</td></tr>
+	{% endif %}
+	{% if participant %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br /><br />
+			Ваше положение в КЛБМатче
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_person_places.html' with is_admin=0 link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if team %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Команда <a href="{{ url_start }}{{ team.get_absolute_url }}" style="color: #337ab7; text-decoration: none;">{{ team.name }}</a>
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			{% include 'tools/klb_team_places.html' with link_style="color: #337ab7; text-decoration: none;" %}
+		</td></tr>
+	{% endif %}
+	{% if user_city %}
+		<tr><td class="h3" style="font-family: inherit; font-weight: 500; line-height: 1.1; color: inherit; font-size: 20px; padding: 0 0 15px;">
+			<br />
+			Поищите предстоящие забеги
+		</td></tr>
+		<tr><td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<p><a href="{{ url_start }}{% url 'results:races' city_id=user_city.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В городе {{ user_city }}</a></p>
+			{% if user_city.region.active %}
+				<p><a href="{{ url_start }}{% url 'results:races' region_id=user_city.region.id date_region=2 %}"
+					style="color: #337ab7; text-decoration: none;">В регионе {{ user_city.region }}</a></p>
+			{% endif %}
+			<p><a href="{{ url_start }}{% url 'results:races' country_id=user_city.region.country.id date_region=2 %}"
+				style="color: #337ab7; text-decoration: none;">В стране {{ user_city.region.country }}</a></p>
+		</td></tr>
+	{% endif %}
+	<tr>
+		<td class="bodycopy" style="font-size: 16px; line-height: 22px;">
+			<br />
+			Успешных Вам стартов летом!
+		</td>
+	</tr>
+{% endblock %}

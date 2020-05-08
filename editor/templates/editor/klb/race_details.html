@@ -1,0 +1,275 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+
+{% block main %}
+{% include 'results/panel_header_before_title.html' %}
+	<span class="label label-primary">КЛБМатч</span> Забег
+	<a class="underlined" href="{{ event.get_absolute_url }}">{{ event.name }}</a> ({{ event.dateFull|safe }})
+	на
+	<a class="underlined" href="{{ race.get_absolute_url }}">{{ race.distance }}</a>
+	в серии
+	<a class="underlined" href="{{ event.series.get_absolute_url }}">{{ event.series|safe }}</a>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<a href="{{ event.get_editor_url }}">
+		<button type="button" class="btn btn-sm btn-primary">Редактировать забег</button></a>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<a href="{{ event.get_history_url }}">
+		<button type="button" class="btn btn-xs btn-primary">История изменений</button></a>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<a href="{{ event.get_old_klb_url }}">
+		<button type="button" class="btn btn-sm btn-primary">Результаты в Матче (старая)</button></a>
+{% include 'results/panel_header_after_title.html' %}
+	{% if hasUnboundResults %}
+		<p>На этой дистанции есть результаты, проведённые в КЛБМатч, но не привязанные к загруженным результатам.
+			Они должны быть перечислены на странице <a href="{% url 'editor:klb_status' %}">статуса КЛБМатча</a>.
+			Сначала, пожалуйста, разберитесь с ними.
+		</p>
+	{% elif hasOffAndUnoffResults %}
+		<p>На этой дистанции есть и результаты из протокола, и введенные самими участниками. Они должны быть перечислены на странице <a href="{% url 'editor:klb_status' %}">статуса КЛБМатча</a>.
+			Сначала, пожалуйста, разберитесь с ними.
+		</p>
+	{% else %}
+		{% if using_pages %}
+			<h3>Внимание, это – не все результаты забега! А только страница {{ page|add:1 }} из {{ pages|length }}</h3>
+		{% endif %}
+		<form method="POST" action="{{ race.get_klb_process_url }}" name="frmRaceDetails">
+			{% csrf_token %}
+			{% if using_pages %}
+				<input type="hidden" name="page" value="{{ page }}"/>
+			{% endif %}
+			<div class="row">
+				<div class="col-md-4">
+					<h4>Числа</h4>
+					{% if just_checked %}
+						<p><strong>Ура, результатов для обработки не видно! Можно закрывать.</strong></p>
+					{% elif race.was_checked_for_klb %}
+						<p><strong>Эта дистанция уже проводилась в матч и с тех пор, скорее всего, не изменялась.</strong></p>
+					{% endif %}
+					{% if race.is_multiday %}
+						<p><strong>Дистанция помечена как многодневная гонка. Будут посчитаны только бонусы.</strong></p>
+					{% endif %}
+					{% if race.distance_real %}
+						<p>Официальная дистанция: {{ race.distance }}. Фактическая дистанция: {{ race.distance_real }}.
+							<br/>
+							<strong>В КЛБМатче будет учтена дистанция {{ distance }}.</strong>
+						</p>
+					{% else %}
+						<p>Дистанция: {{ distance }}</p>
+					{% endif %}
+					<p>Всего финишировавших: {{ results_total }}</p>
+					{% if using_pages %}
+						<p>Из них на текущей странице: {{ n_results_on_cur_page }}. Фамилии от «{{ first_lname }}» до «{{ last_lname }}».</p>
+					{% endif %}
+					<p>Уже засчитано в КЛБМатч: {{ results_in_klb }}</p>
+					<p>Может быть засчитано прямо сейчас: {{ results_to_add }}</p>
+					<p>Ошибок при проверках: {{ results_errors }}</p>
+				</div>
+				<div class="col-md-4">
+					<h4>Все дистанции забега</h4>
+					{% for ev_race in races %}{% with n=ev_race.get_official_results.count klb_status=ev_race.get_klb_status %}
+						{% if ev_race == race %}
+							<strong>
+								{{ ev_race }}
+								{% if n %}
+									({{ n }}&nbsp;результат{{ n|plural_ending_1 }})
+								{% endif %}
+							</strong>
+							{% if using_pages %}
+								[
+								{% for ev_page in pages %}
+									{% if ev_page == page %}
+										<strong>Стр.&nbsp;{{ page|add:1 }} </strong>
+									{% else %}
+										<a href="{% url 'editor:klb_race_details' race_id=race.id page=ev_page %}">Стр.&nbsp;{{ ev_page|add:1 }} </a>
+									{% endif %}
+								{% endfor %}
+								]
+							{% endif %}
+							{% if ev_race.was_checked_for_klb %}
+								– уже проводилась в Матч
+							{% endif %}
+						{% elif ev_race.loaded and klb_status == KLB_STATUS_OK %}
+							<a href="{{ ev_race.get_klb_editor_url }}">
+								{{ ev_race }}
+								{% if n %}
+									({{ n }}&nbsp;результат{{ n|plural_ending_1 }}){% endif %}</a>
+							{% if ev_race.was_checked_for_klb %}
+								– уже проводилась в Матч
+							{% endif %}
+						{% elif klb_status != KLB_STATUS_OK %}
+							{{ ev_race }}
+							{% if n %}
+								({{ n }}&nbsp;результат{{ n|plural_ending_1 }})
+							{% endif %}
+							– дистанция не подходит для КЛБМатча
+						{% else %}
+							{{ ev_race.distance }}
+							{% if n %}
+								({{ n }}&nbsp;результат{{ n|plural_ending_1 }})
+							{% endif %}
+							– результаты ещё не загружены
+						{% endif %}
+						<br/>
+					{% endwith %}{% endfor %}
+				</div>
+				<div class="col-md-4">
+					<h4>Настройки</h4>
+					{% if event.is_too_old_for_klb_score %}
+						<p>
+							<strong>Со дня забега прошло больше 90 дней.</strong>
+							<br/>
+							<input type="checkbox" name="only_bonus_score"{% if only_bonus_score %} checked{% endif %}/>
+							Считать у добавляемых результатов только бонусные очки
+						</p>
+					{% endif %}
+				</div>
+			</div>
+			<table class="table table-condensed table-hover table-bordered">
+				<tr class="text-center info">
+					<th rowspan="2">КЛБМатч</th>
+					<th rowspan="2">Кандидаты</th>
+					<th colspan="4">Имя</th>
+					<th rowspan="2">Клуб (сырой)</th>
+					<th rowspan="2">Дата рождения</th>
+					<th rowspan="2">Город, страна (сырые)</th>
+					<th rowspan="2">Результат (сырой)</th>
+					<th rowspan="2">Возраст</th>
+					<th rowspan="2">Комментарий</th>
+					<th rowspan="2"></th>
+				</tr>
+				<tr class="text-center info">
+					<th>Сырое</th>
+					<th>Фамилия (сырая)</th>
+					<th>Имя (сырое)</th>
+					<th>Отчество (сырое)</th>
+				{% for row in results %}{% with result=row.result klb_result=row.result.klb_result candidates=row.candidates %}
+					<tr{% if result.gender == 1 %} class="success"{% endif %}>
+						<td>{% if klb_result %}
+								{% with person=klb_result.klb_person %}
+									<span class="label label-primary">уже засчитан</span>
+									<br/>
+									<a href="{{ person.get_absolute_url }}">{{ person.fname }} {{ person.lname }}</a>
+									{% with team=klb_result.get_team %}{% if team %}
+										<br/>
+										Команда&nbsp;<a href="{{ team.get_absolute_url }}">{{ team.name }}</a>
+										{% if team.club.name != team.name %}
+											<br/>
+											Клуб&nbsp;<a href="{{ team.club.get_absolute_url }}">{{ team.club.name }}</a>
+										{% endif %}
+									{% endif %}{% endwith %}
+									<br/>
+									очки: {{ klb_result.klb_score|floatformat:3 }}
+									<br/>
+									бонус: {{ klb_result.bonus_score|floatformat:3 }}
+									<br/>
+									<nobr><input type="checkbox" name="to_delete_{{ result.id }}"
+											class="del-from-match" data-result="{{ result.id }}"/>
+										Удалить&nbsp;из&nbsp;Матча</nobr>
+									<br/>
+									<nobr><input type="checkbox" name="to_unclaim_{{ result.id }}"
+										id="to_unclaim_{{ result.id }}" disabled/>
+										и отвязать результат от бегуна</nobr>
+								{% endwith %}
+							{% elif candidates %}
+								{% if candidates|length == 1 %}
+									<span class="label label-success">есть 1 подходящий</span>
+								{% else %}
+									<span class="label label-warning">есть {{ candidates|length }} подходящих</span>
+								{% endif %}
+								<br/>
+								Проверяем: {{ row.compared_type|safe }}
+							{% elif row.errors %}
+								{% for error in row.errors %}
+									<br/>
+									<span class="label label-danger">{{ error }}</span>
+								{% endfor %}
+							{% endif %}
+						</td>
+						<td>{% if candidates %}
+								{% for candidate in candidates %}{% with person=candidate.person team=candidate.team %}
+									{% if not forloop.first %}<br/>{% endif %}
+									{% if candidate.show_checkbox %}
+										<input type="radio" name="person_for_{{ result.id }}" value="{{ person.id }}"
+											{% if row.checked_by_default %}checked{% endif %}
+										/>
+									{% endif %}
+										<a href="{{ person.get_absolute_url }}">{{ person.lname }} {{ person.fname }} {{ person.midname }}</a>
+										{% if person.city %}({{ person.city.nameWithCountry|safe }}){% endif %}
+										{% for comment in candidate.comments %}
+											<br/>
+											<span class="label label-success">{{ comment }}</span>
+										{% endfor %}
+										{% if team %}
+											<br/>
+											Команда&nbsp;<a href="{{ team.get_absolute_url }}">{{ team.name }}</a>
+											{% if team.club.city %}
+												({{ team.club.strCity|safe }})
+											{% endif %}
+											{% if team.club.name != team.name %}
+												<br/>
+												Клуб&nbsp;<a href="{{ team.club.get_absolute_url }}">{{ team.club.name }}</a>
+											{% endif %}
+										{% endif %}
+										<br/>
+										д.р. {{ person.birthday|date:"d.m.Y"|default:'' }}, возраст в день забега: {{ person|age_on_event:event }}
+										{% for error in candidate.errors %}
+											<br/>
+											<span class="label label-danger">{{ error }}</span>
+										{% endfor %}
+								{% endwith %}{% endfor %}
+								{% if row.has_checkboxes %}
+									<br/>
+									<input type="radio" name="person_for_{{ result.id }}" value="0"
+										{% if not row.checked_by_default %}checked{% endif %}
+									/>
+									Не засчитывать никому
+								{% endif %}
+							{% elif klb_result.added_by %}
+								Засчитал {% include 'editor/user_name_with_link.html' with person=klb_result.added_by %}
+								<br/>
+								{{ klb_result.last_update }}
+							{% endif %}
+						</td>
+						<td>{{ result.name_raw }}</td>
+						<td>
+							{{ result.lname }}
+							{% if result.lname_raw %}({{ result.lname_raw }}){% endif %}
+						</td>
+						<td>
+							{{ result.fname }}
+							{% if result.fname_raw %}({{ result.fname_raw }}){% endif %}
+						</td>
+						<td>
+							{{ result.midname }}
+							{% if result.midname_raw %}({{ result.midname_raw }}){% endif %}
+						</td>
+						<td class="text-center">
+							{{ result.clubLink }}
+							{% if result.club_raw %}({{ result.club_raw }}){% endif %}
+						</td>
+						<td class="text-center">
+							{% if result.birthday_known %}{{ result.birthday }}{% else %}{{ result.birthday.year }}{% endif %}
+						</td>
+						<td class="text-center">
+							{{ result.strCity }}
+							{% if result.city_raw %}({{ result.city_raw }}{% if result.country_raw %}, {{ result.country_raw }}{% endif %}){% endif %}
+						</td>
+						<td class="text-center">
+							{{ result }}
+							{% if result.time_raw %}({{ result.time_raw }}){% endif %}
+						</td>
+						<td class="text-center">
+							{% if result.age_raw %}{{ result.age_raw }}{% endif %}
+						</td>
+						<td class="text-center">{{ result.comment }}</td>
+						<td><a href="{{ result.get_editor_url }}">
+								<button type="button" class="btn btn-xs btn-primary">Ред</button></a>
+						</td>
+					</tr>
+				{% endwith %}{% endfor %}
+			</table>
+			<input type="submit" value="Обработать отмеченные результаты" class="btn btn-success"/>
+		</form>
+	{% endif %}
+{% include 'results/panel_footer.html' %}
+{% endblock %}

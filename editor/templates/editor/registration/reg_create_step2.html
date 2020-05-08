@@ -1,0 +1,82 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+<div class="row"><div class="col-md-12">
+<form id="frmRegistration" method="POST" action="" class="form-horizontal">
+{% csrf_token %}
+{% include 'results/panel_header_before_title.html' %}
+	Открытие регистрации на забег <a class="underlined" href="{{ event.get_absolute_url }}">{{ event.name|safe }}</a>. Шаг 2
+{% include 'results/panel_header_after_title.html' %}
+
+	<p>2,9% от суммы оплаты забирает себе аггрегатор платежей; ещё 3% — комиссия ПроБЕГа. Таким образом, вы получите 94,1% с каждого платежа.</p>
+
+	<br/>
+	<h4>Стоимость регистрации</h4>
+
+	<p>В первой строке укажите, до какой даты действуют цены в данном столбце. Ненужные столбцы оставьте пустыми.
+	Последний столбец обязательно заполните.</p>
+
+	<p>Для дистанций, регистрация на которые бесплатная, просто поставьте 0 в последний столбец и всё.</p>
+
+	<p>Вы сможете в любой момент изменить введённые сейчас суммы и даты.</p>
+	<table class="table table-condensed">
+		<tr class="text-center">
+			<th>Дистанция</th>
+			<th colspan="{{ n_price_cols|add:1 }}" class="text-center">До какого дня включительно действует цена?</th>
+		</tr>
+		<tr class="text-center">
+			<td></td>
+			{% for _ in "x"|rjust:n_price_cols %}
+				<td><input name="price_date_{{ forloop.counter }}" type="date"/></td>
+			{% endfor %}
+			<td>До закрытия регистрации<br/>({{ event.registration.finish_date|date:'d.m.Y' }})</td>
+		</tr>
+		{% for race in races %}
+			<tr class="text-center">
+				<td>{{ race.distance_with_details|safe }}</td>
+				{% for _ in "x"|rjust:n_price_cols %}
+					<td><input name="price_race_{{ race.id }}_date_{{ forloop.counter }}" type="number"/></td>
+				{% endfor %}
+				<td><input name="price_race_{{ race.id }}_finish" type="number" class="price_finish"/></td>
+			</tr>
+		{% endfor %}
+	</table>
+
+	<h4>Футболки</h4>
+
+	<div class="checkbox">
+		<label>
+			<input type="radio" name="tshirts" value="1"/>
+			Сразу добавить вопрос о размере футболки. Футболки достанутся всем участникам бесплатно
+		</label>
+	</div>
+	<div class="checkbox">
+		<label>
+			<input type="radio" name="tshirts" value="2"/>
+			Сразу добавить вопрос о размере футболки. Футболка стоит
+			<input name="tshirt_price" type="number"/> рублей, можно её не заказывать
+		</label>
+	</div>
+	<div class="checkbox">
+		<label>
+			<input type="radio" name="tshirts" value="3" checked/>
+			Не задавать вопрос о размере футболки
+		</label>
+	</div>
+
+	<p class="text-center">
+		<input type="submit" name="frmRegistration_submit" id="btnSubmit" value="Сохранить" class="btn btn-success" disabled/>
+	</p>
+{% include 'results/panel_footer.html' %}
+</form>
+</div></div>
+	<script language="javascript">
+n_races = {{ races.count }};
+$(".price_finish").change(function(){
+	$("#btnSubmit").prop("disabled", $('.price_finish').filter(function () {
+    	return this.value.length > 0
+	}).length < n_races);
+});
+</script>
+{% endblock %}

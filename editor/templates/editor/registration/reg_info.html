@@ -1,0 +1,268 @@
+{% extends 'results/base.html' %}
+{% load results_extras %}
+{% load staticfiles %}
+{% block main %}
+<div class="row"> <!-- Header -->
+	<div class="col-md-6">
+		<h3><a href="{{ event.get_absolute_url }}">{{ event|safe }}</a>,
+			{{ event.dateFull|safe }}
+		</h3>
+	</div>
+	<div class="col-md-6 text-right">
+		{% include 'results/event_edit_buttons.html' %}
+	</div>
+</div>
+{% include 'results/event_details_row.html' with race_page=1 %}
+<hr/>
+<div class="row"><div class="col-md-12">
+	<h4 class="text-left"><a name="intro"></a>Регистрация на забег. Текущее состояние</h4>
+	<div class="row">
+		<div class="col-md-4">
+			<table class="table table-condensed table-borderless">
+				<tr>
+					<td class="text-right">Открыта ли регистрация прямо сейчас:</td>
+					<td>{% include 'tools/small_bool_span.html' with value=registration.is_open_now %}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Можно ли открывать регистрацию:</td>
+					<td>{% include 'tools/small_bool_span.html' with value=registration.is_open %}</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td class="text-right">Время открытия регистрации:</td>
+					<td>{{ registration.start_date }}</td>
+				</tr>
+				<tr>
+					<td class="text-right">закрытия регистрации:</td>
+					<td>{{ registration.finish_date }}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Все участники должны указать отчество:</td>
+					<td>{% include 'tools/small_bool_span.html' with value=registration.is_midname_needed %}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Все участники должны указать свой почтовый адрес:</td>
+					<td>{% include 'tools/small_bool_span.html' with value=registration.is_address_needed %}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-5">
+			<table class="table table-condensed">
+			<tr>
+				<th class="text-right">Дистанция</th>
+				<th class="text-center">Регистрация<br/>создана?</th>
+				<th class="text-center">Регистрация<br/>открыта?</th>
+				<th class="text-center">Есть<br/>места?</th>
+			</tr>
+			{% for race in event.ordered_race_set %}
+				<tr>
+					<td class="text-right">{{ race }}</td>
+					<td class="text-center">{% include 'tools/small_bool_span.html' with value=race.reg_race_details %}</td>
+					{% if race.reg_race_details %}
+						<td class="text-center">{% include 'tools/small_bool_span.html' with value=race.reg_race_details.is_open %}</td>
+						<td class="text-center">TODO</td>
+					{% else %}
+						<td></td><td></td>
+					{% endif %}
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+		<div class="col-md-3">
+			{% include 'results/panel_header.html' with title='Содержание' style='default' %}
+				<p><a href="#intro">Общие параметры</a></p>
+				{% if event.reg_question_set.exists %}
+					<p>Вопросы:
+					{% for question in event.reg_question_set.all %}
+						<br/>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#question{{ question.id }}">{{ question.number }}. {{ question.title }}</a>
+					{% endfor %}
+					</p>
+				{% endif %}
+				{% if event.get_reg_race_set.exists %}
+					<p>Дистанции:
+					{% for race in event.get_reg_race_set %}
+						<br/>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#race{{ race.id }}">{{ race }}</a>
+					{% endfor %}
+					</p>
+				{% endif %}
+				<p><a href="#participants">Участники</a></p>
+			{% include 'results/panel_footer.html' %}
+		</div>
+	</div>
+</div></div>
+<hr/>
+{% for question in event.reg_question_set.all %}
+<hr/>
+<div class="row"><div class="col-md-12">
+	<div class="row">
+		<div class="col-md-5">
+			<h4 class="text-left"><a name="question{{ question.id }}"></a>Вопрос {{ question.number }}. {{ question.title }}</h4>
+			<table class="table table-condensed table-borderless">
+				<colgroup>
+					<col style="min-width:50%;"/>
+					<col/>
+				</colgroup>
+				<tr>
+					<td class="text-right">Текст вопроса:</td>
+					<td>{{ question.name }}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Можно ли дать несколько ответов:</td>
+					<td>{% include 'tools/small_bool_span.html' with value=question.multiple_answers %}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Обязательно ли дать хотя бы один ответ:</td>
+					<td>{% include 'tools/small_bool_span.html' with value=question.is_required %}</td>
+				</tr>
+				<tr>
+					<td class="text-right">До какой даты показывать вопрос:</td>
+					<td>{{ question.finish_date|default_if_none:'до закрытия регистрации' }}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-5">
+			<h4>Варианты ответа</h4>
+			<table class="table table-condensed table-border">
+				<tr>
+					<th>№</th><th>Текст</th><th>Цена</th>
+					<th class="text-center">Показывать<br/>регистрирующимся</th>
+					<th class="text-center">Выбран<br/>по умолчанию</th>
+					<th class="text-right">Число<br/>ответивших</th>
+				</tr>
+				{% for choice in question.reg_question_choice_set.all %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ choice.name }}</td>
+						<td>{{ choice.cost|default:'0' }}</td>
+						<td class="text-center">{% include 'tools/small_bool_span.html' with value=choice.is_visible %}</td>
+						<td class="text-center">{% include 'tools/small_bool_span.html' with value=choice.is_default %}</td>
+						<td class="text-right">{{ choice.reg_answer_set.count|default:'0' }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+			<br/>
+			<h4>На каких дистанциях задаём вопрос</h4>
+			{% for race in question.race_set.all %}
+				<p>
+					<input type="checkbox" name="chkbox_{{ race.id }}" checked disabled>
+					{{ race }}
+				</p>
+			{% endfor %}
+		</div>
+	</div>
+</div></div>
+{% endfor %}
+<hr/>
+{% for race in event.get_reg_race_set %}{% with race_details=race.reg_race_details %}
+<hr/>
+<div class="row"><div class="col-md-12">
+	<div class="row">
+		<div class="col-md-4">
+			<h4 class="text-left"><a name="race{{ race.id }}"></a>Регистрация на дистанцию {{ race }}</h4>
+			<table class="table table-condensed table-borderless">
+				<tr>
+					<td class="text-right">Открыта ли:</td>
+					<td>{% include 'tools/small_bool_span.html' with value=race_details.is_open %}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Максимальное число участников:</td>
+					<td>{{ race_details.participants_limit }}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Максимальный размер листа ожидания:</td>
+					<td>{{ race_details.queue_limit }}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Публиковать список зарегистрированных на дистанцию?</td>
+					<td>{% include 'tools/small_bool_span.html' with value=race_details.is_participants_list_open %}</td>
+				</tr>
+				<tr>
+					<td class="text-right">Уже зарегистрировалось человек:</td>
+					<td>{{ race.registrant_set.count }}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-4">
+			<h4 class="text-left">&nbsp;</h4>
+			<table class="table table-condensed table-borderless">
+				<tr>
+					<td class="text-right">Свою регистрацию можно передать другому человеку?</td>
+					<td>{% include 'tools/small_bool_span.html' with value=race_details.can_be_transferred %}</td>
+				</tr>
+				{% if race_details.can_be_transferred %}
+					<tr>
+						<td class="text-right">Стоимость передачи регистрации:</td>
+						<td>{{ race_details.transfer_cost }}</td>
+					</tr>
+					<tr>
+						<td class="text-right">Последний день передачи регистраций:</td>
+						<td>{{ race_details.transfer_finish_date }}</td>
+					</tr>
+				{% endif %}
+			</table>
+		</div>
+		<div class="col-md-4">
+			<h4>Стоимость регистрации</h4>
+			<table class="table table-condensed">
+				{% for finish_date, costs, names in race_details.get_prices_by_dates %}
+					<tr>
+						<td class="text-right">
+							до
+							{% if finish_date %}
+								{{ finish_date|date:'j.m.Y' }}
+							{% else %}
+								окончания регистрации
+							{% endif %}
+						</td>
+						<td class="text-right">{% for cost in costs %}{% if not forloop.first %}<br/>{% endif %}{{ cost }}{% endfor %}</td>
+						<td>{% for name in names %}{% if not forloop.first %}<br/>{% endif %}{{ name }}{% endfor %}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div></div>
+{% endwith %}{% endfor %}
+<hr/>
+<hr/>
+<h4><a name="participants"></a>Зарегистрированные участники</h4>
+{% if registration.get_registrant_set.exists %}
+<table class="table table-condensed table-hover">
+	<tr>
+		<th class="text-right">№</th>
+		<th class="text-right">Дистанция</th>
+		<th>Имя</th>
+		<th>Пол</th>
+		<th>Дата рождения</th>
+		<th>Город</th>
+		<th>Клуб</th>
+		<th>E-mail</th>
+		<th>Тариф</th>
+		<th class="text-right">Стоимость</th>
+		<th class="text-center">Оплачено?</th>
+		<th>Время регистрации</th>
+	</tr>
+	{% for registrant in registration.get_registrant_set %}
+		<tr>
+			<td class="text-right">{{ forloop.counter }}</td>
+			<td class="text-right">{{ registrant.race }}</td>
+			<td>{{ registrant.lname }} {{ registrant.fname }} {{ registrant.midname }}</td>
+			<td>{{ registrant.get_gender_display }}</td>
+			<td>{{ registrant.birthday|date:'j.m.Y' }}</td>
+			<td>{{ registrant.city.nameWithCountry|safe }}</td>
+			<td>{{ registrant.club_name }}</td>
+			<td>{{ registrant.email }}</td>
+			<td>{{ registrant.race_cost.name|default:'(без названия)' }}</td>
+			<td class="text-right">{{ registrant.race_cost.cost|default:'0.00' }} руб.</td>
+			<td class="text-center">{% include 'tools/small_bool_span.html' with value=registrant.is_paid %}</td>
+			<td>{{ registrant.created_time }}</td>
+		</tr>
+	{% endfor %}
+</table>
+{% else %}
+	<p>Пока нет ни одного. Ждём!</p>
+{% endif %}
+{% endblock %}

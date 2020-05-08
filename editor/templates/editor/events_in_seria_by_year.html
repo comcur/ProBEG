@@ -1,0 +1,14 @@
+{% extends 'results/base.html' %}
+{% load staticfiles %}
+{% block main %}
+
+<div class="row">
+	<div class="col-md-12">
+		<h3>{{ page_title }}</h3>
+	</div>
+</div>
+
+<div class="row"><div class="col-md-12">
+	{% include 'generated/events_in_seria_by_year.html' %}
+</div></div>
+{% endblock %}

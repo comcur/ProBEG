@@ -1,0 +1,41 @@
+{% extends 'results/base.html' %}
+{% block main %}
+
+<div class="col-md-12">
+	<h2>{{ list_title }}</h2>
+{% if msgInsteadRegions %}
+	<p>{{ msgInsteadRegions }}</p>
+{% else %}
+	{% if regions %}
+	<table id="table_for_sort" class="table table-condensed table-hover">
+	<thead><tr>
+		<th>ID региона</th><th>Страна</th>
+		<th>Название</th><th>Полное</th><th>На английском</th><th>Число городов</th>
+	</tr></thead>
+	<tbody>
+	{% for region in regions %}
+		<tr{% if not region.active %} class="info"{% endif %}>
+			<td>{{ region.id }}</td>
+			<td>{{ region.country.name }}</td>
+			<td>{{ region.name }}</td>
+			<td>{{ region.name_full }}</td>
+			<td>{{ region.nameEn }}</td>
+			<td>
+				{% if region.country.has_regions %}
+					<a href="{% url 'editor:cities' region_id=region.id %}">
+				{% else %}
+					<a href="{% url 'editor:cities' country_id=region.country.id %}">
+				{% endif %}
+					{{ region.num_cities }}
+				</a>
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody></table>
+	{% else %}
+		<p>Ни одного города не найдено. :( Возможно, вы указали одновременно и страну, и не содержащийся в ней регион?</p>
+	{% endif %}
+{% endif %}
+
+</div>
+{% endblock %}

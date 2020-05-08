@@ -1,0 +1,2 @@
+{% with id=widget.attrs.id %}{% for group, options, index in widget.optgroups %}{% for option in options %}
+    <p class="option-wrapper">{% include option.template_name with widget=option %}</p>{% endfor %}{% endfor %}{% endwith %}

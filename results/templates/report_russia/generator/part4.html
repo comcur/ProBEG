@@ -1,0 +1,49 @@
+{% extends 'report_russia/generator/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+	<br/>
+	<p>Из {{ n_races }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_races old=n_races_old %} по сравнению с {{ year|add:-1 }} годом) стартов
+	на {{ n_events }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_events old=n_events_old %}) забегах в России в {{ year }} году, о которых нам известно, мы обработали результаты
+	с {{ n_races_with_results }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_races_with_results old=n_races_with_results_old %}) стартов{% if n_races_only_n_finishers %};
+		ещё на {{ n_races_only_n_finishers }} старт{{ n_races_only_n_finishers|ending:15 }} мы знаем число финишировавших мужчин и женщин{% endif %}.
+	</p>
+	<p>Всего было обработано
+	{{ n_results_considered }}&nbsp;({% include 'tools/percent_with_sign.html' with new=n_results_considered old=n_results_considered_old %}) результат{{ n_results_considered|ending:1 }} (в том числе женских — {{ n_results_considered_women }}, или {% widthratio n_results_considered_women n_results_considered 100 %}%).</p>
+	<p>Для анализа результатов на основных дистанциях мы взяли только забеги с минимальным перепадом высот,
+	на которых финишировало не меньше {{ MIN_N_PARTICIPANTS_FOR_QUANTILES }} человек и о которых у нас нет данных о существенном отличии
+	фактической длины дистанции от заявленной.
+	Таких за год набралось:
+	{{ n_good_races.0 }} марафон{{ n_good_races.0|plural_ending_1 }},
+	{{ n_good_races.1 }} полумарафон{{ n_good_races.1|plural_ending_1 }},
+	{{ n_good_races.2 }} забег{{ n_good_races.2|plural_ending_1 }} на 10 километров
+	и {{ n_good_races.3 }} — на 5 километров.</p>
+	<p>В отчёте могут быть неточности по самым разным причинам:
+	организаторы могли внести изменения в протокол после того, как мы его обработали; сами протоколы могут содержать ошибки;
+	дистанции забегов могут быть измерены неточно.
+	Мы будем благодарны всем, кто сообщит нам о любых ошибках письмом на адрес <a href="mailto:info@probeg.org">info@probeg.org</a>
+	или <a href="#" id="send_to_info_page">прямо отсюда</a>.</p>
+
+	<br/><br/>
+	<h4>Что ещё можно посмотреть</h4>
+	{% if prev_year_report_exists %}
+		<p>Наш <a href="{% url report_url year=year|add:-1 %}">прошлогодний отчёт</a>.</p>
+	{% endif %}
+	<p>Списки <a href="{% url 'results:rating' %}">самых крупных забегов</a> и <a href="{% url 'results:runners' %}">самых активных бегунов</a> страны — они обновляются ежедневно, в реальном времени.</p>
+
+	<br/><br/>
+	<h4>Как помочь нам сделать следующий отчёт лучше</h4>
+	<p>Нам всегда нужна помощь с <a href="{% url 'results:protocols_wanted' events_type=1 %}">поиском</a>
+	и <a href="{% url 'results:protocols_wanted' events_type=2 %}">обработкой</a> отчётов прошедших забегов — и за текущий,
+	и за прошедшие годы. Посмотрите по ссылкам — возможно, вы можете помочь нам с забегами в своём городе или с теми, в которых вы сами
+	принимали участие.
+	</p>
+	<p>Кроме того, вы можете сделать <a href="{% url 'how_to_help' %}#donation">пожертвование</a> на развитие нашего сайта.</p>
+	<p>Наконец, вы можете просто <a href="{% url 'probeg_auth:login' %}">зарегистрироваться</a>
+	у нас на сайте (если ещё этого не сделали) и привязать себе свои результаты;
+	это позволит нам точнее оценивать общее число участников забегов, а вам даст возможность в удобном виде держать вместе данные
+	о своих выступлениях.</p>
+	<p>У вас есть идеи, какие числа обязательно надо посчитать в следующем отчёте? Тоже <a href="#" id="send_to_info_page">пишите</a>! Самые интересные из реализуемых пожеланий мы учтём, надеемся, уже меньше, чем через год.</p>
+{% endblock %}
+{% block main_part %}
+{% endblock %}

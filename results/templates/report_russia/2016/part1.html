@@ -1,0 +1,4626 @@
+{% extends 'report_russia/2016/base_report.html' %}
+{% load staticfiles %}
+{% load results_extras %}
+{% block first_part %}
+	<br/>
+	<h4 class="text-center">Самые популярные дистанции</h4>
+	<p>Мы не приводим лучшие результаты на дистанциях 10 км и 5 км,
+		поскольку, к сожалению, на очень многих забегах на этих дистанциях трассы измерены неточно.
+		Лучшие результаты по данным из протоколов вы можете найти на странице <a href="{% url 'results:rating' %}">рейтинга забегов</a>.
+	</p>
+	<br/>
+	<div class="row">
+		<div class="col-md-4">
+			<h4 class="text-center">по числу забегов</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th class="text-right">Дистанция</th><th class="text-right nobr">Всего забегов</th>
+				</tr>
+					<tr>
+						<td class="text-right">
+							5 км
+						</td>
+						<td class="text-right">
+							1538
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							10 км
+						</td>
+						<td class="text-right">
+							473
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							полумарафон
+						</td>
+						<td class="text-right">
+							377
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							марафон
+						</td>
+						<td class="text-right">
+							229
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							3 км
+						</td>
+						<td class="text-right">
+							131
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							15 км
+						</td>
+						<td class="text-right">
+							125
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							1 км
+						</td>
+						<td class="text-right">
+							118
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							30 км
+						</td>
+						<td class="text-right">
+							77
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							2 км
+						</td>
+						<td class="text-right">
+							74
+							
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							12 км
+						</td>
+						<td class="text-right">
+							62
+							
+						</td>
+					</tr>
+			</table>
+		</div>
+		<div class="col-md-4 col-md-offset-2">
+			<h4 class="text-center">по числу участников</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th class="text-right">Дистанция</th><th class="text-right nobr">Всего финишировало</th>
+				</tr>
+					<tr>
+						<td class="text-right">
+							5 км
+						</td>
+						<td class="text-right">
+							67246
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							полумарафон
+						</td>
+						<td class="text-right">
+							54292
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							10 км
+						</td>
+						<td class="text-right">
+							52194
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							марафон
+						</td>
+						<td class="text-right">
+							20884
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							3 км
+						</td>
+						<td class="text-right">
+							11876
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							15 км
+						</td>
+						<td class="text-right">
+							4019
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							2 км
+						</td>
+						<td class="text-right">
+							3450
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							10635 м
+						</td>
+						<td class="text-right">
+							3027
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							1520 м
+						</td>
+						<td class="text-right">
+							2955
+						</td>
+					</tr>
+				
+					<tr>
+						<td class="text-right">
+							7 км
+						</td>
+						<td class="text-right">
+							2692
+						</td>
+					</tr>
+			</table>
+		</div>
+	</div>
+	<br/>
+{% endblock %}
+{% block main_part %}
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">100 км. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/18473">Golden Ring Ultra-Trail® 100 2016 2nd Edition</a>
+							(Суздаль)
+						</td>
+						<td class="text-right nobr">
+							24 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 83%">
+									<span class="text-left">110</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 17%">
+									<span class="text-right">22</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							132
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/17796">URAL ULTRA-TRAIL 2016</a>
+							(Нейво-Рудянка)
+						</td>
+						<td class="text-right nobr">
+							21 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 91%">
+									<span class="text-left">33</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 9%">
+									<span class="text-right">3</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							36
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+							(Брянск)
+						</td>
+						<td class="text-right nobr">
+							16 октября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 56%">
+									<span class="text-left">13</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 44%">
+									<span class="text-right">10</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							23
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/17886">Марш-бросок «100 км за 24 часа»</a>
+							(Бородино)
+						</td>
+						<td class="text-right nobr">
+							28 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 78%">
+									<span class="text-left">18</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 22%">
+									<span class="text-right">5</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							23
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/10764">Кубок России по бегу на 100 км, Чемпионат Москвы по 6-часовому бегу, Кубок Пассаторе, XVI сверхмарафон «НОЧЬ МОСКВЫ»</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							12 февраля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 58%">
+									<span class="text-left">7</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 42%">
+									<span class="text-right">5</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							12
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у мужчин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/15872/">
+											Василий<br/>Ларкин</a>
+									
+								</td>
+								<td>
+									06:29:04
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/10764">Кубок России по бегу на 100 км, Чемпионат Москвы по 6-часовому бегу, Кубок Пассаторе, XVI сверхмарафон «НОЧЬ МОСКВЫ»</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									12.02
+								</td>
+								<td>
+										<a href="/runner/15872/">
+											Василий<br/>Ларкин</a>
+									
+								</td>
+								<td>
+									06:40:35
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/2901/">
+											Данил<br/>Десятниченко</a>
+									
+								</td>
+								<td>
+									07:15:32
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/433/">
+											Тимур<br/>Пономарёв</a>
+									
+								</td>
+								<td>
+									07:26:21
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/10764">Кубок России по бегу на 100 км, Чемпионат Москвы по 6-часовому бегу, Кубок Пассаторе, XVI сверхмарафон «НОЧЬ МОСКВЫ»</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									12.02
+								</td>
+								<td>
+										<a href="/runner/2901/">
+											Данил<br/>Десятниченко</a>
+									
+								</td>
+								<td>
+									07:31:33
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/23224">II Ультрамарафон «Гонка на выживание». 11 этап Камского кубка по марафону</a>
+									(Набережные Челны)
+									
+								</td>
+								<td class="text-right">
+									9.10
+								</td>
+								<td>
+										<a href="/user/124/">
+											Алексей<br/>Фесик</a>
+									
+								</td>
+								<td>
+									07:56:32
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/60/">
+											Артемий<br/>Свиридов</a>
+									
+								</td>
+								<td>
+									08:03:32
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/10764">Кубок России по бегу на 100 км, Чемпионат Москвы по 6-часовому бегу, Кубок Пассаторе, XVI сверхмарафон «НОЧЬ МОСКВЫ»</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									12.02
+								</td>
+								<td>
+										<a href="/runner/2326/">
+											Алексей<br/>Бакулин</a>
+									
+								</td>
+								<td>
+									08:03:55
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/user/371/">
+											Юрий<br/>Галкин</a>
+									
+								</td>
+								<td>
+									08:10:50
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/23114">31-й Пробег-Марафон «Битцевская прямая»</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									19.11
+								</td>
+								<td>
+										<a href="/runner/14/">
+											Юрий<br/>Сластенников</a>
+									
+								</td>
+								<td>
+									08:17:31
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у женщин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/24294/">
+											Марина<br/>Жалыбина</a>
+									
+								</td>
+								<td>
+									07:47:24
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/199717/">
+											Алсу<br/>Асанова</a>
+									
+								</td>
+								<td>
+									07:50:06
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/199718/">
+											Наталья<br/>Сотникова</a>
+									
+								</td>
+								<td>
+									07:53:16
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/24952/">
+											Надежда<br/>Шиханова</a>
+									
+								</td>
+								<td>
+									08:02:26
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/25536/">
+											Ольга<br/>Уколова</a>
+									
+								</td>
+								<td>
+									08:03:50
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/10764">Кубок России по бегу на 100 км, Чемпионат Москвы по 6-часовому бегу, Кубок Пассаторе, XVI сверхмарафон «НОЧЬ МОСКВЫ»</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									12.02
+								</td>
+								<td>
+										<a href="/runner/199718/">
+											Наталья<br/>Сотникова</a>
+									
+								</td>
+								<td>
+									08:11:20
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/25537/">
+											Надежда<br/>Шапошникова</a>
+									
+								</td>
+								<td>
+									08:14:04
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/1675/">
+											Диана<br/>Бугрова</a>
+									
+								</td>
+								<td>
+									08:14:17
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/3499/">
+											Светлана<br/>Буравова</a>
+									
+								</td>
+								<td>
+									08:16:55
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/23326">Чемпионат России по бегу на 100 км по шоссе, II фестиваль бега «Брянский лес»</a>
+									(Брянск)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/199719/">
+											Надежда<br/>Гоголева</a>
+									
+								</td>
+								<td>
+									08:21:21
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+			</div>
+		
+	
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">Марафон. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/19039">IV Московский Марафон</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							25 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 84%">
+									<span class="text-left">6603</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 16%">
+									<span class="text-right">1210</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							7813
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/18349">27-й Международный марафон «ERGO – Белые Ночи»</a>
+							(Санкт-Петербург)
+						</td>
+						<td class="text-right nobr">
+							3 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 81%">
+									<span class="text-left">2312</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 19%">
+									<span class="text-right">528</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							2840
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/18337">Горный марафон «КОНЖАК»</a>
+							(Краснотурьинск)
+						</td>
+						<td class="text-right nobr">
+							2 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 74%">
+									<span class="text-left">929</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 26%">
+									<span class="text-right">320</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1249
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/11111">Казанский марафон</a>
+							(Казань)
+						</td>
+						<td class="text-right nobr">
+							15 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 84%">
+									<span class="text-left">854</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 16%">
+									<span class="text-right">156</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1010
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/18581">Международный марафон «Европа — Азия»</a>
+							(Екатеринбург)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 88%">
+									<span class="text-left">558</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 12%">
+									<span class="text-right">70</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							628
+						</td>
+					</tr>
+				
+					<tr>
+						<td>6</td>
+						<td>
+							<a href="/race/10695">47-й международный зимний марафон «Дорога жизни», посвященный 72-й годовщине полного снятия блокады Ленинграда</a>
+							(Санкт-Петербург)
+						</td>
+						<td class="text-right nobr">
+							31 января
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 84%">
+									<span class="text-left">501</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 16%">
+									<span class="text-right">90</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							591
+						</td>
+					</tr>
+				
+					<tr>
+						<td>7</td>
+						<td>
+							<a href="/race/19353">Международный Марафон Сочи</a>
+							(Сочи)
+						</td>
+						<td class="text-right nobr">
+							6 ноября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 85%">
+									<span class="text-left">465</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 15%">
+									<span class="text-right">81</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							546
+						</td>
+					</tr>
+				
+					<tr>
+						<td>8</td>
+						<td>
+							<a href="/race/18563">SIM XXVII Сибирский международный марафон</a>
+							(Омск)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 86%">
+									<span class="text-left">418</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 14%">
+									<span class="text-right">64</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							482
+						</td>
+					</tr>
+				
+					<tr>
+						<td>9</td>
+						<td>
+							<a href="/race/19079">40-й «Космический марафон»</a>
+							(Королёв)
+						</td>
+						<td class="text-right nobr">
+							2 октября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 86%">
+									<span class="text-left">216</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 14%">
+									<span class="text-right">33</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							249
+						</td>
+					</tr>
+				
+					<tr>
+						<td>10</td>
+						<td>
+							<a href="/race/18025">Переславский марафон «Александровские версты»</a>
+							(Переславль-Залесский)
+						</td>
+						<td class="text-right nobr">
+							4 июня
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 90%">
+									<span class="text-left">207</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 10%">
+									<span class="text-right">21</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							228
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у мужчин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/1338/">
+											Федор<br/>Шутов</a>
+									
+								</td>
+								<td>
+									02:11:26
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/19039">IV Московский Марафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/17023/">
+											Артем<br/>Алексеев</a>
+									
+								</td>
+								<td>
+									02:13:40
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/608/">
+											Алексей<br/>Соколов</a>
+									
+								</td>
+								<td>
+									02:13:59
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/1690/">
+											Михаил<br/>Максимов</a>
+									
+								</td>
+								<td>
+									02:14:07
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/19039">IV Московский Марафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/1338/">
+											Федор<br/>Шутов</a>
+									
+								</td>
+								<td>
+									02:14:31
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/17023/">
+											Артем<br/>Алексеев</a>
+									
+								</td>
+								<td>
+									02:14:49
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/19039">IV Московский Марафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/13729/">
+											Юрий<br/>Чечун</a>
+									
+								</td>
+								<td>
+									02:15:07
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/199720/">
+											Артем<br/>Куфтырёв</a>
+									
+								</td>
+								<td>
+									02:16:08
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/19039">IV Московский Марафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/1690/">
+											Михаил<br/>Максимов</a>
+									
+								</td>
+								<td>
+									02:16:57
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/1428/">
+											Алексей<br/>Полтанов</a>
+									
+								</td>
+								<td>
+									02:17:50
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у женщин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/26688/">
+											Татьяна<br/>Архипова</a>
+									
+								</td>
+								<td>
+									02:28:34
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/3529/">
+											Алина<br/>Прокопьева</a>
+									
+								</td>
+								<td>
+									02:28:59
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/25067/">
+											Наталья<br/>Старкова</a>
+									
+								</td>
+								<td>
+									02:30:47
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/25052/">
+											Марина<br/>Ковалева</a>
+									
+								</td>
+								<td>
+									02:31:58
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/19039">IV Московский Марафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/199722/">
+											Татьяна<br/>Арясова</a>
+									
+								</td>
+								<td>
+									02:32:34
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/19039">IV Московский Марафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/25067/">
+											Наталья<br/>Старкова</a>
+									
+								</td>
+								<td>
+									02:33:36
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/11111">Казанский марафон</a>
+									(Казань)
+									
+								</td>
+								<td class="text-right">
+									15.05
+								</td>
+								<td>
+										<a href="/runner/199722/">
+											Татьяна<br/>Арясова</a>
+									
+								</td>
+								<td>
+									02:33:37
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/18581">Международный марафон «Европа — Азия»</a>
+									(Екатеринбург)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										<a href="/runner/199723/">
+											Сардана<br/>Трофимова</a>
+									
+								</td>
+								<td>
+									02:34:57
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/24489/">
+											Нина<br/>Поднебеснова</a>
+									
+								</td>
+								<td>
+									02:35:15
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/11069">Волгоградский марафон, посвященный памяти ЗМС СССР Б. А. Гришаева (чемпионат России по марафону)</a>
+									(Волгоград)
+									
+								</td>
+								<td class="text-right">
+									1.05
+								</td>
+								<td>
+										<a href="/runner/24567/">
+											Гульнара<br/>Выговская</a>
+									
+								</td>
+								<td>
+									02:35:16
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+			</div>
+		
+	
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">30 км. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/18475">Golden Ring Ultra-Trail® 100 2016 2nd Edition</a>
+							(Суздаль)
+						</td>
+						<td class="text-right nobr">
+							24 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 64%">
+									<span class="text-left">453</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 36%">
+									<span class="text-right">245</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							698
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+							(Пушкин)
+						</td>
+						<td class="text-right nobr">
+							25 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 85%">
+									<span class="text-left">445</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 15%">
+									<span class="text-right">75</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							520
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/10987">46-й традиционный легкоатлетический пробег Гатчина – Пушкин</a>
+							(Гатчина)
+						</td>
+						<td class="text-right nobr">
+							3 апреля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 82%">
+									<span class="text-left">293</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 18%">
+									<span class="text-right">61</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							354
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/18727">Горный марафон «Забег за облака»</a>
+							(Златоуст)
+						</td>
+						<td class="text-right nobr">
+							28 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 78%">
+									<span class="text-left">128</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 22%">
+									<span class="text-right">36</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							164
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/19457">Пробег «Здравствуй, Новый Год!»</a>
+							(Гатчина)
+						</td>
+						<td class="text-right nobr">
+							25 декабря
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 77%">
+									<span class="text-left">85</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 23%">
+									<span class="text-right">24</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							109
+						</td>
+					</tr>
+				
+					<tr>
+						<td>6</td>
+						<td>
+							<a href="/race/18424">ALTAI ULTRA TRAIL</a>
+							(Республика Алтай, Усть-Коксинский район, с.&nbsp;Тюнгур)
+						</td>
+						<td class="text-right nobr">
+							16 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 67%">
+									<span class="text-left">59</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 33%">
+									<span class="text-right">28</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							87
+						</td>
+					</tr>
+				
+					<tr>
+						<td>7</td>
+						<td>
+							<a href="/race/18360">Московский трейл</a>
+							(Московская область, Дмитровский район, д.&nbsp;Курово)
+						</td>
+						<td class="text-right nobr">
+							3 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 77%">
+									<span class="text-left">51</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 23%">
+									<span class="text-right">15</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							66
+						</td>
+					</tr>
+				
+					<tr>
+						<td>8</td>
+						<td>
+							<a href="/race/19211">Хепо кросс-поход</a>
+							(Токсово)
+						</td>
+						<td class="text-right nobr">
+							15 октября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 81%">
+									<span class="text-left">50</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 19%">
+									<span class="text-right">11</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							61
+						</td>
+					</tr>
+				
+					<tr>
+						<td>9</td>
+						<td>
+							<a href="/race/23120">Малоярославецкий трейл «Кутузов. Дорогами 1812 года»</a>
+							(Малоярославец)
+						</td>
+						<td class="text-right nobr">
+							22 октября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 80%">
+									<span class="text-left">36</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 20%">
+									<span class="text-right">9</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							45
+						</td>
+					</tr>
+				
+					<tr>
+						<td>10</td>
+						<td>
+							<a href="/race/18295">Night White Trail</a>
+							(Приозерский район)
+						</td>
+						<td class="text-right nobr">
+							26 июня
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 68%">
+									<span class="text-left">31</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 32%">
+									<span class="text-right">14</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							45
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у мужчин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Денис<br/>Васильев
+									
+								</td>
+								<td>
+									01:36:09
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/3219/">
+											Михаил<br/>Питерцев</a>
+									
+								</td>
+								<td>
+									01:36:29
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/10987">46-й традиционный легкоатлетический пробег Гатчина – Пушкин</a>
+									(Гатчина)
+									
+								</td>
+								<td class="text-right">
+									3.04
+								</td>
+								<td>
+										Александр<br/>Павленин
+									
+								</td>
+								<td>
+									01:36:36
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Андрей<br/>Янович
+									
+								</td>
+								<td>
+									01:37:21
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Артур<br/>Бурцев
+									
+								</td>
+								<td>
+									01:38:25
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Александр<br/>Горюнов
+									
+								</td>
+								<td>
+									01:38:50
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/10987">46-й традиционный легкоатлетический пробег Гатчина – Пушкин</a>
+									(Гатчина)
+									
+								</td>
+								<td class="text-right">
+									3.04
+								</td>
+								<td>
+										<a href="/runner/608/">
+											Алексей<br/>Соколов</a>
+									
+								</td>
+								<td>
+									01:39:57
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										<a href="/runner/607/">
+											Игорь<br/>Щербина</a>
+									
+								</td>
+								<td>
+									01:40:35
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Александр<br/>Павленин
+									
+								</td>
+								<td>
+									01:41:21
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Николай<br/>Волков
+									
+								</td>
+								<td>
+									01:41:31
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у женщин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/10987">46-й традиционный легкоатлетический пробег Гатчина – Пушкин</a>
+									(Гатчина)
+									
+								</td>
+								<td class="text-right">
+									3.04
+								</td>
+								<td>
+										Маргарита<br/>Плаксина
+									
+								</td>
+								<td>
+									01:54:53
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/10987">46-й традиционный легкоатлетический пробег Гатчина – Пушкин</a>
+									(Гатчина)
+									
+								</td>
+								<td class="text-right">
+									3.04
+								</td>
+								<td>
+										<a href="/runner/3156/">
+											Наталья<br/>Кан</a>
+									
+								</td>
+								<td>
+									01:57:21
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Евгения<br/>Сухорученкова
+									
+								</td>
+								<td>
+									01:58:00
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/10987">46-й традиционный легкоатлетический пробег Гатчина – Пушкин</a>
+									(Гатчина)
+									
+								</td>
+								<td class="text-right">
+									3.04
+								</td>
+								<td>
+										Анастасия<br/>Пулькина
+									
+								</td>
+								<td>
+									01:58:22
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Маргарита<br/>Плаксина
+									
+								</td>
+								<td>
+									01:58:54
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/10987">46-й традиционный легкоатлетический пробег Гатчина – Пушкин</a>
+									(Гатчина)
+									
+								</td>
+								<td class="text-right">
+									3.04
+								</td>
+								<td>
+										Елизавета<br/>Ерохина
+									
+								</td>
+								<td>
+									01:59:05
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Анастасия<br/>Пулькина
+									
+								</td>
+								<td>
+									01:59:19
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Екатерина<br/>Безгодова
+									
+								</td>
+								<td>
+									01:59:31
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Ульяна<br/>Демидова
+									
+								</td>
+								<td>
+									02:00:11
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/18959">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Наталья<br/>Ках
+									
+								</td>
+								<td>
+									02:00:22
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+			</div>
+		
+	
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">Полумарафон. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/11106">Московский полумарафон</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							15 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 73%">
+									<span class="text-left">4598</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 27%">
+									<span class="text-right">1682</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							6280
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/18636">Музыкальный полумарафон</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							14 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 67%">
+									<span class="text-left">4042</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 33%">
+									<span class="text-right">1966</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							6008
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/11112">Казанский марафон</a>
+							(Казань)
+						</td>
+						<td class="text-right nobr">
+							15 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 66%">
+									<span class="text-left">1122</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 34%">
+									<span class="text-right">554</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1676
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/11043">Полумарафон «Весенний Гром»</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							24 апреля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 73%">
+									<span class="text-left">1162</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 27%">
+									<span class="text-right">412</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1574
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/19383">VII Гатчинский международный полумарафон</a>
+							(Гатчина)
+						</td>
+						<td class="text-right nobr">
+							20 ноября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 75%">
+									<span class="text-left">1072</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 25%">
+									<span class="text-right">342</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1414
+						</td>
+					</tr>
+				
+					<tr>
+						<td>6</td>
+						<td>
+							<a href="/race/18891">III Ярославский полумарафон «Золотое кольцо»</a>
+							(Ярославль)
+						</td>
+						<td class="text-right nobr">
+							11 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 76%">
+									<span class="text-left">1067</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 24%">
+									<span class="text-right">328</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1395
+						</td>
+					</tr>
+				
+					<tr>
+						<td>7</td>
+						<td>
+							<a href="/race/10969">Полумарафон «Сочи Автодром»</a>
+							(Сочи)
+						</td>
+						<td class="text-right nobr">
+							27 марта
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 69%">
+									<span class="text-left">952</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 31%">
+									<span class="text-right">415</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1367
+						</td>
+					</tr>
+				
+					<tr>
+						<td>8</td>
+						<td>
+							<a href="/race/18880">7-й Московский полумарафон «Осенний гром»</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							11 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 71%">
+									<span class="text-left">973</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 29%">
+									<span class="text-right">380</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1353
+						</td>
+					</tr>
+				
+					<tr>
+						<td>9</td>
+						<td>
+							<a href="/race/11054">Петербургский Полумарафон – открытый Чемпионат Санкт-Петербурга по полумарафону</a>
+							(Санкт-Петербург)
+						</td>
+						<td class="text-right nobr">
+							23 апреля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 74%">
+									<span class="text-left">872</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 26%">
+									<span class="text-right">298</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1170
+						</td>
+					</tr>
+				
+					<tr>
+						<td>10</td>
+						<td>
+							<a href="/race/18582">Международный марафон «Европа — Азия»</a>
+							(Екатеринбург)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 67%">
+									<span class="text-left">755</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 33%">
+									<span class="text-right">364</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1119
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у мужчин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/18825">Сибирский фестиваль бега. XIX Новосибирский полумарафон памяти Александра Раевича</a>
+									(Новосибирск)
+									
+								</td>
+								<td class="text-right">
+									10.09
+								</td>
+								<td>
+										<a href="/runner/201894/">
+											Евгений<br/>Рыбаков</a>
+									
+								</td>
+								<td>
+									01:03:19,01
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/18825">Сибирский фестиваль бега. XIX Новосибирский полумарафон памяти Александра Раевича</a>
+									(Новосибирск)
+									
+								</td>
+								<td class="text-right">
+									10.09
+								</td>
+								<td>
+										<a href="/runner/201895/">
+											Анатолий<br/>Рыбаков</a>
+									
+								</td>
+								<td>
+									01:03:19,01
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/18891">III Ярославский полумарафон «Золотое кольцо»</a>
+									(Ярославль)
+									
+								</td>
+								<td class="text-right">
+									11.09
+								</td>
+								<td>
+										<a href="/runner/1338/">
+											Федор<br/>Шутов</a>
+									
+								</td>
+								<td>
+									01:03:27
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/22537">Оскольский полумарафон</a>
+									(Старый Оскол)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										Сергей<br/>Попов
+									
+								</td>
+								<td>
+									01:03:58
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/22537">Оскольский полумарафон</a>
+									(Старый Оскол)
+									
+								</td>
+								<td class="text-right">
+									16.10
+								</td>
+								<td>
+										<a href="/runner/201893/">
+											Аплачкин<br/>Артем</a>
+									
+								</td>
+								<td>
+									01:04:00
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/18891">III Ярославский полумарафон «Золотое кольцо»</a>
+									(Ярославль)
+									
+								</td>
+								<td class="text-right">
+									11.09
+								</td>
+								<td>
+										<a href="/runner/201893/">
+											Артём<br/>Аплачкин</a>
+									
+								</td>
+								<td>
+									01:04:08
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/11054">Петербургский Полумарафон – открытый Чемпионат Санкт-Петербурга по полумарафону</a>
+									(Санкт-Петербург)
+									
+								</td>
+								<td class="text-right">
+									23.04
+								</td>
+								<td>
+										Алексей<br/>Реунков
+									
+								</td>
+								<td>
+									01:04:23,50
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/18880">7-й Московский полумарафон «Осенний гром»</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									11.09
+								</td>
+								<td>
+										<a href="/runner/18985/">
+											Искандер<br/>Ядгаров</a>
+									
+								</td>
+								<td>
+									01:04:36,23
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/10969">Полумарафон «Сочи Автодром»</a>
+									(Сочи)
+									
+								</td>
+								<td class="text-right">
+									27.03
+								</td>
+								<td>
+										<a href="/runner/11827/">
+											Михаил<br/>Кульков</a>
+									
+								</td>
+								<td>
+									01:04:47
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/22305">II Югорский полумарафон «Превзойди себя»</a>
+									(Ханты-Мансийск)
+									
+								</td>
+								<td class="text-right">
+									10.09
+								</td>
+								<td>
+										<a href="/runner/11827/">
+											Михаил<br/>Кульков</a>
+									
+								</td>
+								<td>
+									01:04:51,98
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у женщин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/21863">Тюменский полумарафон</a>
+									(Тюмень)
+									
+								</td>
+								<td class="text-right">
+									1.10
+								</td>
+								<td>
+										Наталья<br/>Тарасова
+									
+								</td>
+								<td>
+									01:12:05
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/18451">18-й открытый областной Шербакульский полумарафон</a>
+									(Шербакуль)
+									
+								</td>
+								<td class="text-right">
+									23.07
+								</td>
+								<td>
+										Марина<br/>Ковалева
+									
+								</td>
+								<td>
+									01:13:37
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/22533">Благотворительный Полумарафон «ВЯТСКИЕ ХОЛМЫ»</a>
+									(Киров)
+									
+								</td>
+								<td class="text-right">
+									4.09
+								</td>
+								<td>
+										<a href="/user/187/">
+											Иванова<br/>Галина</a>
+									
+								</td>
+								<td>
+									01:13:48
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/18825">Сибирский фестиваль бега. XIX Новосибирский полумарафон памяти Александра Раевича</a>
+									(Новосибирск)
+									
+								</td>
+								<td class="text-right">
+									10.09
+								</td>
+								<td>
+										Елена<br/>Седова
+									
+								</td>
+								<td>
+									01:13:58,98
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/18825">Сибирский фестиваль бега. XIX Новосибирский полумарафон памяти Александра Раевича</a>
+									(Новосибирск)
+									
+								</td>
+								<td class="text-right">
+									10.09
+								</td>
+								<td>
+										Анна<br/>Белокобыльская
+									
+								</td>
+								<td>
+									01:14:26,02
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/18636">Музыкальный полумарафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									14.08
+								</td>
+								<td>
+										Юлия<br/>Крюкова
+									
+								</td>
+								<td>
+									01:14:30
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/18891">III Ярославский полумарафон «Золотое кольцо»</a>
+									(Ярославль)
+									
+								</td>
+								<td class="text-right">
+									11.09
+								</td>
+								<td>
+										Гульнара<br/>Выговская
+									
+								</td>
+								<td>
+									01:14:41
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/11106">Московский полумарафон</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									15.05
+								</td>
+								<td>
+										Юлия<br/>Крюкова
+									
+								</td>
+								<td>
+									01:14:45
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/23134">Международный Марафон Сочи</a>
+									(Сочи)
+									
+								</td>
+								<td class="text-right">
+									6.11
+								</td>
+								<td>
+										<a href="/runner/25067/">
+											Наталья<br/>Старкова</a>
+									
+								</td>
+								<td>
+									01:14:47
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/17708">SIM Весенний полумарафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									15.05
+								</td>
+								<td>
+										Наталья<br/>Тарасова
+									
+								</td>
+								<td>
+									01:14:49
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+			</div>
+		
+	
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">1 час. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/23287">Часовой бег</a>
+							(Тольятти)
+						</td>
+						<td class="text-right nobr">
+							6 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 63%">
+									<span class="text-left">103</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 37%">
+									<span class="text-right">58</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							161
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/17828">Весенний часовой бег по набережной Брюгге</a>
+							(Йошкар-Ола)
+						</td>
+						<td class="text-right nobr">
+							22 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 63%">
+									<span class="text-left">91</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 37%">
+									<span class="text-right">52</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							143
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/20228">IV Чемпионат и первенство Омской области по часовому бегу (памяти Георгия Алексаняна)</a>
+							(Омск)
+						</td>
+						<td class="text-right nobr">
+							11 июня
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 61%">
+									<span class="text-left">75</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 39%">
+									<span class="text-right">47</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							122
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/19029">11-й Прохладненский часовой бег</a>
+							(Прохладный)
+						</td>
+						<td class="text-right nobr">
+							25 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 72%">
+									<span class="text-left">89</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 28%">
+									<span class="text-right">33</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							122
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/18575">Часовой бег</a>
+							(Железногорск)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 73%">
+									<span class="text-left">76</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 27%">
+									<span class="text-right">28</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							104
+						</td>
+					</tr>
+				
+					<tr>
+						<td>6</td>
+						<td>
+							<a href="/race/18209">I Музыкальный часовой пробег в честь Дня молодежи, посвященный легендарному директору Новотрубного завода Ф. А. Данилову</a>
+							(Первоуральск)
+						</td>
+						<td class="text-right nobr">
+							18 июня
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 62%">
+									<span class="text-left">64</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 38%">
+									<span class="text-right">39</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							103
+						</td>
+					</tr>
+				
+					<tr>
+						<td>7</td>
+						<td>
+							<a href="/race/19907">Часовой бег, посвященный памяти МСМК СССР Юрия Поротова</a>
+							(Кемерово)
+						</td>
+						<td class="text-right nobr">
+							20 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 69%">
+									<span class="text-left">64</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 31%">
+									<span class="text-right">28</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							92
+						</td>
+					</tr>
+				
+					<tr>
+						<td>8</td>
+						<td>
+							<a href="/race/19313">Часовой бег</a>
+							(Городец)
+						</td>
+						<td class="text-right nobr">
+							4 ноября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 71%">
+									<span class="text-left">59</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 29%">
+									<span class="text-right">24</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							83
+						</td>
+					</tr>
+				
+					<tr>
+						<td>9</td>
+						<td>
+							<a href="/race/17956">Часовой бег памяти мастера спорта международного класса Ивана Лабутина</a>
+							(Вязники)
+						</td>
+						<td class="text-right nobr">
+							29 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 77%">
+									<span class="text-left">60</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 23%">
+									<span class="text-right">17</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							77
+						</td>
+					</tr>
+				
+					<tr>
+						<td>10</td>
+						<td>
+							<a href="/race/23228">Часовой бег «Звездный час» на призы МАОУДОД «СДЮШОР по игровым видам спорта имени А.М. Беляева»</a>
+							(Нижневартовск)
+						</td>
+						<td class="text-right nobr">
+							2 октября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 55%">
+									<span class="text-left">38</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 45%">
+									<span class="text-right">31</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							69
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у мужчин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/17828">Весенний часовой бег по набережной Брюгге</a>
+									(Йошкар-Ола)
+									
+								</td>
+								<td class="text-right">
+									22.05
+								</td>
+								<td>
+										<a href="/runner/24023/">
+											Денис<br/>Головин</a>
+									
+								</td>
+								<td>
+									17980 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/19029">11-й Прохладненский часовой бег</a>
+									(Прохладный)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Андрей<br/>Алахвердов
+									
+								</td>
+								<td>
+									17830 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/23287">Часовой бег</a>
+									(Тольятти)
+									
+								</td>
+								<td class="text-right">
+									6.09
+								</td>
+								<td>
+										Эдуард<br/>Жигунов
+									
+								</td>
+								<td>
+									17800 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/17956">Часовой бег памяти мастера спорта международного класса Ивана Лабутина</a>
+									(Вязники)
+									
+								</td>
+								<td class="text-right">
+									29.05
+								</td>
+								<td>
+										Александр<br/>Орлов
+									
+								</td>
+								<td>
+									17765 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/18979">Часовой бег по стадиону</a>
+									(Архангельск)
+									
+								</td>
+								<td class="text-right">
+									19.09
+								</td>
+								<td>
+										Пётр<br/>Шульгин
+									
+								</td>
+								<td>
+									17620 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/20228">IV Чемпионат и первенство Омской области по часовому бегу (памяти Георгия Алексаняна)</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									11.06
+								</td>
+								<td>
+										<a href="/runner/16066/">
+											Бархат<br/>Базарбаев</a>
+									
+								</td>
+								<td>
+									17592 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/18209">I Музыкальный часовой пробег в честь Дня молодежи, посвященный легендарному директору Новотрубного завода Ф. А. Данилову</a>
+									(Первоуральск)
+									
+								</td>
+								<td class="text-right">
+									18.06
+								</td>
+								<td>
+										Руслан<br/>Гарифьянов
+									
+								</td>
+								<td>
+									17572 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/23287">Часовой бег</a>
+									(Тольятти)
+									
+								</td>
+								<td class="text-right">
+									6.09
+								</td>
+								<td>
+										Виктор<br/>Самойлов
+									
+								</td>
+								<td>
+									17500 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/18209">I Музыкальный часовой пробег в честь Дня молодежи, посвященный легендарному директору Новотрубного завода Ф. А. Данилову</a>
+									(Первоуральск)
+									
+								</td>
+								<td class="text-right">
+									18.06
+								</td>
+								<td>
+										<a href="/runner/5576/">
+											Алексей<br/>Крупин</a>
+									
+								</td>
+								<td>
+									17400 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/23287">Часовой бег</a>
+									(Тольятти)
+									
+								</td>
+								<td class="text-right">
+									6.09
+								</td>
+								<td>
+										Виктор<br/>Ряполов
+									
+								</td>
+								<td>
+									17350 м
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у женщин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/20228">IV Чемпионат и первенство Омской области по часовому бегу (памяти Георгия Алексаняна)</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									11.06
+								</td>
+								<td>
+										<a href="/runner/25052/">
+											Марина<br/>Ковалёва</a>
+									
+								</td>
+								<td>
+									16385 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/23287">Часовой бег</a>
+									(Тольятти)
+									
+								</td>
+								<td class="text-right">
+									6.09
+								</td>
+								<td>
+										Любовь<br/>Добровольская
+									
+								</td>
+								<td>
+									16300 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/23287">Часовой бег</a>
+									(Тольятти)
+									
+								</td>
+								<td class="text-right">
+									6.09
+								</td>
+								<td>
+										Анастасия<br/>Козина
+									
+								</td>
+								<td>
+									15550 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/23287">Часовой бег</a>
+									(Тольятти)
+									
+								</td>
+								<td class="text-right">
+									6.09
+								</td>
+								<td>
+										Наиля<br/>Юламанова
+									
+								</td>
+								<td>
+									15490 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/19472">Мемориал заслуженного тренера СССР Б. Я. Новожилова</a>
+									(Екатеринбург)
+									
+								</td>
+								<td class="text-right">
+									28.12
+								</td>
+								<td>
+										Александра<br/>Морозова
+									
+								</td>
+								<td>
+									15400 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/23287">Часовой бег</a>
+									(Тольятти)
+									
+								</td>
+								<td class="text-right">
+									6.09
+								</td>
+								<td>
+										Дина<br/>Захарченко
+									
+								</td>
+								<td>
+									15320 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/18209">I Музыкальный часовой пробег в честь Дня молодежи, посвященный легендарному директору Новотрубного завода Ф. А. Данилову</a>
+									(Первоуральск)
+									
+								</td>
+								<td class="text-right">
+									18.06
+								</td>
+								<td>
+										Ольга<br/>Пашагина
+									
+								</td>
+								<td>
+									15285 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/11044">Часовой бег Шри Чинмоя «Самопреодоление»</a>
+									(Ижевск)
+									
+								</td>
+								<td class="text-right">
+									17.04
+								</td>
+								<td>
+										Александра<br/>Валишина
+									
+								</td>
+								<td>
+									14927 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/23228">Часовой бег «Звездный час» на призы МАОУДОД «СДЮШОР по игровым видам спорта имени А.М. Беляева»</a>
+									(Нижневартовск)
+									
+								</td>
+								<td class="text-right">
+									2.10
+								</td>
+								<td>
+										Юлия<br/>Бурка
+									
+								</td>
+								<td>
+									14805 м
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/19481">Новогодний часовой бег. Открытый чемпионат и первенства города по часовому бегу</a>
+									(Комсомольск-на-Амуре)
+									
+								</td>
+								<td class="text-right">
+									31.12
+								</td>
+								<td>
+										Елена<br/>Саяпина
+									
+								</td>
+								<td>
+									14750 м
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+			</div>
+		
+	
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">15 км. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/18960">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+							(Пушкин)
+						</td>
+						<td class="text-right nobr">
+							25 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 66%">
+									<span class="text-left">365</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 34%">
+									<span class="text-right">180</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							545
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+							(Омск)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 72%">
+									<span class="text-left">389</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 28%">
+									<span class="text-right">150</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							539
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/18122">Традиционный пробег «По аллеям истории»</a>
+							(Гатчина)
+						</td>
+						<td class="text-right nobr">
+							12 июня
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 72%">
+									<span class="text-left">205</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 28%">
+									<span class="text-right">77</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							282
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/10929">Пробег «18 лет КАО «Сильвия»</a>
+							(Гатчина)
+						</td>
+						<td class="text-right nobr">
+							20 марта
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 75%">
+									<span class="text-left">142</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 25%">
+									<span class="text-right">46</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							188
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/19349">Пробег «Межсезонье»</a>
+							(Гатчина)
+						</td>
+						<td class="text-right nobr">
+							6 ноября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 69%">
+									<span class="text-left">97</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 31%">
+									<span class="text-right">42</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							139
+						</td>
+					</tr>
+				
+					<tr>
+						<td>6</td>
+						<td>
+							<a href="/race/18238">Пробег на призы ЗАО «Хохломская роспись»</a>
+							(Семёнов)
+						</td>
+						<td class="text-right nobr">
+							19 июня
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 83%">
+									<span class="text-left">89</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 17%">
+									<span class="text-right">18</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							107
+						</td>
+					</tr>
+				
+					<tr>
+						<td>7</td>
+						<td>
+							<a href="/race/24061">Winter Forest Cross 2016</a>
+							(Дзержинский)
+						</td>
+						<td class="text-right nobr">
+							18 декабря
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 63%">
+									<span class="text-left">67</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 37%">
+									<span class="text-right">39</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							106
+						</td>
+					</tr>
+				
+					<tr>
+						<td>8</td>
+						<td>
+							<a href="/race/19256">Пробег памяти академика И. В. Курчатова</a>
+							(Заречный)
+						</td>
+						<td class="text-right nobr">
+							23 октября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 89%">
+									<span class="text-left">94</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 11%">
+									<span class="text-right">11</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							105
+						</td>
+					</tr>
+				
+					<tr>
+						<td>9</td>
+						<td>
+							<a href="/race/21859">Кроссовый забег «Затюменский»</a>
+							(Тюмень)
+						</td>
+						<td class="text-right nobr">
+							31 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 81%">
+									<span class="text-left">86</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 19%">
+									<span class="text-right">19</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							105
+						</td>
+					</tr>
+				
+					<tr>
+						<td>10</td>
+						<td>
+							<a href="/race/17955">Спортивный фестиваль Pervouralsk Open (горный бег)</a>
+							(Первоуральск)
+						</td>
+						<td class="text-right nobr">
+							29 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 73%">
+									<span class="text-left">67</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 27%">
+									<span class="text-right">24</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							91
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у мужчин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/22161">51-й Легкоатлетический пробег «Алексин – Курган Славы»</a>
+									(Алексин)
+									
+								</td>
+								<td class="text-right">
+									9.05
+								</td>
+								<td>
+										Сергей<br/>Суббочев
+									
+								</td>
+								<td>
+									00:44:36
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Игорь<br/>Максимов
+									
+								</td>
+								<td>
+									00:45:41
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/22161">51-й Легкоатлетический пробег «Алексин – Курган Славы»</a>
+									(Алексин)
+									
+								</td>
+								<td class="text-right">
+									9.05
+								</td>
+								<td>
+										Иван<br/>Панфёров
+									
+								</td>
+								<td>
+									00:45:58
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										<a href="/runner/11827/">
+											Михаил<br/>Кульков</a>
+									
+								</td>
+								<td>
+									00:46:48
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/18960">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Александр<br/>Кротович
+									
+								</td>
+								<td>
+									00:47:03
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Иван<br/>Коняев
+									
+								</td>
+								<td>
+									00:47:48
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Денис<br/>Чертыков
+									
+								</td>
+								<td>
+									00:48:07
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/22161">51-й Легкоатлетический пробег «Алексин – Курган Славы»</a>
+									(Алексин)
+									
+								</td>
+								<td class="text-right">
+									9.05
+								</td>
+								<td>
+										Евгений<br/>Дюжиков
+									
+								</td>
+								<td>
+									00:48:23
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/23945">Кросс-пробег «Заревское озеро»</a>
+									(Балашиха)
+									
+								</td>
+								<td class="text-right">
+									10.09
+								</td>
+								<td>
+										<a href="/runner/200700/">
+											Дмитрий<br/>Тунгусков</a>
+									
+								</td>
+								<td>
+									00:48:38
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/18960">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Александр<br/>Куверин
+									
+								</td>
+								<td>
+									00:48:41
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h4 class="text-center">Лучшие результаты у женщин</h4>
+					<table class="table table-condensed table-hover">
+						<tr>
+							<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+							<th class="text-left">Имя</th><th class="text-left">Результат</th>
+						</tr>
+						
+							<tr>
+								<td>1</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Екатерина<br/>Соколенко
+									
+								</td>
+								<td>
+									00:52:13
+								</td>
+							</tr>
+						
+							<tr>
+								<td>2</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Елизавета<br/>Пахомова
+									
+								</td>
+								<td>
+									00:52:55
+								</td>
+							</tr>
+						
+							<tr>
+								<td>3</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Гульнара<br/>Выговская
+									
+								</td>
+								<td>
+									00:53:01
+								</td>
+							</tr>
+						
+							<tr>
+								<td>4</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Любовь<br/>Добровольская
+									
+								</td>
+								<td>
+									00:54:49
+								</td>
+							</tr>
+						
+							<tr>
+								<td>5</td>
+								<td>
+									<a href="/race/18960">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Олеся<br/>Мошиашвили
+									
+								</td>
+								<td>
+									00:56:07
+								</td>
+							</tr>
+						
+							<tr>
+								<td>6</td>
+								<td>
+									<a href="/race/18564">SIM XXVII Сибирский международный марафон</a>
+									(Омск)
+									
+								</td>
+								<td class="text-right">
+									7.08
+								</td>
+								<td>
+										Римма<br/>Родько
+									
+								</td>
+								<td>
+									00:56:16
+								</td>
+							</tr>
+						
+							<tr>
+								<td>7</td>
+								<td>
+									<a href="/race/18960">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Алина<br/>Субботина
+									
+								</td>
+								<td>
+									00:57:22
+								</td>
+							</tr>
+						
+							<tr>
+								<td>8</td>
+								<td>
+									<a href="/race/18960">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Наталья<br/>Прохорова
+									
+								</td>
+								<td>
+									00:57:52
+								</td>
+							</tr>
+						
+							<tr>
+								<td>9</td>
+								<td>
+									<a href="/race/18960">90-й Международный пробег Пушкин – Санкт-Петербург на призы газеты «Вечерний Петербург» памяти Валентина Семенова</a>
+									(Пушкин)
+									
+								</td>
+								<td class="text-right">
+									25.09
+								</td>
+								<td>
+										Татьяна<br/>Сидункова
+									
+								</td>
+								<td>
+									00:58:26
+								</td>
+							</tr>
+						
+							<tr>
+								<td>10</td>
+								<td>
+									<a href="/race/18648">Парковый пробег «Путяевский Лабиринт» 3 этап</a>
+									(Москва)
+									
+								</td>
+								<td class="text-right">
+									17.08
+								</td>
+								<td>
+										<a href="/runner/6110/">
+											Тамара<br/>Щемерова</a>
+									
+								</td>
+								<td>
+									00:58:28
+								</td>
+							</tr>
+						
+					</table>
+				</div>
+			</div>
+		
+	
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">10 км. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/19040">IV Московский Марафон</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							25 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 48%">
+									<span class="text-left">5348</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 52%">
+									<span class="text-right">5614</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							10962
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/18350">27-й Международный марафон «ERGO – Белые Ночи»</a>
+							(Санкт-Петербург)
+						</td>
+						<td class="text-right nobr">
+							3 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 47%">
+									<span class="text-left">2119</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 53%">
+									<span class="text-right">2338</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							4457
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/18413">Московский Марафон Ночной забег</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							16 июля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 56%">
+									<span class="text-left">1970</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 44%">
+									<span class="text-right">1520</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							3490
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/22532">Пробег «IGNITE MOSCOW x GROM 10k»</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							4 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 62%">
+									<span class="text-left">1035</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 38%">
+									<span class="text-right">609</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1644
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/11113">Казанский марафон</a>
+							(Казань)
+						</td>
+						<td class="text-right nobr">
+							15 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 47%">
+									<span class="text-left">646</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 53%">
+									<span class="text-right">718</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1364
+						</td>
+					</tr>
+				
+					<tr>
+						<td>6</td>
+						<td>
+							<a href="/race/18892">III Ярославский полумарафон «Золотое кольцо»</a>
+							(Ярославль)
+						</td>
+						<td class="text-right nobr">
+							11 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 51%">
+									<span class="text-left">532</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 49%">
+									<span class="text-right">494</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							1026
+						</td>
+					</tr>
+				
+					<tr>
+						<td>7</td>
+						<td>
+							<a href="/race/21860">Благотворительный забег «Достигая цели!»</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 65%">
+									<span class="text-left">625</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 35%">
+									<span class="text-right">330</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							955
+						</td>
+					</tr>
+				
+					<tr>
+						<td>8</td>
+						<td>
+							<a href="/race/18583">Международный марафон «Европа — Азия»</a>
+							(Екатеринбург)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 54%">
+									<span class="text-left">422</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 46%">
+									<span class="text-right">349</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							771
+						</td>
+					</tr>
+				
+					<tr>
+						<td>9</td>
+						<td>
+							<a href="/race/18876">Уфимский Открытый Марафон — 2016</a>
+							(Уфа)
+						</td>
+						<td class="text-right nobr">
+							11 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 54%">
+									<span class="text-left">361</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 46%">
+									<span class="text-right">305</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							666
+						</td>
+					</tr>
+				
+					<tr>
+						<td>10</td>
+						<td>
+							<a href="/race/11079">EAM Пробег «Майская гроза»</a>
+							(Екатеринбург)
+						</td>
+						<td class="text-right nobr">
+							5 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 67%">
+									<span class="text-left">352</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 33%">
+									<span class="text-right">168</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							520
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+		
+	
+		<br/><br/>
+		<div class="row"><div class="col-md-8 col-md-offset-1 col-sm-12 col-sm-offset-0">
+			<h4 class="text-center">5 км. Самые крупные забеги</h4>
+			<table class="table table-condensed table-hover">
+				<tr>
+					<th></th><th class="text-left">Забег</th><th class="text-right">Дата</th>
+					<th class="text-center" colspan="2">Финишировало:</th><th></th>
+				</tr>
+				<tr>
+					<th colspan="3"></th><th class="text-left">Мужчин</th><th class="text-right">Женщин</th><th class="text-right">Всего</th>
+				</tr>
+				
+					<tr>
+						<td>1</td>
+						<td>
+							<a href="/race/11001">Московский марафон: Первый забег</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							10 апреля
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 51%">
+									<span class="text-left">1993</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 49%">
+									<span class="text-right">1894</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							3887
+						</td>
+					</tr>
+				
+					<tr>
+						<td>2</td>
+						<td>
+							<a href="/race/18565">SIM XXVII Сибирский международный марафон</a>
+							(Омск)
+						</td>
+						<td class="text-right nobr">
+							7 августа
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 46%">
+									<span class="text-left">1387</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 54%">
+									<span class="text-right">1623</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							3010
+						</td>
+					</tr>
+				
+					<tr>
+						<td>3</td>
+						<td>
+							<a href="/race/17811">RUN ASICS KRASNODAR «5000 метров с «Высшей Лигой»</a>
+							(Краснодар)
+						</td>
+						<td class="text-right nobr">
+							22 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 64%">
+									<span class="text-left">1581</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 36%">
+									<span class="text-right">861</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							2442
+						</td>
+					</tr>
+				
+					<tr>
+						<td>4</td>
+						<td>
+							<a href="/race/19019">Владивостокский марафон</a>
+							(Владивосток)
+						</td>
+						<td class="text-right nobr">
+							24 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 49%">
+									<span class="text-left">375</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 51%">
+									<span class="text-right">389</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							764
+						</td>
+					</tr>
+				
+					<tr>
+						<td>5</td>
+						<td>
+							<a href="/race/18946">EAM Ночной Забег</a>
+							(Екатеринбург)
+						</td>
+						<td class="text-right nobr">
+							17 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 59%">
+									<span class="text-left">394</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 41%">
+									<span class="text-right">266</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							660
+						</td>
+					</tr>
+				
+					<tr>
+						<td>6</td>
+						<td>
+							<a href="/race/18237">Благотворительный забег «Вокруг земли за 60 минут»</a>
+							(Москва)
+						</td>
+						<td class="text-right nobr">
+							18 июня
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 31%">
+									<span class="text-left">155</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 69%">
+									<span class="text-right">338</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							493
+						</td>
+					</tr>
+				
+					<tr>
+						<td>7</td>
+						<td>
+							<a href="/race/10697">47-й международный зимний марафон «Дорога жизни», посвященный 72-й годовщине полного снятия блокады Ленинграда</a>
+							(Санкт-Петербург)
+						</td>
+						<td class="text-right nobr">
+							31 января
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 57%">
+									<span class="text-left">277</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 43%">
+									<span class="text-right">202</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							479
+						</td>
+					</tr>
+				
+					<tr>
+						<td>8</td>
+						<td>
+							<a href="/race/19091">XXXIII Донской марафон – ROSTOV DON MARATHON 2016</a>
+							(Ростов-на-Дону)
+						</td>
+						<td class="text-right nobr">
+							10 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 56%">
+									<span class="text-left">268</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 44%">
+									<span class="text-right">206</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							474
+						</td>
+					</tr>
+				
+					<tr>
+						<td>9</td>
+						<td>
+							<a href="/race/17822">Благотворительный забег «Беги, герой!»</a>
+							(Нижний Новгород)
+						</td>
+						<td class="text-right nobr">
+							22 мая
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 50%">
+									<span class="text-left">198</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 50%">
+									<span class="text-right">197</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							395
+						</td>
+					</tr>
+				
+					<tr>
+						<td>10</td>
+						<td>
+							<a href="/race/22958">Благотворительный забег в защиту амурского тигра и дальневосточного леопарда</a>
+							(Владивосток)
+						</td>
+						<td class="text-right nobr">
+							2 сентября
+						</td>
+						<td colspan="2" style="min-width:300px;">
+							<div class="progress">
+								<div class="progress-bar text-left" style="width: 65%">
+									<span class="text-left">229</span>
+								</div>
+								<div class="progress-bar progress-bar-danger text-right" style="width: 35%">
+									<span class="text-right">118</span>
+								</div>
+							</div>
+						</td>
+						<td class="text-right">
+							347
+						</td>
+					</tr>
+				
+			</table>
+		</div></div>
+{% endblock %}
