@@ -6554,6 +6554,15 @@ button.list-group-item-danger.active:hover {
 	padding: 15px
 }
 
+.border {
+	background-color: #fffdf4;
+	padding: 10px;
+	margin-bottom: 14px;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0.5,0,0,0.1);
+}
+
 .panel-heading {
 	padding: 10px 15px;
 	border-bottom: 1px solid transparent;
