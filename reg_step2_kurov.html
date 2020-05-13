@@ -184,100 +184,105 @@
 								<p>Вы сможете в любой момент изменить введённые сейчас суммы и даты, <i>а также количество
 										изменений стоимости регистрации</i>.</p>
 							</div>
-							<table class="table table-condensed">
-								<tr class="text-center info">
-									<th>Дистанция</th>
-									<th colspan="5" class="text-center">Введите дату: до какого дня включительно действует цена
-									</th>
-								</tr>
-								<tr class="text-center">
-									<td></td>
-									<td><input name="price_date_1" type="date" /></td>
-									<td><input name="price_date_2" type="date" /></td>
-									<td><input name="price_date_3" type="date" /></td>
-									<td><input name="price_date_4" type="date" /></td>
-									<td>Цена до окончания регистрации<br />(29.12.2020)</td>
-								</tr>
-								<tr class="warning">
-									<th colspan="6" class="text-center">Введите стоимость регистрации для дистанции [выбранная
-										дистанция]
-									</th>
-								</tr>
-								<tr class="text-center">
-									<td rowspan="5"
-										style="vertical-align: middle; border-right: 1px solid #ddd; font-weight: 700; background-color: #fffdf4;">
-										10 км</td>
-									<td><input name="price_race_64075_date_1" type="number" /></td>
-									<td><input name="price_race_64075_date_2" type="number" /></td>
-									<td><input name="price_race_64075_date_3" type="number" /></td>
-									<td><input name="price_race_64075_date_4" type="number" /></td>
-									<td><input name="price_race_64075_finish" type="number" class="price_finish" /></td>
-								</tr>
-								<tr class="warning-2">
-									<th colspan="6" class="text-center-small">Специальные цены для отдельных категорий
-										участников
-									</th>
-								</tr>
-								<tr>
-									<td colspan="4" class="text-right">Для мужчин
-										<input name="race_64075_senior_male_age" type="number"
-											style="width:4em; text-align: center;" value="60" />
-										лет и старше
-									</td>
-									<td class="text-center"><input name="price_race_64075_senior_male" type="number" /></td>
-								</tr>
-								<tr>
-									<td colspan="4" class="text-right">Для женщин
-										<input name="race_64075_senior_female_age" type="number"
-											style="width:4em; text-align: center;" value="55" />
-										лет и старше
-									</td>
-									<td class="text-center"><input name="price_race_64075_senior_female" type="number" /></td>
-								</tr>
-								<tr>
-									<td colspan="4" class="text-right">Для детей &nbsp;
-										<input name="race_64075_young_age" type="number" style="width:4em; text-align: center;" />
-										лет и младше
-									</td>
-									<td class="text-center"><input name="price_race_64075_young" type="number" /></td>
-								</tr>
-								<tr class="warning">
-									<th colspan="6" class="text-center">Введите стоимость регистрации для дистанции [выбранная
-										дистанция]
-									</th>
-								</tr>
-								<tr class="text-center">
-									<td>5 км</td>
-									<td><input name="price_race_64076_date_1" type="number" /></td>
-									<td><input name="price_race_64076_date_2" type="number" /></td>
-									<td><input name="price_race_64076_date_3" type="number" /></td>
-									<td><input name="price_race_64076_date_4" type="number" /></td>
-									<td><input name="price_race_64076_finish" type="number" class="price_finish" /></td>
-								</tr>
-								<tr>
-									<td colspan="5" class="text-right">Специальная цена для мужчин
-										<input name="race_64076_senior_male_age" type="number" style="width:8em;" value="60" />
-										лет и старше
-									</td>
-									<td class="text-center"><input name="price_race_64076_senior_male" type="number" /></td>
-								</tr>
-								<tr>
-									<td colspan="5" class="text-right">Специальная цена для женщин
-										<input name="race_64076_senior_female_age" type="number" style="width:8em;" value="55" />
-										лет и старше
-									</td>
-									<td class="text-center"><input name="price_race_64076_senior_female" type="number" /></td>
-								</tr>
-								<tr>
-									<td colspan="5" class="text-right">Специальная цена для детей
-										<input name="race_64076_young_age" type="number" style="width:8em;" /> лет и младше
-									</td>
-									<td class="text-center"><input name="price_race_64076_young" type="number" /></td>
-								</tr>
-								<tr class="warning">
-									<td colspan="6">&nbsp;</td>
-								</tr>
-							</table>
+							<div class="border">
+								<table class="table table-condensed">
+									<tr class="text-center info">
+										<th>Дистанция</th>
+										<th colspan="5" class="text-center">Введите дату: до какого дня включительно действует
+											цена
+										</th>
+									</tr>
+									<tr class="text-center">
+										<td></td>
+										<td><input name="price_date_1" type="date" /></td>
+										<td><input name="price_date_2" type="date" /></td>
+										<td><input name="price_date_3" type="date" /></td>
+										<td><input name="price_date_4" type="date" /></td>
+										<td>Цена до окончания регистрации<br />(29.12.2020)</td>
+									</tr>
+									<tr class="warning">
+										<th colspan="6" class="text-center">Введите стоимость регистрации для дистанции [выбранная
+											дистанция]
+										</th>
+									</tr>
+									<tr class="text-center">
+										<td rowspan="5"
+											style="vertical-align: middle; border-right: 1px solid #ddd; font-weight: 700; background-color: #fffdf4;">
+											10 км</td>
+										<td><input name="price_race_64075_date_1" type="number" /></td>
+										<td><input name="price_race_64075_date_2" type="number" /></td>
+										<td><input name="price_race_64075_date_3" type="number" /></td>
+										<td><input name="price_race_64075_date_4" type="number" /></td>
+										<td><input name="price_race_64075_finish" type="number" class="price_finish" /></td>
+									</tr>
+									<tr class="warning-2">
+										<th colspan="6" class="text-center-small">Специальные цены для отдельных категорий
+											участников
+										</th>
+									</tr>
+									<tr>
+										<td colspan="4" class="text-right">Для мужчин
+											<input name="race_64075_senior_male_age" type="number"
+												style="width:4em; text-align: center;" value="60" />
+											лет и старше
+										</td>
+										<td class="text-center"><input name="price_race_64075_senior_male" type="number" /></td>
+									</tr>
+									<tr>
+										<td colspan="4" class="text-right">Для женщин
+											<input name="race_64075_senior_female_age" type="number"
+												style="width:4em; text-align: center;" value="55" />
+											лет и старше
+										</td>
+										<td class="text-center"><input name="price_race_64075_senior_female" type="number" /></td>
+									</tr>
+									<tr>
+										<td colspan="4" class="text-right">Для детей &nbsp;
+											<input name="race_64075_young_age" type="number"
+												style="width:4em; text-align: center;" />
+											лет и младше
+										</td>
+										<td class="text-center"><input name="price_race_64075_young" type="number" /></td>
+									</tr>
+									<tr class="warning">
+										<th colspan="6" class="text-center">Введите стоимость регистрации для дистанции [выбранная
+											дистанция]
+										</th>
+									</tr>
+									<tr class="text-center">
+										<td>5 км</td>
+										<td><input name="price_race_64076_date_1" type="number" /></td>
+										<td><input name="price_race_64076_date_2" type="number" /></td>
+										<td><input name="price_race_64076_date_3" type="number" /></td>
+										<td><input name="price_race_64076_date_4" type="number" /></td>
+										<td><input name="price_race_64076_finish" type="number" class="price_finish" /></td>
+									</tr>
+									<tr>
+										<td colspan="5" class="text-right">Специальная цена для мужчин
+											<input name="race_64076_senior_male_age" type="number" style="width:8em;" value="60" />
+											лет и старше
+										</td>
+										<td class="text-center"><input name="price_race_64076_senior_male" type="number" /></td>
+									</tr>
+									<tr>
+										<td colspan="5" class="text-right">Специальная цена для женщин
+											<input name="race_64076_senior_female_age" type="number" style="width:8em;"
+												value="55" />
+											лет и старше
+										</td>
+										<td class="text-center"><input name="price_race_64076_senior_female" type="number" /></td>
+									</tr>
+									<tr>
+										<td colspan="5" class="text-right">Специальная цена для детей
+											<input name="race_64076_young_age" type="number" style="width:8em;" /> лет и младше
+										</td>
+										<td class="text-center"><input name="price_race_64076_young" type="number" /></td>
+									</tr>
+									<tr class="warning">
+										<td colspan="6">&nbsp;</td>
+									</tr>
+								</table>
+							</div>
 							<div class="border">
 								<h4>Футболки</h4>
 								<div class="checkbox"><label><input type="radio" name="tshirts" value="1" />
